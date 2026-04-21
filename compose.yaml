@@ -1,4 +1,7 @@
 services:
+
+  # Database
+
   db:
     image: postgres:18
     restart: always
@@ -7,22 +10,33 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: kochbuch
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     ports:
       - "5432:5432"
+
+
+
+  # Backend
 
   backend:
     build: ./backend
     ports:
       - "5000:5000"
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/kochbuch
+      DATABASE_HOST: db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_DB: kochbuch
     depends_on:
       - db
     volumes:
       - ./backend:/app
       - /app/node_modules
 
+
+
+  # Client
+  
   client:
     build: ./client
     ports:
@@ -32,6 +46,23 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
+
+
+
+  # pgAdmin
+
+  pgadmin:
+    image: elestio/pgadmin:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: login@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 8080
+      PGADMIN_CONFIG_ALLOW_SPECIAL_EMAIL_DOMAINS: True
+    ports:
+      - "8080:8080"
+
+
 
 volumes:
   postgres_data:
