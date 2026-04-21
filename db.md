@@ -4,67 +4,82 @@
 erDiagram
 direction LR
 
-Rezept {
-    int RezeptID PK
-    text Name
-    text KategorieID FK
+Users {
+    serial UserID PK
+    varchar(32) Name "unique not null"
+    char(32) PasswortHash "not null"
+    text SettingThemeSlug
+    bool SettingAdvancedOptions
 }
 
-Kategorie {
-    int KategorieID PK
-    text Name
+Categories {
+    serial CategoryID PK
+    varchar(32) Name "unique not null"
 }
 
-Bild {
-    int BildID PK
-    text Name
-    int UserID FK
+Recipes {
+    serial RecipeID PK
+    varchar(64) Name "not null"
+    int CategoryID FK
 }
 
-Rezeptbild {
-    int BildID PK, FK
-    int RezeptID PK, FK
-    int Position
-    text Untertitel
+Steps {
+    serial StepID PK
+    int RecipeID FK "not null on delete cascade"
+    int IndexNumber "not null"
+    text Text "not null"
 }
 
-Zutat {
-    int ZutatID PK
-    int RezeptID FK
-    int Menge
-    text Einheit
-    text Text
-    int SchrittID FK
+Ingredients {
+    serial IngredientID PK
+    int RecipeID FK
+    numeric Amount
+    varchar(16) Unit
+    varchar(64) Text "not null"
+    text comment
+    int StepID FK
 }
 
-Schritt {
-    int SchrittID PK
-    int RezeptID FK
-    int IndexNummer
-    text Text
+ApiKeysInner {
+    serial ApiKeyInner PK
+    int UserID FK "unique on delete cascade"
+    varchar(32) Name "unique"
 }
 
-User {
-    int UserID PK
-    text Name
-    text PasswortHash
-    text EinstellungThemeSlug
-    bool EinstellungErweiterteFunktionen
-}
-
-Zugriffsrecht {
+ApiKeysOuter {
+    int ApiKeyOuter PK
     int UserID PK, FK
-    int RezeptID PK, FK
-    text Rolle
+    varchar(32) Domain "not null"
 }
 
-Rezept }o--|| Kategorie: gehörtZu
-Bild ||--|{ Rezeptbild: ist
-Rezeptbild }o--|| Rezept: gehörtZu
-Bild ||--|{ User: gehört
-Zutat }|--|| Rezept: kommtIn
-Schritt }|--|| Rezept: gehörtZu
-Schritt |o--o{ Zutat: benötigt
-User ||--o{ Zugriffsrecht: hatZugriff
-Rezept ||--|{ Zugriffsrecht: kannZugegriffenWerdenDurch
+AccessPermissions {
+    int ApiKeyInner PK, FK "on delete cascade"
+    int RecipeID PK, FK "on delete cascade"
+    int Role "not null"
+}
+
+Images {
+    serial ImageID PK
+    varchar(64) Location "unique not null"
+    int UserID FK "not null"
+}
+
+RecipeImages {
+    int ImageID FK "not null"
+    int RecipeID PK, FK
+    int Slot PK
+    text Caption
+}
+
+Recipes }o--o| Categories: gehörtZu
+Images ||--|{ RecipeImages: ist
+Recipes ||--o{ RecipeImages: siehtAusWie
+Images ||--|{ Users: gehört
+Recipes ||--|{ Ingredients: enthält
+Recipes ||--|{ Steps: hatSchritt
+Steps |o--o{ Ingredients: benötigt
+ApiKeysInner ||--o| Users: gehörtZu
+ApiKeysOuter }o--|| Users: gehörtZu
+ApiKeysInner ||--o{ AccessPermissions: hatZugriff
+Recipes ||--|{ AccessPermissions: kannZugegriffenWerdenDurch
 ```
