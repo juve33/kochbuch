@@ -1,29 +1,12 @@
-import { Pool } from "pg";
-import waitPort from 'wait-port';
+import * as db from '../db/index.js';
 
-let pool;
-
-async function init() {
-    await waitPort({
-        host: process.env.DATABASE_HOST,
-        port: 5432,
-        timeout: 10000,
-        waitForDns: true,
-    });
-    
-    pool = new Pool({
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        host: process.env.DATABASE_HOST,
-        database: process.env.DATABASE_DB,
-    });
-
+export async function init() {
     return new Promise((acc, rej) => {
-        pool.query(`
+        db.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name VARCHAR(32) UNIQUE NOT NULL,
-                password_hash CHAR(32) NOT NULL,
+                password_hash VARCHAR(60) NOT NULL,
                 setting_theme_slug VARCHAR(32),
                 setting_advanced_options bool
             );
@@ -111,4 +94,20 @@ async function init() {
     });
 }
 
-export default { init };
+
+
+export function requireAuth(minRole) {
+    return function (req, res, next) {
+        if (!req.session.userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const userRole = req.session.role ?? 0;
+
+        if (userRole < minRole) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        next();
+    };
+}
