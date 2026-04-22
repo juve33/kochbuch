@@ -7,7 +7,7 @@ direction LR
 Users {
     serial UserID PK
     varchar(32) Name "unique not null"
-    char(32) PasswortHash "not null"
+    varchar(60) PasswortHash "not null"
     text SettingThemeSlug
     bool SettingAdvancedOptions
 }
