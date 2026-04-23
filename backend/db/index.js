@@ -8,15 +8,15 @@ const pool = new Pool({
 });
 
 export const query = (text, params) => {
-    return pool.query(text, params)
-        .catch(err => {
-            console.error('DB ERROR:', {
-                text,
-                params,
-                code: err.code,
-                message: err.message,
-            });
-
-            throw err;
+    try {
+        return pool.query(text, params);
+    } catch (err) {
+        console.error('DB ERROR:', {
+            text,
+            params,
+            code: err.code,
+            message: err.message,
         });
+        throw err;
+    }
 }
