@@ -20,7 +20,7 @@ Categories {
 Recipes {
     serial RecipeID PK
     varchar(64) Name "not null"
-    int CategoryID FK
+    int CategoryID FK "on delete set null"
 }
 
 Steps {
@@ -48,7 +48,7 @@ ApiKeysInner {
 
 ApiKeysOuter {
     int ApiKeyOuter PK
-    int UserID PK, FK
+    int UserID PK, FK "on delete cascade"
     varchar(32) Domain "not null"
 }
 
