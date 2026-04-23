@@ -28,9 +28,13 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-    req.session.destroy(() => {
-        res.status(200).json({ message: 'Logged out successfully' });
-    });
+    if (req.session.userId) {
+        req.session.destroy(() => {
+            res.status(200).json({ message: 'Logged out successfully' });
+        });
+    } else {
+        res.status(200).json({ message: 'Wasn\'t logged in before, won\'t be logged in afterwards' });
+    }
 }
 
 export default {login, logout}
