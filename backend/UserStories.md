@@ -4,9 +4,9 @@
 
 ### User
 
-- [ ] Einloggen
-- [ ] Ausloggen
-- [ ] Account erstellen
+- [x] Einloggen
+- [x] Ausloggen
+- [x] Account erstellen
 - [ ] externen Api-Schlüssel hinzufügen
 
 ### Rezepte ansehen
