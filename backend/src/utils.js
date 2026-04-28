@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+
 import * as db from '../db/index.js';
 
 export async function init() {
@@ -7,8 +9,9 @@ export async function init() {
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name VARCHAR(32) UNIQUE NOT NULL,
                 password_hash VARCHAR(60) NOT NULL,
+                rank INT DEFAULT 0,
                 setting_theme_slug VARCHAR(32),
-                setting_advanced_options bool
+                setting_advanced_options bool DEFAULT false
             );
 
             CREATE TABLE IF NOT EXISTS categories (
@@ -62,7 +65,7 @@ export async function init() {
             CREATE TABLE IF NOT EXISTS access_permissions (
                 key INT,
                 recipe_id INT,
-                role INT NOT NULL,
+                role INT NOT NULL DEFAULT 0,
                 PRIMARY KEY (key, recipe_id),
                 FOREIGN KEY (key) REFERENCES api_keys_inner(key) ON DELETE CASCADE,
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
@@ -84,6 +87,27 @@ export async function init() {
                 FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE,
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
             );`,
+            (err) => {
+                if (err) return rej(err);
+
+                console.log(`Created tables`);
+                acc();
+            },
+        );
+    });
+}
+
+
+
+export async function createTestUser() {
+    const hashedPassword = await bcrypt.hash(`1234`, 10);
+
+    return new Promise((acc, rej) => {
+        db.query(`
+            INSERT INTO users (name, password_hash, rank)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (name) DO NOTHING;
+            `, [`test`, hashedPassword, 10],
             (err) => {
                 if (err) return rej(err);
 

@@ -9,7 +9,13 @@ const login = async (req, res) => {
         req.session.destroy();
     }
 
-    const result = await db.query(`SELECT id, name, password_hash FROM users WHERE (name = $1)`, [username]);
+    const result = await db.query(
+        `SELECT u.id, u.name, u.password_hash, a.key
+        FROM users u
+        LEFT JOIN api_keys_inner a ON u.id = a.user_id
+        WHERE u.name = $1`,
+        [username]
+    );
 
     if (!result.rows[0]) {
         return res.status(400).json({ error: 'User not found' });
@@ -22,6 +28,7 @@ const login = async (req, res) => {
 
     req.session.userId = result.rows[0].id;
     req.session.userName = result.rows[0].name;
+    req.session.apiKey = result.rows[0].key;
     req.session.role = 0; //SPÄTER ÄNDERN (wenn es Rollen gibt)
 
     res.status(200).json({ message: 'Logged in successfully' });

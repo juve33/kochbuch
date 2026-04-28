@@ -6,10 +6,11 @@ import waitPort from 'wait-port';
 
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import recipeRoutes from './routes/recipeRoutes.js';
 
 import bcrypt from 'bcrypt';
 import * as db from './db/index.js';
-import { init, requireAuth } from './src/utils.js';
+import { init, createTestUser, requireAuth } from './src/utils.js';
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.use('/auth', authRoutes);
 
 app.use('/user', userRoutes);
 
+app.use('/recipe', recipeRoutes);
+
 
 
 await waitPort({
@@ -44,6 +47,8 @@ await waitPort({
 });
 
 init();
+
+createTestUser();
 
 
 
