@@ -8,6 +8,7 @@ Users {
     serial UserID PK
     varchar(32) Name "unique not null"
     varchar(60) PasswortHash "not null"
+    int rank "default 0"
     text SettingThemeSlug
     bool SettingAdvancedOptions
 }
