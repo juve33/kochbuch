@@ -12,6 +12,8 @@ const allRecipesGet = async (req, res) => {
         `,
         [req.session.apiKey]
     );
+
+    res.status(200).json(result.rows);
 }
 
 const recipeGet = async (req, res) => {
