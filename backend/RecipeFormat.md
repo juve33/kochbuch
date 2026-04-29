@@ -19,6 +19,7 @@
             "amount": number,
             "unit": string,
             "text": string,
+            "comment": string,
             "step_id": number
         }
     ],
