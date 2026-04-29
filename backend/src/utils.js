@@ -104,7 +104,7 @@ export async function createTestUser() {
 
     return new Promise((acc, rej) => {
         db.query(`
-            INSERT INTO users (name, password_hash, rank)
+            INSERT INTO users (name, password_hash, role)
             VALUES ($1, $2, $3)
             ON CONFLICT (name) DO NOTHING;
             `, [`test`, hashedPassword, 10],
