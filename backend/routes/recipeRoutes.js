@@ -5,7 +5,7 @@ import recipeController from '../controllers/recipeController.js';
 
 const router = express.Router();
 
-// router.route('/all').get(requireAuth(0), recipeController.allRecipesGet);
+router.route('/all').get(requireAuth(0), recipeController.allRecipesGet);
 
 // router.route('/new').post(requireAuth(0), recipeController.newRecipePost);
 
