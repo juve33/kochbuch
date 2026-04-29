@@ -9,11 +9,12 @@ const login = async (req, res) => {
         req.session.destroy();
     }
 
-    const result = await db.query(
-        `SELECT u.id, u.name, u.role, u.password_hash, a.key
+    const result = await db.query(`
+        SELECT u.id, u.name, u.role, u.password_hash, a.key
         FROM users u
         LEFT JOIN api_keys_inner a ON u.id = a.user_id
-        WHERE u.name = $1`,
+        WHERE u.name = $1;
+        `,
         [username]
     );
 
