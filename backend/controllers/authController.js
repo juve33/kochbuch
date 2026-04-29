@@ -10,7 +10,7 @@ const login = async (req, res) => {
     }
 
     const result = await db.query(
-        `SELECT u.id, u.name, u.password_hash, a.key
+        `SELECT u.id, u.name, u.role, u.password_hash, a.key
         FROM users u
         LEFT JOIN api_keys_inner a ON u.id = a.user_id
         WHERE u.name = $1`,
@@ -29,7 +29,7 @@ const login = async (req, res) => {
     req.session.userId = result.rows[0].id;
     req.session.userName = result.rows[0].name;
     req.session.apiKey = result.rows[0].key;
-    req.session.role = 0; //SPÄTER ÄNDERN (wenn es Rollen gibt)
+    req.session.role = result.rows[0].role;
 
     res.status(200).json({ message: 'Logged in successfully' });
 }

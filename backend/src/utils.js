@@ -9,7 +9,7 @@ export async function init() {
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name VARCHAR(32) UNIQUE NOT NULL,
                 password_hash VARCHAR(60) NOT NULL,
-                rank INT DEFAULT 0,
+                role INT NOT NULL DEFAULT 0,
                 setting_theme_slug VARCHAR(32),
                 setting_advanced_options bool DEFAULT false
             );
