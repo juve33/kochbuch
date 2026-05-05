@@ -1,10 +1,12 @@
+import { Routes, Route } from 'react-router-dom';
+
+import Login from './features/auth/Login';
+
 function App() {
   return (
-    <>
-      <p>
-        Hallo Welt!
-      </p>
-    </>
+    <Routes>
+      <Route path="login" element={<Login />} />
+    </Routes>
   )
 }
 
