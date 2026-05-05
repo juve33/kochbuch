@@ -8,9 +8,20 @@ const allRecipesGet = async (req, res) => {
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
         JOIN access_permissions a ON r.id = a.recipe_id AND a.key = $1
-        ORDER BY LOWER(c.name) NULLS FIRST,  LOWER(r.name);
+        ORDER BY LOWER(c.name) NULLS FIRST, LOWER(r.name);
         `,
         [req.session.apiKey]
+    );
+
+    res.status(200).json(result.rows);
+}
+
+const categoriesGet = async (req, res) => {
+    const result = await db.query(`
+        SELECT *
+        FROM categories
+        ORDER BY LOWER(name);
+        `
     );
 
     res.status(200).json(result.rows);
@@ -69,4 +80,4 @@ const recipeGet = async (req, res) => {
     });
 }
 
-export default {allRecipesGet, recipeGet}
+export default {allRecipesGet, categoriesGet, recipeGet}
