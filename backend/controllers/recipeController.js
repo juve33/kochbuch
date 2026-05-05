@@ -27,6 +27,45 @@ const categoriesGet = async (req, res) => {
     res.status(200).json(result.rows);
 }
 
+const newRecipePost = async (req, res) => {
+    const { name, category_id, images, ingredients, steps } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ message: 'Name must not be empty' });
+    }
+    else if (!ingredients) {
+        return res.status(400).json({ message: 'Ingredients must not be empty' });
+    }
+    else if (!steps) {
+        return res.status(400).json({ message: 'Steps must not be empty' });
+    }
+
+    const recipe_result = await db.query(category_id ? `
+        INSERT INTO recipes (name, category_id)
+        VALUES ($1, $2)
+        RETURNING id;` : `
+        INSERT INTO recipes (name)
+        VALUES ($1)
+        RETURNING id;`, [name, category_id])
+        .catch(err => {
+            return res.status(400).json({ message: 'Bad Request' });
+        });
+
+    const step_result = await Promise.all(
+        steps.map(step =>
+            db.query(`
+                INSERT INTO steps (recipe_id, index_number, text)
+                VALUES ($1, $2, $3)
+                RETURNING id;
+            `, [recipe_result.rows[0].id, step.index_number, step.text])
+        )
+    ).catch(err => {
+        return res.status(400).json({ message: 'Bad Request' });
+    });
+
+    res.status(201).json({ message: 'Recipe created successfully' });
+}
+
 const recipeGet = async (req, res) => {
     const { id } = req.params;
 
