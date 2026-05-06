@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -6,7 +6,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         setError("");
@@ -29,7 +29,9 @@ const Login = () => {
 
             window.location.href = "/overview";
         } catch (err) {
-            setError(err.message);
+            const message =
+                err instanceof Error ? err.message : "Unexpected error";
+            setError(message);
         } finally {
             setLoading(false);
         }
