@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 
 type Category = {
-  id: number;
+  id: number | undefined;
   name: string;
 };
 
-const CategorySelector = () => {
+type CategorySelectorProps = {
+  value: string | undefined;
+  onChange: React.ChangeEventHandler<HTMLSelectElement>;
+};
+
+const CategorySelector = ({value, onChange}: CategorySelectorProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [error, setError] = useState("");
 
@@ -34,17 +39,24 @@ const CategorySelector = () => {
     }, []);
 
     return (
-        <select disabled={categories.length <= 0}>
+        <>
+            <label htmlFor="category">Category:</label>
             {
-                error ?
-                    (<p>{error}</p>) :
-                    categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                            {category.name}
-                        </option>
-                    ))
+                error ? (
+                    <div>{error}</div>) : (
+                    <select id="category" onChange={onChange} value={value} disabled={categories.length <= 0} defaultValue={undefined}>
+                        {
+                            categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
+                                </option>
+                            ))
+                        }
+                        <option value={undefined}>None</option>
+                    </select>
+                )
             }
-        </select>
+        </>
     )
 }
 
