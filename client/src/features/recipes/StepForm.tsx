@@ -1,16 +1,20 @@
 import { type JSX } from "react";
 import { useSortable } from '@dnd-kit/sortable';
 
+export type Step = {
+  id: number;
+  text: string;
+};
+
 type StepFormProps = {
-    id: number;
+    value: Step;
     index: number;
-    text: string;
-    onTextChange: React.ChangeEventHandler<HTMLTextAreaElement>;
+    setAction: React.Dispatch<React.SetStateAction<Step[]>>;
     children?: JSX.Element;
 };
 
-const StepForm = ({ id, index, text, onTextChange, children }: StepFormProps) => {
-    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id });
+const StepForm = ({ value, index, setAction, children }: StepFormProps) => {
+    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id: value.id });
 
     return (
         <fieldset
@@ -33,8 +37,16 @@ const StepForm = ({ id, index, text, onTextChange, children }: StepFormProps) =>
             <textarea
                 id="text"
                 placeholder="Stir"
-                onChange={onTextChange}
-                value={text}
+                onChange={(e) => {
+                    setAction(prev => {
+                        const next = [...prev];
+
+                        prev[index].text = e.target.value;
+
+                        return next;
+                    });
+                }}
+                value={value.text}
                 required
             />
             {children}
