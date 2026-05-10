@@ -1,5 +1,4 @@
-import { type JSX } from "react";
-import { useSortable } from '@dnd-kit/sortable';
+import type { FieldsetFormProps } from '../../utils/FieldsetFormProps';
 
 export type Ingredient = {
   id: number;
@@ -9,31 +8,9 @@ export type Ingredient = {
   comment?: string;
 };
 
-type IngredientFormProps = {
-    value: Ingredient;
-    index: number;
-    setAction: React.Dispatch<React.SetStateAction<Ingredient[]>>;
-    children?: JSX.Element;
-};
-
-const IngredientForm = ({ value, index, setAction, children }: IngredientFormProps) => {
-    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id: value.id });
-
+const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredient>) => {
     return (
-        <fieldset
-            ref={setNodeRef}
-            style={{
-                transform: transform
-                    ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-                    : undefined,
-                transition,
-            }}
-        >
-            <button
-                type="button"
-                {...attributes}
-                {...listeners}
-            />
+        <>
             <input
                 type="number"
                 id="amount"
@@ -95,8 +72,7 @@ const IngredientForm = ({ value, index, setAction, children }: IngredientFormPro
                 }}
                 value={value.comment}
             />
-            {children}
-        </fieldset>
+        </>
     )
 }
 
