@@ -2,7 +2,7 @@ import type { FieldsetFormProps } from '../../utils/FieldsetFormProps';
 
 export type Ingredient = {
   id: number;
-  amount: number;
+  amount?: number;
   unit?: string;
   text: string;
   comment?: string;
@@ -25,7 +25,6 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     });
                 }}
                 value={value.amount}
-                required
             />
             <input
                 type="text"
