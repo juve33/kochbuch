@@ -1,35 +1,38 @@
 import type { FieldsetFormProps } from '../../utils/FieldsetFormProps';
+import FractionInput from '../../components/FractionInput';
 
 export type Ingredient = {
-  id: number;
-  amount?: number;
-  unit?: string;
-  text: string;
-  comment?: string;
+    id: number;
+    amount?: number;
+    amountString?: string;
+    unit?: string;
+    text: string;
+    comment?: string;
 };
 
 const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredient>) => {
     return (
-        <>
-            <input
-                type="number"
+        <div className='input-item-form input-item-form-ingredients'>
+            <FractionInput
                 id="amount"
-                placeholder="500"
-                onChange={(e) => {
+                onValueChange={(parsedValue, stringValue) => {
                     setAction(prev => {
                         const next = [...prev];
 
-                        prev[index].amount = e.target.valueAsNumber;
+                        prev[index].amount = parsedValue;
+                        prev[index].amountString = stringValue;
+
+                        console.log(parsedValue);
 
                         return next;
                     });
                 }}
-                value={value.amount}
+                value={value.amountString}
+                size={(value.amountString) ? Math.max(value.amountString.length, 1) : 1}
             />
             <input
                 type="text"
                 id="unit"
-                placeholder="g"
                 onChange={(e) => {
                     setAction(prev => {
                         const next = [...prev];
@@ -40,11 +43,11 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     });
                 }}
                 value={value.unit}
+                size={(value.unit) ? Math.max(value.unit.length, 1) : 1}
             />
             <input
                 type="text"
                 id="text"
-                placeholder="Flour"
                 onChange={(e) => {
                     setAction(prev => {
                         const next = [...prev];
@@ -55,6 +58,7 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     });
                 }}
                 value={value.text}
+                size={(value.text) ? Math.max(value.text.length, 4) : 4}
                 required
             />
             <input
@@ -70,8 +74,9 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     });
                 }}
                 value={value.comment}
+                size={(value.comment) ? Math.max(value.comment.length, 5) : 5}
             />
-        </>
+        </div>
     )
 }
 

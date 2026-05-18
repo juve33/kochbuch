@@ -7,13 +7,12 @@ export type Step = {
 
 const StepForm = ({ value, index, setAction }: FieldsetFormProps<Step>) => {
     return (
-        <>
+        <div className='input-item-form input-item-form-steps'>
             <div>
                 {index + 1}
             </div>
             <textarea
                 id="text"
-                placeholder="Stir"
                 onChange={(e) => {
                     setAction(prev => {
                         const next = [...prev];
@@ -26,7 +25,7 @@ const StepForm = ({ value, index, setAction }: FieldsetFormProps<Step>) => {
                 value={value.text}
                 required
             />
-        </>
+        </div>
     )
 }
 
