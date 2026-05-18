@@ -22,6 +22,8 @@ Recipes {
     serial RecipeID PK
     varchar(64) Name "not null"
     int CategoryID FK "on delete set null"
+    int servings
+    int duration
 }
 
 Steps {
@@ -34,6 +36,7 @@ Steps {
 Ingredients {
     serial IngredientID PK
     int RecipeID FK
+    int IndexNumber "not null"
     numeric Amount
     varchar(16) Unit
     varchar(64) Text "not null"

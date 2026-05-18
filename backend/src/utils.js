@@ -23,6 +23,8 @@ export async function init() {
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name VARCHAR(64) NOT NULL,
                 category_id INT,
+                servings INT,
+                duration INT,
                 FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
             );
 
@@ -38,6 +40,7 @@ export async function init() {
             CREATE TABLE IF NOT EXISTS ingredients (
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 recipe_id INT NOT NULL,
+                index_number INT NOT NULL,
                 step_id INT,
                 amount NUMERIC,
                 unit VARCHAR(16),
