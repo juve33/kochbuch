@@ -1,0 +1,22 @@
+:root {
+    font-size: 20px;
+}
+
+:where(:root) {
+    font-family: sans-serif;
+}
+
+body {
+    margin: 0 !important;
+}
+
+#root {
+    display: grid;
+
+    min-height: 100vh !important;
+    min-height: 100svh !important;
+}
+
+button {
+    align-self: center !important;
+}

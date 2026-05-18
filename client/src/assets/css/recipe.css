@@ -1,0 +1,74 @@
+#root>form {
+    display: grid !important;
+
+    grid-template-areas:
+        "head head"
+        "ingredients steps" !important;
+
+    overflow: hidden !important;
+}
+
+:where(#root>form) {
+    grid-template-columns: .4fr .6fr;
+    grid-template-rows: auto 1fr;
+}
+
+
+
+textarea {
+    resize: none !important;
+}
+
+:where(fieldset),
+:where(input),
+:where(textarea) {
+    margin: 0;
+    padding: 0;
+
+    border: none;
+}
+
+:where(input),
+:where(textarea) {
+    font-family: inherit;
+    font-size: 1em;
+}
+
+:where(input:invalid) {
+    box-shadow: inset 0px 0px 0px 2px red;
+}
+
+
+
+.input-group-head {
+    grid-area: head !important;
+}
+
+.input-group-ingredients {
+    grid-area: ingredients !important;
+}
+
+.input-group-steps {
+    grid-area: steps !important;
+}
+
+.input-item-ingredients,
+.input-item-steps {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto !important;
+}
+
+:where(.input-item-ingredients),
+:where(.input-item-steps) {
+    gap: .5em;
+}
+
+.input-item-form {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+}
+
+.input-item-form-ingredients :first-child {
+    text-align: right;
+}
