@@ -3,15 +3,17 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 
 type SortableFieldsetProps = {
     id: UniqueIdentifier;
+    className?: string;
     children?: React.ReactNode;
 };
 
-const SortableFieldset = ({ id, children }: SortableFieldsetProps) => {
+const SortableFieldset = ({ id, children, className }: SortableFieldsetProps) => {
     const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id });
 
     return (
         <fieldset
             ref={setNodeRef}
+            className={className}
             style={{
                 transform: transform
                     ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
