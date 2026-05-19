@@ -63,6 +63,18 @@ const newRecipePost = async (req, res) => {
         return res.status(400).json({ message: 'Bad Request' });
     });
 
+    const ingredient_result = await Promise.all(
+        ingredients.map(ingredient =>
+            db.query(`
+                INSERT INTO ingredients (recipe_id, index_number, amount, unit, text, comment)
+                VALUES ($1, $2, $3, $5, $6)
+                RETURNING id;
+            `, [recipe_result.rows[0].id, ingredient.index_number, ingredient.amount, ingredient.unit, ingredient.text, ingredient.comment])
+        )
+    ).catch(err => {
+        return res.status(400).json({ message: 'Bad Request' });
+    });
+
     res.status(201).json({ message: 'Recipe created successfully' });
 }
 
