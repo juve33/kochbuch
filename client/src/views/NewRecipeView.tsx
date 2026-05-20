@@ -4,11 +4,12 @@ import RecipeForm from '../features/recipes/RecipeForm';
 import { type Ingredient } from '../features/recipes/IngredientForm';
 import { type Step } from '../features/recipes/StepForm';
 import { type RecipeApi } from '../utils/ApiTypes';
+import Fraction from '../utils/Fraction';
 
 const NewRecipeView = () => {
     const [name, setName] = useState<string>("");
     const [category, setCategory] = useState<string>();
-    const [ingredients, setIngredients] = useState<Ingredient[]>([{id: 1, amountString: "500", unit:"g", text:"Flour"}]);
+    const [ingredients, setIngredients] = useState<Ingredient[]>([{id: 1, amount: new Fraction(500), unit:"g", text:"Flour"}]);
     const [steps, setSteps] = useState<Step[]>([{id: 1, text:"In a bowl, mix the flour and the salt"}]);
 
     const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ const NewRecipeView = () => {
             ingredients:
                 ingredients.map((ingredient, index) => ({
                     index_number: index,
-                    amount: ingredient.amount,
+                    amount: ingredient.amount?.valueAsNumber,
                     unit: ingredient.unit,
                     text: ingredient.text,
                     comment: ingredient.comment

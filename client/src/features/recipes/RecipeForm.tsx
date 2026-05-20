@@ -9,6 +9,7 @@ import SortableFieldset from '../../components/SortableFieldset';
 import SortableFieldsetContext from '../../components/SortableFieldsetContext';
 
 import '../../assets/css/recipe.css';
+import Fraction from '../../utils/Fraction';
 
 type RecipeFormProps = {
     nameHook: [string, React.Dispatch<React.SetStateAction<string>>];

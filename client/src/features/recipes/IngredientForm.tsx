@@ -1,10 +1,10 @@
 import type { FieldsetFormProps } from '../../utils/FieldsetFormProps';
+import Fraction from '../../utils/Fraction';
 import FractionInput from '../../components/FractionInput';
 
 export type Ingredient = {
     id: number;
-    amount?: number;
-    amountString?: string;
+    amount?: Fraction;
     unit?: string;
     text: string;
     comment?: string;
@@ -15,20 +15,21 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
         <div className='input-item-form input-item-form-ingredients'>
             <FractionInput
                 id="amount"
-                onValueChange={(parsedValue, stringValue) => {
+                onValueChange={(e) => {
                     setAction(prev => {
                         const next = [...prev];
 
-                        prev[index].amount = parsedValue;
-                        prev[index].amountString = stringValue;
-
-                        console.log(parsedValue);
+                        if (next[index].amount === undefined) {
+                            next[index].amount = new Fraction(e.target.value);
+                        } else {
+                            next[index].amount.valueAsString = e.target.value
+                        }
 
                         return next;
                     });
                 }}
-                value={value.amountString}
-                size={(value.amountString) ? Math.max(value.amountString.length, 1) : 1}
+                value={value.amount}
+                size={Math.max(1, value.amount?.valueAsString?.length ?? 0)}
             />
             <input
                 type="text"
@@ -37,7 +38,7 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     setAction(prev => {
                         const next = [...prev];
 
-                        prev[index].unit = e.target.value;
+                        next[index].unit = e.target.value;
 
                         return next;
                     });
@@ -52,7 +53,7 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     setAction(prev => {
                         const next = [...prev];
 
-                        prev[index].text = e.target.value;
+                        next[index].text = e.target.value;
 
                         return next;
                     });
@@ -68,7 +69,7 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     setAction(prev => {
                         const next = [...prev];
 
-                        prev[index].comment = e.target.value;
+                        next[index].comment = e.target.value;
 
                         return next;
                     });

@@ -14,16 +14,16 @@ class Fraction {
     }
     set valueAsString(value) {
         this._valueAsNumber = Fraction.parseFraction(value);
-        this.valueAsString = value;
+        this._valueAsString = value;
     }
 
     constructor();
     constructor(value: number);
     constructor(value: string);
     constructor(value: number | string | undefined = undefined) {
-        if (!value) {
+        if (value === undefined) {
             this._valueAsNumber = undefined;
-            this._valueAsString = undefined;
+            this._valueAsString = "";
         }
         if (typeof value == "number") {
             this._valueAsNumber = value;
@@ -65,6 +65,7 @@ class Fraction {
 
             return whole + (num / den);
         }
+        return undefined;
     }
 }
 
