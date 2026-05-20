@@ -94,14 +94,23 @@ const recipeGet = async (req, res) => {
     const { id } = req.params;
 
     const recipe_data = await db.query(`
-        SELECT r.id, r.name, c.name AS category_name, a.role
+        SELECT r.id, r.name, c.name AS category_name, 10 as role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
-        JOIN access_permissions a ON r.id = a.recipe_id AND a.key = $1;
-        WHERE r.id = $2
+        WHERE r.id = $1;
         `,
-        [req.session.apiKey, id]
+        [id]
     );
+
+    //const recipe_data = await db.query(`
+    //    SELECT r.id, r.name, c.name AS category_name, a.role
+    //    FROM recipes r
+    //    LEFT JOIN categories c ON r.category_id = c.id
+    //    JOIN access_permissions a ON r.id = a.recipe_id AND a.key = $1
+    //    WHERE r.id = $2;
+    //    `,
+    //    [req.session.apiKey, id]
+    //);
 
     if (recipe_data.rowCount = 0) {
         return res.status(400).json({ error: 'Recipe not found or not permitted to access' });
@@ -111,7 +120,7 @@ const recipeGet = async (req, res) => {
         SELECT i.id, ri.slot, ri.caption, i.location
         FROM images i
         JOIN recipe_images ri ON i.id = ri.image_id
-        WHERE ri.recipe_id = $1
+        WHERE ri.recipe_id = $1;
         `,
         [id]
     );
@@ -120,12 +129,13 @@ const recipeGet = async (req, res) => {
         SELECT id, amount, unit, text, comment, step_id
         FROM ingredients
         WHERE recipe_id = $1
+        ORDER BY index_number ASC;
         `,
         [id]
     );
 
     const steps_data = await db.query(`
-        SELECT id, index_number, text
+        SELECT id, text
         FROM steps
         WHERE recipe_id = $1
         ORDER BY index_number ASC;
