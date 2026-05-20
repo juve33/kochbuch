@@ -16,7 +16,7 @@ const SortableFieldset = ({ id, children, className }: SortableFieldsetProps) =>
             className={className}
             style={{
                 transform: transform
-                    ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+                    ? `translateY(${transform.y}px)`
                     : undefined,
                 transition,
             }}
