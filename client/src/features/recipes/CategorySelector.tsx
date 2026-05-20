@@ -18,8 +18,8 @@ const CategorySelector = ({value, onChange}: CategorySelectorProps) => {
         const fetchCategories = async () => {
             try {
                 const response = await fetch("http://localhost:5000/recipe/categories", {
-                method: "GET",
-                credentials: "include",
+                    method: "GET",
+                    credentials: "include",
                 });
 
                 const data = await response.json();
