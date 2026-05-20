@@ -33,49 +33,61 @@ const newRecipePost = async (req, res) => {
     if (!name) {
         return res.status(400).json({ message: 'Name must not be empty' });
     }
-    else if (!ingredients) {
+    else if (!Array.isArray(ingredients) || ingredients.length === 0) {
         return res.status(400).json({ message: 'Ingredients must not be empty' });
     }
-    else if (!steps) {
+    else if (!Array.isArray(steps) || steps.length === 0) {
         return res.status(400).json({ message: 'Steps must not be empty' });
     }
 
-    const recipe_result = await db.query(category_id ? `
-        INSERT INTO recipes (name, category_id)
-        VALUES ($1, $2)
-        RETURNING id;` : `
-        INSERT INTO recipes (name)
-        VALUES ($1)
-        RETURNING id;`, [name, category_id])
-        .catch(err => {
-            return res.status(400).json({ message: 'Bad Request' });
+    const client = await db.pool.connect();
+
+    try {
+        await client.query(`BEGIN`);
+        
+        const recipe_result = await client.query(`
+            INSERT INTO recipes (name, category_id)
+            VALUES ($1, $2)
+            RETURNING id;
+            `, [name, category_id ?? null]);
+
+        const recipeId = recipe_result.rows[0].id;
+
+        await Promise.all(
+            steps.map(step =>
+                client.query(`
+                    INSERT INTO steps (recipe_id, index_number, text)
+                    VALUES ($1, $2, $3)
+                    RETURNING id;
+                `, [recipeId, step.index_number, step.text])
+            )
+        );
+
+        await Promise.all(
+            ingredients.map(ingredient =>
+                client.query(`
+                    INSERT INTO ingredients (recipe_id, index_number, amount, unit, text, comment)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                    RETURNING id;
+                `, [recipeId, ingredient.index_number, ingredient.amount ?? null, ingredient.unit ?? null, ingredient.text, ingredient.comment ?? null])
+            )
+        );
+
+        await client.query('COMMIT');
+
+        res.status(201).json({ message: 'Recipe created successfully', id: recipeId });
+    } catch (err) {
+        await client.query('ROLLBACK');
+
+        console.error(err);
+
+        res.status(500).json({
+            message: 'Creating recipe failed'
         });
 
-    const step_result = await Promise.all(
-        steps.map(step =>
-            db.query(`
-                INSERT INTO steps (recipe_id, index_number, text)
-                VALUES ($1, $2, $3)
-                RETURNING id;
-            `, [recipe_result.rows[0].id, step.index_number, step.text])
-        )
-    ).catch(err => {
-        return res.status(400).json({ message: 'Bad Request' });
-    });
-
-    const ingredient_result = await Promise.all(
-        ingredients.map(ingredient =>
-            db.query(`
-                INSERT INTO ingredients (recipe_id, index_number, amount, unit, text, comment)
-                VALUES ($1, $2, $3, $5, $6)
-                RETURNING id;
-            `, [recipe_result.rows[0].id, ingredient.index_number, ingredient.amount, ingredient.unit, ingredient.text, ingredient.comment])
-        )
-    ).catch(err => {
-        return res.status(400).json({ message: 'Bad Request' });
-    });
-
-    res.status(201).json({ message: 'Recipe created successfully' });
+    } finally {
+        client.release();
+    }
 }
 
 const recipeGet = async (req, res) => {
@@ -131,4 +143,4 @@ const recipeGet = async (req, res) => {
     });
 }
 
-export default {allRecipesGet, categoriesGet, recipeGet}
+export default {allRecipesGet, categoriesGet, newRecipePost, recipeGet}
