@@ -15,17 +15,18 @@ type RecipeFormProps = {
     categoryHook: [string | undefined, React.Dispatch<React.SetStateAction<string | undefined>>];
     ingredientsHook: [Ingredient[], React.Dispatch<React.SetStateAction<Ingredient[]>>];
     stepsHook: [Step[], React.Dispatch<React.SetStateAction<Step[]>>];
+    disabled?: boolean;
     onFormSubmit?: React.SubmitEventHandler<HTMLFormElement>;
 };
 
-const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, onFormSubmit }: RecipeFormProps) => {
+const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, disabled, onFormSubmit }: RecipeFormProps) => {
     const [name, setName] = nameHook;
     const [category, setCategory] = categoryHook;
     const [ingredients, setIngredients] = ingredientsHook;
     const [steps, setSteps] = stepsHook;
 
     return (
-        <form onSubmit={onFormSubmit}>
+        <form className='form form-recipe' onSubmit={onFormSubmit} aria-disabled={disabled}>
             <div className='input-group input-group-head'>
                 <input
                     type="text"
@@ -107,6 +108,12 @@ const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, onFormS
                     Add step
                 </AddButton>
             </fieldset>
+            <button
+                type="submit"
+                disabled={disabled}
+            >
+                Submit
+            </button>
         </form>
     )
 }
