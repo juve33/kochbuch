@@ -1,4 +1,4 @@
-#root>form {
+.form-recipe {
     display: grid !important;
 
     grid-template-areas:
@@ -8,7 +8,7 @@
     overflow: hidden !important;
 }
 
-:where(#root>form) {
+:where(.form-recipe) {
     grid-template-columns: .4fr .6fr;
     grid-template-rows: auto 1fr;
 }
@@ -30,6 +30,8 @@ textarea {
 
 :where(input),
 :where(textarea) {
+    background: unset;
+    
     font-family: inherit;
     font-size: 1em;
 }
