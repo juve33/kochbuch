@@ -4,14 +4,22 @@ import * as db from '../db/index.js';
 
 const allRecipesGet = async (req, res) => {
     const result = await db.query(`
-        SELECT r.id, r.name, c.name AS category, a.role
+        SELECT r.id, r.name, c.name AS category, 10 as role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
-        JOIN access_permissions a ON r.id = a.recipe_id AND a.key = $1
         ORDER BY LOWER(c.name) NULLS FIRST, LOWER(r.name);
-        `,
-        [req.session.apiKey]
+        `
     );
+
+    //const result = await db.query(`
+    //    SELECT r.id, r.name, c.name AS category, a.role
+    //    FROM recipes r
+    //    LEFT JOIN categories c ON r.category_id = c.id
+    //    JOIN access_permissions a ON r.id = a.recipe_id AND a.key = $1
+    //    ORDER BY LOWER(c.name) NULLS FIRST, LOWER(r.name);
+    //    `,
+    //    [req.session.apiKey]
+    //);
 
     res.status(200).json(result.rows);
 }
@@ -25,6 +33,47 @@ const categoriesGet = async (req, res) => {
     );
 
     res.status(200).json(result.rows);
+}
+
+const categoriesPost = async (req, res) => {
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ message: 'Name must not be empty' });
+    }
+
+    const client = await db.pool.connect();
+
+    try {
+        await client.query(`BEGIN`);
+        
+        const recipe_result = await client.query(`
+            INSERT INTO categories (name)
+            VALUES ($1)
+            RETURNING id;
+            `, [name]);
+
+        const categoryId = recipe_result.rows[0].id;
+
+        await client.query('COMMIT');
+
+        res.status(201).json({ message: 'Category created successfully', id: categoryId });
+    } catch (err) {
+        await client.query('ROLLBACK');
+
+        console.error(err);
+
+        if (err.code === '23505') {
+            return res.status(400).json({ message: 'Category already exists' });
+        }
+
+        res.status(500).json({
+            message: 'Creating category failed'
+        });
+
+    } finally {
+        client.release();
+    }
 }
 
 const newRecipePost = async (req, res) => {
@@ -153,4 +202,4 @@ const recipeGet = async (req, res) => {
     });
 }
 
-export default {allRecipesGet, categoriesGet, newRecipePost, recipeGet}
+export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet}

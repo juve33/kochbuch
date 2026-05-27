@@ -8,6 +8,7 @@ const router = express.Router();
 router.route('/all').get(requireAuth(0), recipeController.allRecipesGet);
 
 router.route('/categories').get(requireAuth(0), recipeController.categoriesGet);
+router.route('/categories').post(requireAuth(0), recipeController.categoriesPost);
 
 router.route('/new').post(requireAuth(0), recipeController.newRecipePost);
 
