@@ -9,7 +9,6 @@ import SortableFieldset from '../../components/SortableFieldset';
 import SortableFieldsetContext from '../../components/SortableFieldsetContext';
 
 import '../../assets/css/recipe.css';
-import Fraction from '../../utils/Fraction';
 
 type RecipeFormProps = {
     nameHook: [string, React.Dispatch<React.SetStateAction<string>>];
@@ -27,8 +26,8 @@ const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, disable
     const [steps, setSteps] = stepsHook;
 
     return (
-        <form className='form form-recipe' onSubmit={onFormSubmit} aria-disabled={disabled}>
-            <div className='input-group input-group-head'>
+        <form className='form form-recipe recipe' onSubmit={onFormSubmit} aria-disabled={disabled}>
+            <div className='input-group input-group-head recipe-group-head'>
                 <input
                     type="text"
                     id="recipe-name"
@@ -37,9 +36,9 @@ const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, disable
                     value={name}
                     required
                 />
-                <CategorySelector onChange={(e) => setCategory(e.target.value)} value={category} />
+                <CategorySelector setAction={setCategory} value={category} />
             </div>
-            <fieldset className='input-group input-group-ingredients'>
+            <fieldset className='input-group input-group-ingredients recipe-group-ingredients'>
                 <SortableFieldsetContext
                     value={ingredients}
                     setAction={setIngredients}
@@ -48,7 +47,7 @@ const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, disable
                             <SortableFieldset
                                 key={ingredient.id}
                                 id={ingredient.id}
-                                className='input-item input-item-ingredients'
+                                className='input-item input-item-ingredients recipe-item-ingredients'
                             >
                                 <IngredientForm
                                     index={index}
@@ -74,7 +73,7 @@ const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, disable
                     Add ingredient
                 </AddButton>
             </fieldset>
-            <fieldset className='input-group input-group-steps'>
+            <fieldset className='input-group input-group-steps recipe-group-steps'>
                 <SortableFieldsetContext
                     value={steps}
                     setAction={setSteps}
@@ -83,7 +82,7 @@ const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, disable
                         <SortableFieldset
                             key={step.id}
                             id={step.id}
-                            className='input-item input-item-steps'
+                            className='input-item input-item-steps recipe-item-steps'
                         >
                             <StepForm
                                 index={index}

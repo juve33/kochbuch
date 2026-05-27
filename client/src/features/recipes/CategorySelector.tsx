@@ -1,18 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Category = {
-  id: number | undefined;
-  name: string;
+    id: number | undefined;
+    name: string;
 };
 
 type CategorySelectorProps = {
-  value: string | undefined;
-  onChange: React.ChangeEventHandler<HTMLSelectElement>;
+    value?: string;
+    setAction: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-const CategorySelector = ({value, onChange}: CategorySelectorProps) => {
+const CategorySelector = ({value, setAction}: CategorySelectorProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
+    const [previousSelectedCategory, setPreviousSelectedCategory] = useState<string>();
+    const [newCategory, setNewCategory] = useState<string>("");
+
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const newCategoryRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -38,24 +44,103 @@ const CategorySelector = ({value, onChange}: CategorySelectorProps) => {
         fetchCategories();
     }, []);
 
+    const handleSubmit = async () => {
+        setLoading(true);
+        setError("");
+
+        if (!newCategory) {
+            setAction(previousSelectedCategory);
+            setLoading(false);
+            return;
+        };
+
+        const category_parsed = {
+            name: newCategory
+        }
+
+        try {
+            const response = await fetch("http://localhost:5000/recipe/categories" , {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(category_parsed)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Creating category failed");
+            }
+
+            setCategories(items => [...items, {id: data.id, name: newCategory}])
+
+            setAction(String(data.id));
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : "Unexpected error";
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if (value === "new") {
+            newCategoryRef.current?.focus();
+        }
+    }, [value]);
+
     return (
         <>
             <label htmlFor="category">Category:</label>
-            {
-                error ? (
-                    <div>{error}</div>) : (
-                    <select id="category" onChange={onChange} value={value} disabled={categories.length <= 0} defaultValue={undefined}>
-                        {
-                            categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))
-                        }
-                        <option value={undefined}>None</option>
-                    </select>
-                )
-            }
+            <select
+                id="category"
+                onChange={(e => {
+                    setPreviousSelectedCategory(value);
+                    setAction(e.target.value)
+                })}
+                value={value}
+                disabled={loading}
+            >
+                <option value={""}>None</option>
+                {
+                    categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
+                    ))
+                }
+                <option value={"new"}>Add category</option>
+            </select>
+            {error && <div>{error}</div>}
+            {value === "new" && (
+                <div>
+                    <div>
+                        <label htmlFor="new-category">Enter new category:</label>
+                        <input
+                            ref={newCategoryRef}
+                            id="new-category"
+                            type="text"
+                            value={newCategory}
+                            onChange={(e) => setNewCategory(e.target.value)}
+                        />
+                        <button
+                            type="button"
+                            onClick={handleSubmit}
+                        >
+                            Submit
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setAction(previousSelectedCategory)}
+                        >
+                            x
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     )
 }

@@ -46,6 +46,11 @@ const RecipeView = () => {
                 <h1>
                     {recipe?.name}
                 </h1>
+                {recipe?.category_id ??
+                    <p>
+                        {recipe?.category_name}
+                    </p>
+                }
             </div>
             <div>
                 <ul>
