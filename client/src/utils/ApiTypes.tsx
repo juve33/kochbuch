@@ -2,11 +2,18 @@ export type RecipeApi = {
     id?: number;
     name: string;
     category_id?: number;
+    category_name?: string;
     servings?: number;
     duration?: number;
     
     ingredients: IngredientApi[];
     steps: StepApi[];
+}
+
+export type RecipeOverviewApi = {
+    id: number;
+    name: string;
+    category_name?: string;
 }
 
 export type IngredientApi = {
