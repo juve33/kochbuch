@@ -23,7 +23,7 @@ const CategorySelector = ({value, setAction}: CategorySelectorProps) => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch("http://localhost:5000/recipe/categories", {
+                const response = await fetch("http://localhost:5001/recipe/categories", {
                     method: "GET",
                     credentials: "include",
                 });
@@ -59,7 +59,7 @@ const CategorySelector = ({value, setAction}: CategorySelectorProps) => {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/recipe/categories" , {
+            const response = await fetch("http://localhost:5001/recipe/categories" , {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

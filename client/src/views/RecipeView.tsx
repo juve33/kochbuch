@@ -17,7 +17,7 @@ const RecipeView = () => {
             setError("");
 
             try {
-                const response = await fetch("http://localhost:5000/recipe/" + recipeId, {
+                const response = await fetch("http://localhost:5001/recipe/" + recipeId, {
                     method: "GET",
                     credentials: "include",
                 });
@@ -46,6 +46,7 @@ const RecipeView = () => {
                 <h1>
                     {recipe?.name}
                 </h1>
+                { error ?? (<p>{error}</p>)}
                 {recipe?.category_id ??
                     <p>
                         {recipe?.category_name}
