@@ -25,7 +25,7 @@ const RecipeView = () => {
                     throw new Error(data.error || data.message || "Fetching recipes failed");
                 }
                 
-                setRecipes(data as RecipeApi[]);
+                setRecipes(data as RecipeOverviewApi[]);
             } catch (err) {
                 const message =
                     err instanceof Error ? err.message : "Unexpected error";
