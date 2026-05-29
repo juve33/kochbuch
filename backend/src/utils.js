@@ -56,6 +56,21 @@ export async function init() {
                 name VARCHAR(32) UNIQUE,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             );
+
+            CREATE OR REPLACE FUNCTION create_inner_api_key_for_user()
+                RETURNS trigger AS $$
+                BEGIN
+                    INSERT INTO api_keys_inner (user_id)
+                    VALUES (NEW.id);
+
+                    RETURN NEW;
+                END;
+                $$ LANGUAGE plpgsql;
+            
+            CREATE OR REPLACE TRIGGER users_after_insert
+                AFTER INSERT ON users
+                FOR EACH ROW
+                EXECUTE FUNCTION create_inner_api_key_for_user();
             
             CREATE TABLE IF NOT EXISTS api_keys_outer (
                 key INT,
