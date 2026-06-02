@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import Modal from '../../components/Modal';
+
 type Category = {
     id: number | undefined;
     name: string;
@@ -12,7 +14,7 @@ type CategorySelectorProps = {
 
 const CategorySelector = ({value, setAction}: CategorySelectorProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [previousSelectedCategory, setPreviousSelectedCategory] = useState<string>();
+    const [previousSelectedCategory, setPreviousSelectedCategory] = useState<string>("");
     const [newCategory, setNewCategory] = useState<string>("");
 
     const [loading, setLoading] = useState(false);
@@ -98,7 +100,7 @@ const CategorySelector = ({value, setAction}: CategorySelectorProps) => {
             <select
                 id="category"
                 onChange={(e => {
-                    setPreviousSelectedCategory(value);
+                    setPreviousSelectedCategory(value ?? "");
                     setAction(e.target.value)
                 })}
                 value={value}
@@ -116,30 +118,30 @@ const CategorySelector = ({value, setAction}: CategorySelectorProps) => {
             </select>
             {error && <div>{error}</div>}
             {value === "new" && (
-                <div>
-                    <div>
-                        <label htmlFor="new-category">Enter new category:</label>
-                        <input
-                            ref={newCategoryRef}
-                            id="new-category"
-                            type="text"
-                            value={newCategory}
-                            onChange={(e) => setNewCategory(e.target.value)}
-                        />
-                        <button
-                            type="button"
-                            onClick={handleSubmit}
-                        >
-                            Submit
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setAction(previousSelectedCategory)}
-                        >
-                            x
-                        </button>
-                    </div>
-                </div>
+                <Modal
+                    onCloseButtonClick={() => setAction(previousSelectedCategory)}
+                >
+                    <label htmlFor="new-category">Enter new category:</label>
+                    <input
+                        ref={newCategoryRef}
+                        id="new-category"
+                        type="text"
+                        value={newCategory}
+                        onChange={(e) => setNewCategory(e.target.value)}
+                    />
+                    <button
+                        type="button"
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setAction(previousSelectedCategory)}
+                    >
+                        Cancel
+                    </button>
+                </Modal>
             )}
         </>
     )
