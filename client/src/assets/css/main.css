@@ -11,7 +11,8 @@ body {
 }
 
 #root {
-    display: grid;
+    display: grid !important;
+    align-content: start !important;
 
     min-height: 100vh !important;
     min-height: 100svh !important;
