@@ -30,3 +30,13 @@ export type StepApi = {
     index_number: number;
     text: string;
 }
+
+export type ShareableUserApi = {
+    name: string;
+    key_id: number;
+}
+
+export type ShareableUserListApi = {
+    local: ShareableUserApi[];
+    foreign: ShareableUserApi[];
+}

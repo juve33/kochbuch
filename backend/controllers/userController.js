@@ -2,6 +2,31 @@ import bcrypt from 'bcrypt';
 
 import * as db from '../db/index.js';
 
+const innerApiKeysGet = async (req, res) => {
+    const result = await db.query(`
+        SELECT a.id AS key_id, a.name as foreign_user_name, u.name as local_user_name
+        FROM api_keys_inner a
+        LEFT JOIN users u ON u.id = a.user_id
+        WHERE u.id <> $1
+        ORDER BY LOWER(u.name) NULLS LAST, LOWER(a.name) ASC;
+        `,
+        [req.session.userId]
+    );
+
+    const innerApiKeys_parsed = {
+        local: result.rows.filter((entry) => entry.local_user_name).map(key_set => ({
+            "name": key_set.local_user_name,
+            "key_id": key_set.key_id
+        })) ?? [],
+        foreign: result.rows.filter((entry) => !entry.local_user_name).map(key_set => ({
+            "name": key_set.foreign_user_name,
+            "key_id": key_set.key_id
+        })) ?? []
+    }
+
+    res.status(200).json(innerApiKeys_parsed);
+}
+
 const newUserPost = async (req, res) => {
     const { username, password } = req.body;
 
@@ -23,4 +48,4 @@ const newUserPost = async (req, res) => {
     res.status(201).json({ message: 'User created successfully' });
 }
 
-export default {newUserPost}
+export default {innerApiKeysGet, newUserPost}

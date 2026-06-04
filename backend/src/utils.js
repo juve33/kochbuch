@@ -5,6 +5,8 @@ import * as db from '../db/index.js';
 export async function init() {
     return new Promise((acc, rej) => {
         db.query(`
+            CREATE EXTENSION IF NOT EXISTS pgcrypto;
+            
             CREATE TABLE IF NOT EXISTS users (
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name VARCHAR(32) UNIQUE NOT NULL,
@@ -51,7 +53,8 @@ export async function init() {
             );
             
             CREATE TABLE IF NOT EXISTS api_keys_inner (
-                key INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                key_hash varchar(60) UNIQUE,
                 user_id INT UNIQUE,
                 name VARCHAR(32) UNIQUE,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -73,7 +76,7 @@ export async function init() {
                 EXECUTE FUNCTION create_inner_api_key_for_user();
             
             CREATE TABLE IF NOT EXISTS api_keys_outer (
-                key INT,
+                key varchar(60),
                 user_id INT,
                 domain VARCHAR(32) NOT NULL,
                 PRIMARY KEY (key, user_id),
@@ -81,11 +84,11 @@ export async function init() {
             );
             
             CREATE TABLE IF NOT EXISTS access_permissions (
-                key INT,
+                key_id INT,
                 recipe_id INT,
                 role INT NOT NULL DEFAULT 0,
-                PRIMARY KEY (key, recipe_id),
-                FOREIGN KEY (key) REFERENCES api_keys_inner(key) ON DELETE CASCADE,
+                PRIMARY KEY (key_id, recipe_id),
+                FOREIGN KEY (key_id) REFERENCES api_keys_inner(id) ON DELETE CASCADE,
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
             );
             
@@ -123,9 +126,11 @@ export async function createTestUser() {
     return new Promise((acc, rej) => {
         db.query(`
             INSERT INTO users (name, password_hash, role)
-            VALUES ($1, $2, $3)
+            VALUES
+                ($1, $2, $3),
+                ($4, $5, $6)
             ON CONFLICT (name) DO NOTHING;
-            `, [`test`, hashedPassword, 10],
+            `, [`test`, hashedPassword, 10, `test2`, hashedPassword, 0],
             (err) => {
                 if (err) return rej(err);
 

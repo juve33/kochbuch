@@ -12,9 +12,9 @@
 ### Rezepte ansehen
 
 - [ ] Inhaltsverzeichnis: verfügbare Rezepte auflisten (mit Links)
-    - [ ] interne Rezepte
+    - [x] interne Rezepte
     - [ ] externe Rezepte
-- [ ] einzelnes Rezept aufrufen
+- [x] einzelnes Rezept aufrufen
 - [ ] nächstes/vorheriges Rezept aufrufen (aus dem Inhaltsverzeichnis)
 
 ### Rezepte erstellen & bearbeiten

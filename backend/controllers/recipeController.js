@@ -4,22 +4,14 @@ import * as db from '../db/index.js';
 
 const allRecipesGet = async (req, res) => {
     const result = await db.query(`
-        SELECT r.id, r.name, c.name AS category, 10 as role
+        SELECT r.id, r.name, c.name AS category, a.role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
+        JOIN access_permissions a ON r.id = a.recipe_id AND a.key_id = $1
         ORDER BY LOWER(c.name) NULLS FIRST, LOWER(r.name);
-        `
+        `,
+        [req.session.apiKeyId]
     );
-
-    //const result = await db.query(`
-    //    SELECT r.id, r.name, c.name AS category, a.role
-    //    FROM recipes r
-    //    LEFT JOIN categories c ON r.category_id = c.id
-    //    JOIN access_permissions a ON r.id = a.recipe_id AND a.key = $1
-    //    ORDER BY LOWER(c.name) NULLS FIRST, LOWER(r.name);
-    //    `,
-    //    [req.session.apiKey]
-    //);
 
     res.status(200).json(result.rows);
 }
@@ -122,6 +114,11 @@ const newRecipePost = async (req, res) => {
             )
         );
 
+        await client.query(`
+            INSERT INTO access_permissions (key_id, recipe_id, role)
+            VALUES ($1, $2, $3);
+            `, [req.session.apiKeyId, recipeId, 10]);
+
         await client.query('COMMIT');
 
         res.status(201).json({ message: 'Recipe created successfully', id: recipeId });
@@ -143,25 +140,16 @@ const recipeGet = async (req, res) => {
     const { id } = req.params;
 
     const recipe_data = await db.query(`
-        SELECT r.id, r.name, c.name AS category_name, 10 as role
+        SELECT r.id, r.name, c.name AS category_name, a.role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
-        WHERE r.id = $1;
+        JOIN access_permissions a ON r.id = a.recipe_id AND a.key_id = $1
+        WHERE r.id = $2;
         `,
-        [id]
+        [req.session.apiKeyId, id]
     );
 
-    //const recipe_data = await db.query(`
-    //    SELECT r.id, r.name, c.name AS category_name, a.role
-    //    FROM recipes r
-    //    LEFT JOIN categories c ON r.category_id = c.id
-    //    JOIN access_permissions a ON r.id = a.recipe_id AND a.key = $1
-    //    WHERE r.id = $2;
-    //    `,
-    //    [req.session.apiKey, id]
-    //);
-
-    if (recipe_data.rowCount = 0) {
+    if (recipe_data.rows.length === 0) {
         return res.status(400).json({ error: 'Recipe not found or not permitted to access' });
     }
 
@@ -196,10 +184,37 @@ const recipeGet = async (req, res) => {
         "id": recipe_data.rows[0].id,
         "name": recipe_data.rows[0].name,
         "category_name": recipe_data.rows[0].category_name,
+        "role":  recipe_data.rows[0].role,
         "images": images_data.rows,
         "ingredients": ingredients_data.rows,
         "steps": steps_data.rows
     });
 }
 
-export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet}
+const recipeShareGet = async (req, res) => {
+    const { id } = req.params;
+
+    const authorization_result = await db.query(`
+        SELECT (a.role = 10) AS is_authorized
+        FROM access_permissions a
+        WHERE a.recipe_id = $1 AND a.key_id = $2;
+        `,
+        [id, req.session.apiKeyId]
+    );
+
+    if (!authorization_result.rows[0].is_authorized) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    const result = await db.query(`
+        SELECT a.key_id
+        FROM access_permissions a
+        WHERE a.recipe_id = $1 AND a.key_id <> $2;
+        `,
+        [id, req.session.apiKeyId]
+    );
+
+    res.status(200).json(result.rows);
+}
+
+export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet, recipeShareGet}
