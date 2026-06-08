@@ -6,12 +6,14 @@ import ShareButton from '../features/recipes/ShareButton';
 const LoggedInLayout = () => {
     const recipeMatch = useMatch('/recipe/:recipeId');
 
+    const recipeId = Number(recipeMatch?.params.recipeId);
+
     return (
         <>
             <Header>
-                {recipeMatch?.params.recipeId && (
+                {Number.isInteger(recipeId) && (
                     <ShareButton
-                        recipeId={recipeMatch.params.recipeId}
+                        recipeId={recipeId}
                     />
                 )}
             </Header>
