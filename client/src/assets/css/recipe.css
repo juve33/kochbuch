@@ -42,6 +42,18 @@ textarea {
 
 
 
+.input__hidden {
+    position: absolute !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+}
+
+:where(.input__hidden:checked + label) {
+    box-shadow: inset 0px 0px 0px 1px #0008;
+}
+
+
+
 .input-group-head {
     grid-area: head !important;
 }
