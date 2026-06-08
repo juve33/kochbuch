@@ -7,13 +7,13 @@ type ShareButtonProps = {
     recipeId: number | string;
 };
 
-type UserCheckbuttonProps = {
+type UserCheckboxProps = {
     valueHook: [Number[], React.Dispatch<React.SetStateAction<Number[]>>];
     user: ShareableUserApi;
     disabled?: boolean;
 };
 
-const UserCheckbox = ({ valueHook, user, disabled }: UserCheckbuttonProps) => {
+const UserCheckbox = ({ valueHook, user, disabled }: UserCheckboxProps) => {
     const [selectedUsers, setSelectedUsers] = valueHook;
 
     return (
@@ -185,6 +185,12 @@ const ShareButton = ({ recipeId }: ShareButtonProps) => {
                         onClick={handleSubmit}
                     >
                         Submit
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setOpen(false)}
+                    >
+                        Cancel
                     </button>
                     {error && <div>{error}</div>}
                 </Modal>
