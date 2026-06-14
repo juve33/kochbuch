@@ -12,7 +12,7 @@ type CategorySelectorProps = {
     setAction: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-const CategorySelector = ({value, setAction}: CategorySelectorProps) => {
+const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [previousSelectedCategory, setPreviousSelectedCategory] = useState<string>("");
     const [newCategory, setNewCategory] = useState<string>("");
