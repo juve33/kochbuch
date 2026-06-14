@@ -5,6 +5,7 @@ import { type ShareableUserApi, type ShareableUserListApi } from '../../utils/Ap
 
 type ShareButtonProps = {
     recipeId: number | string;
+    children?: string | React.ReactNode;
 };
 
 type UserCheckboxProps = {
@@ -37,7 +38,7 @@ const UserCheckbox = ({ valueHook, user, disabled }: UserCheckboxProps) => {
     );
 }
 
-const ShareButton = ({ recipeId }: ShareButtonProps) => {
+const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
     const [selectedUsers, setSelectedUsers] = useState<Number[]>([]);
     const [allUsers, setAllUsers] = useState<ShareableUserListApi>({local: [], foreign: []});
 
@@ -141,7 +142,7 @@ const ShareButton = ({ recipeId }: ShareButtonProps) => {
                 type="button"
                 onClick={() => setOpen(true)}
             >
-                Share
+                {children}
             </button>
             {open && (
                 <Modal
