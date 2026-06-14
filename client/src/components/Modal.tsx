@@ -1,4 +1,5 @@
 import { type JSX } from "react";
+import { createPortal } from "react-dom";
 
 import '../assets/css/modal.css';
 
@@ -9,7 +10,13 @@ type ModalProps = {
 };
 
 const Modal = ({ onCloseButtonClick, children } : ModalProps) => {
-    return (
+    const modalRoot = document.getElementById("modal-root");
+
+    if (!modalRoot) {
+        return null;
+    }
+
+    return createPortal(
         <div className='modal__wrapper'>
             <div className='modal'>
                 {children}
@@ -23,8 +30,9 @@ const Modal = ({ onCloseButtonClick, children } : ModalProps) => {
                     x
                 </button>
             )}
-        </div>
-    )
+        </div>,
+        modalRoot
+    );
 }
 
 export default Modal
