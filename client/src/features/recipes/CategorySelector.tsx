@@ -121,26 +121,28 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                 <Modal
                     onCloseButtonClick={() => setAction(previousSelectedCategory)}
                 >
-                    <label htmlFor="new-category">Enter new category:</label>
-                    <input
-                        ref={newCategoryRef}
-                        id="new-category"
-                        type="text"
-                        value={newCategory}
-                        onChange={(e) => setNewCategory(e.target.value)}
-                    />
-                    <button
-                        type="button"
-                        onClick={handleSubmit}
-                    >
-                        Submit
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setAction(previousSelectedCategory)}
-                    >
-                        Cancel
-                    </button>
+                    <form>
+                        <label htmlFor="new-category">Enter new category:</label>
+                        <input
+                            ref={newCategoryRef}
+                            id="new-category"
+                            type="text"
+                            value={newCategory}
+                            onChange={(e) => setNewCategory(e.target.value)}
+                        />
+                        <button
+                            type="submit"
+                            onClick={handleSubmit}
+                        >
+                            Submit
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setAction(previousSelectedCategory)}
+                        >
+                            Cancel
+                        </button>
+                    </form>
                 </Modal>
             )}
         </>

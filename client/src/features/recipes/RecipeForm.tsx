@@ -19,7 +19,7 @@ type RecipeFormProps = {
     onFormSubmit?: React.SubmitEventHandler<HTMLFormElement>;
 };
 
-const RecipeForm = ({nameHook, categoryHook, ingredientsHook, stepsHook, disabled, onFormSubmit }: RecipeFormProps) => {
+const RecipeForm = ({ nameHook, categoryHook, ingredientsHook, stepsHook, disabled, onFormSubmit }: RecipeFormProps) => {
     const [name, setName] = nameHook;
     const [category, setCategory] = categoryHook;
     const [ingredients, setIngredients] = ingredientsHook;
