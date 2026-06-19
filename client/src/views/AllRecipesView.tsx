@@ -14,7 +14,7 @@ const RecipeView = () => {
             setError("");
 
             try {
-                const response = await fetch("http://localhost:5001/recipe/all", {
+                const response = await fetch("http://localhost:5001/recipe/", {
                     method: "GET",
                     credentials: "include",
                 });
