@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 
+import Recipe from '../features/recipes/Recipe'
 import { type RecipeApi } from '../utils/ApiTypes';
 
 const RecipeView = () => {
@@ -41,33 +42,11 @@ const RecipeView = () => {
     }, []);
 
     return (
-        <div>
-            <div>
-                <h1>
-                    {recipe?.name}
-                </h1>
-                { error ?? (<p>{error}</p>)}
-                {recipe?.category_id ??
-                    <p>
-                        {recipe?.category_name}
-                    </p>
-                }
-            </div>
-            <div>
-                <ul>
-                    {recipe?.ingredients.map((ingredient) => (
-                        <li>{ingredient.amount} {ingredient.unit} {ingredient.text} {ingredient.comment ?? <em>{ingredient.comment}</em>}</li>
-                    ))}
-                </ul>
-            </div>
-            <div>
-                <ol>
-                    {recipe?.steps.map((step) => (
-                        <li>{step.text}</li>
-                    ))}
-                </ol>
-            </div>
-        </div>
+        error ? (
+            <p>{error}</p>
+        ) : (
+            <Recipe recipe={recipe} />
+        )       
     )
 }
 
