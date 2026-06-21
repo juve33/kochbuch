@@ -150,7 +150,7 @@ const recipeGet = async (req, res) => {
     );
 
     if (recipe_data.rows.length === 0) {
-        return res.status(400).json({ error: 'Recipe not found or not permitted to access' });
+        return res.status(400).json({ message: 'Recipe not found or not permitted to access' });
     }
 
     const images_data = await db.query(`
@@ -217,4 +217,61 @@ const recipeShareGet = async (req, res) => {
     res.status(200).json(result.rows);
 }
 
-export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet, recipeShareGet}
+const recipeSharePost = async (req, res) => {
+    const { recipe_id, selected_users, removed_users } = req.body;
+    const { id } = req.params;
+
+    const authorization_result = await db.query(`
+        SELECT (a.role = 10) AS is_authorized
+        FROM access_permissions a
+        WHERE a.recipe_id = $1 AND a.key_id = $2;
+        `,
+        [id, req.session.apiKeyId]
+    );
+
+    if (!authorization_result.rows[0].is_authorized) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    const client = await db.pool.connect();
+
+    try {
+        await client.query(`BEGIN`);
+
+        await Promise.all(
+            selected_users.map(user =>
+                client.query(`
+                    INSERT INTO access_permissions (key_id, recipe_id)
+                    VALUES ($1, $2)
+                    ON CONFLICT DO NOTHING;
+                `, [user, recipe_id])
+            )
+        );
+
+        await Promise.all(
+            removed_users.map(user =>
+                client.query(`
+                    DELETE FROM access_permissions
+                    WHERE key_id = $1 AND recipe_id = $2;
+                `, [user, recipe_id])
+            )
+        );
+        
+        await client.query('COMMIT');
+
+        res.status(201).json({ message: 'Shared with users successfully' });
+    } catch (err) {
+        await client.query('ROLLBACK');
+
+        console.error(err);
+
+        res.status(500).json({
+            message: 'Creating category failed'
+        });
+
+    } finally {
+        client.release();
+    }
+}
+
+export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet, recipeShareGet, recipeSharePost}

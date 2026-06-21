@@ -9,13 +9,15 @@ type ShareButtonProps = {
 };
 
 type UserCheckboxProps = {
-    valueHook: [Number[], React.Dispatch<React.SetStateAction<Number[]>>];
+    selectedUsersHook: [Number[], React.Dispatch<React.SetStateAction<Number[]>>];
+    removedUsersHook: [Number[], React.Dispatch<React.SetStateAction<Number[]>>];
     user: ShareableUserApi;
     disabled?: boolean;
 };
 
-const UserCheckbox = ({ valueHook, user, disabled }: UserCheckboxProps) => {
-    const [selectedUsers, setSelectedUsers] = valueHook;
+const UserCheckbox = ({ selectedUsersHook, removedUsersHook, user, disabled }: UserCheckboxProps) => {
+    const [selectedUsers, setSelectedUsers] = selectedUsersHook;
+    const [removedUsers, setRemovedUsers] = removedUsersHook;
 
     return (
         <div>
@@ -23,23 +25,28 @@ const UserCheckbox = ({ valueHook, user, disabled }: UserCheckboxProps) => {
                 type='checkbox'
                 className='input input__hidden'
                 disabled={disabled}
-                id={'shared-users' + user.key_id.toString()}
-                name='shared-users' value={user.key_id}
+                id={'shared-users-' + user.key_id.toString()}
+                name='shared-users'
+                value={user.key_id}
                 onChange={(e) => {
                     if (e.target.checked) {
                         setSelectedUsers([...selectedUsers, parseInt(e.target.value)]);
+                        setRemovedUsers(removedUsers.filter(item => item !== parseInt(e.target.value)));
                     } else {
                         setSelectedUsers(selectedUsers.filter(item => item !== parseInt(e.target.value)));
+                        setRemovedUsers([...removedUsers, parseInt(e.target.value)]);
                     }
                 }}
+                checked={selectedUsers.includes(user.key_id)}
             />
-            <label htmlFor={'shared-users' + user.key_id.toString()}>{user.name}</label>
+            <label htmlFor={'shared-users-' + user.key_id.toString()}>{user.name}</label>
         </div>
     );
 }
 
 const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
     const [selectedUsers, setSelectedUsers] = useState<Number[]>([]);
+    const [removedUsers, setRemovedUsers] = useState<Number[]>([]);
     const [allUsers, setAllUsers] = useState<ShareableUserListApi>({local: [], foreign: []});
 
     const [open, setOpen] = useState(false);
@@ -87,7 +94,7 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                     throw new Error(data.error || data.message || "Fetching shared users failed");
                 }
                 
-                setSelectedUsers(data as Number[]);
+                setSelectedUsers(data.map((user: { key_id: number }) => user.key_id))
             } catch (err) {
                 const message =
                     err instanceof Error ? err.message : "Unexpected error";
@@ -107,7 +114,8 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
 
         const users_parsed = {
             recipe_id: recipeId,
-            key_ids: selectedUsers
+            selected_users: selectedUsers,
+            removed_users: removedUsers
         }
 
         try {
@@ -120,14 +128,15 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                 body: JSON.stringify(users_parsed)
             });
 
+            setOpen(false);
+
             const data = await response.json();
 
             if (!response.ok) {
                 throw new Error(data.error || data.message || "Sharing recipe failed");
             }
-
-            setOpen(false);
         } catch (err) {
+            setOpen(true);
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
             setError(message);
@@ -155,7 +164,8 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                                 <div>
                                     {allUsers.local.map((user) => (
                                         <UserCheckbox
-                                            valueHook={[selectedUsers, setSelectedUsers]}
+                                            selectedUsersHook={[selectedUsers, setSelectedUsers]}
+                                            removedUsersHook={[removedUsers, setRemovedUsers]}
                                             user={user}
                                             disabled={loading}
                                         />
@@ -164,7 +174,8 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                                 <div>
                                     {allUsers.local.map((user) => (
                                         <UserCheckbox
-                                            valueHook={[selectedUsers, setSelectedUsers]}
+                                            selectedUsersHook={[selectedUsers, setSelectedUsers]}
+                                            removedUsersHook={[removedUsers, setRemovedUsers]}
                                             user={user}
                                             disabled={loading}
                                         />
@@ -174,7 +185,8 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                             :
                             allUsers.local.map((user) => (
                                 <UserCheckbox
-                                    valueHook={[selectedUsers, setSelectedUsers]}
+                                    selectedUsersHook={[selectedUsers, setSelectedUsers]}
+                                    removedUsersHook={[removedUsers, setRemovedUsers]}
                                     user={user}
                                     disabled={loading}
                                 />

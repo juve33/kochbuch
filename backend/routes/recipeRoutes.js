@@ -15,6 +15,6 @@ router.route('/:id').get(requireAuth(0), recipeController.recipeGet);
 // router.route('/:id').post(requireAuth(0), recipeController.recipePost);
 
 router.route('/:id/share').get(requireAuth(0), recipeController.recipeShareGet);
-//router.route('/:id/share').post(requireAuth(0), recipeController.recipeSharePost);
+router.route('/:id/share').post(requireAuth(0), recipeController.recipeSharePost);
 
 export default router;
