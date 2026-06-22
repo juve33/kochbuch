@@ -6,6 +6,7 @@ import AllRecipesView from './views/AllRecipesView';
 import NewRecipeView from './views/NewRecipeView';
 import RecipeView from './views/RecipeView';
 import Recipe from './features/recipes/Recipe';
+import RecipeForm from './features/recipes/RecipeForm';
 
 function App() {
     return (
@@ -16,7 +17,9 @@ function App() {
                 <Route path="overview" element={<AllRecipesView />} />
                 
                 <Route path="recipe">
-                    <Route path="new" element={<NewRecipeView />} />
+                    <Route path="new" element={<NewRecipeView />}>
+                        <Route index element={<RecipeForm />} />
+                    </Route>
                     <Route path=":recipeId" element={<RecipeView />}>
                         <Route index element={<Recipe />} />
                     </Route>

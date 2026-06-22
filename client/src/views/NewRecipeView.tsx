@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { Outlet } from 'react-router';
 
-import RecipeForm from '../features/recipes/RecipeForm';
 import { type RecipeApi } from '../utils/ApiTypes';
-import RecipeContext from '../features/recipes/RecipeContext';
+import { type RecipeOutletContext } from './RecipeView.js';
 
 const NewRecipeView = () => {
     const [loading, setLoading] = useState(false);
@@ -40,17 +40,20 @@ const NewRecipeView = () => {
     }
 
     return (
-        <RecipeContext value={{
-            name: "",
-            ingredients: [{index_number: 0, amount: 500, unit:"g", text:"Flour"}],
-            steps: [{index_number: 0, text:"In a bowl, mix the flour and the salt"}]
-        }}>
-            <RecipeForm
-                disabled={loading}
-                onFormSubmit={handleSubmit}
+        <>
+            <Outlet
+                context={{
+                    recipe: {
+                        name: "",
+                        ingredients: [{index_number: 0, amount: 500, unit:"g", text:"Flour"}],
+                        steps: [{index_number: 0, text:"In a bowl, mix the flour and the salt"}]
+                    },
+                    disabled: loading,
+                    onFormSubmit: handleSubmit
+                } satisfies RecipeOutletContext}
             />
             { error ?? (<p>{error}</p>)}
-        </RecipeContext>
+        </>
     )
 }
 

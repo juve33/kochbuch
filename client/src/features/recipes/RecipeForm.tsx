@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import { useState, useEffect } from 'react';
+import { useOutletContext } from 'react-router'
 
 import CategorySelector from './CategorySelector';
 import IngredientForm, { type Ingredient } from './IngredientForm';
@@ -9,39 +10,35 @@ import SortableFieldset from '../../components/SortableFieldset';
 import SortableFieldsetContext from '../../components/SortableFieldsetContext';
 import { type RecipeApi } from '../../utils/ApiTypes';
 import Fraction from '../../utils/Fraction';
-import RecipeContext from './RecipeContext';
+import { type RecipeOutletContext } from '../../views/RecipeView.js';
 
 import '../../assets/css/recipe.css';
 
-type RecipeFormProps = {
-    disabled?: boolean;
-    onFormSubmit?: (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => void | Promise<void>;
-};
+const RecipeForm = () => {
+    const { recipe, disabled, onFormSubmit } = useOutletContext<RecipeOutletContext>()
 
-const RecipeForm = ({ disabled, onFormSubmit }: RecipeFormProps) => {
-    const recipe = useContext(RecipeContext)
+    const [name, setName] = useState<string>("");
+    const [category, setCategory] = useState<string>();
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [steps, setSteps] = useState<Step[]>([]);
 
-    const [name, setName] = useState<string>(recipe?.name ?? "");
-    const [category, setCategory] = useState<string | undefined>(recipe?.category_id ? recipe.category_id.toString() : undefined);
-    const [ingredients, setIngredients] = useState<Ingredient[]>(
-        recipe?.ingredients.toSorted((a, b) => {return a.index_number - b.index_number})
-            .map((ingredient): Ingredient => ({
+    useEffect(() => {
+        if (recipe) {
+            setName(recipe.name);
+            setCategory(recipe.category_id ? recipe.category_id.toString() : undefined);
+            setIngredients(recipe.ingredients.map((ingredient): Ingredient => ({
                 id: ingredient.id ?? Date.now(),
                 amount: ingredient.amount ? new Fraction(ingredient.amount): undefined,
                 unit: ingredient.unit,
                 text: ingredient.text,
                 comment: ingredient.comment
-            }))
-        ?? []
-    );
-    const [steps, setSteps] = useState<Step[]>(
-        recipe?.steps.toSorted((a, b) => {return a.index_number - b.index_number})
-            .map((step): Step => ({
-                id: Date.now(),
+            })));
+            setSteps(recipe.steps.map((step): Step => ({
+                id: step.id ?? Date.now(),
                 text: step.text,
-            }))
-        ?? []
-    );
+            })))
+        }
+    }, [recipe]);
 
     const newRecipe = (): RecipeApi => {
         return {

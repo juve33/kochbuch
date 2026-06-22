@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react';
 import { Outlet, useParams } from "react-router";
 
 import { type RecipeApi } from '../utils/ApiTypes';
-import RecipeContext from '../features/recipes/RecipeContext';
+
+export type RecipeOutletContext = {
+    recipe?: RecipeApi;
+    disabled?: boolean;
+    onFormSubmit?: (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => void | Promise<void>;
+};
 
 const RecipeView = () => {
     let { recipeId } = useParams();
@@ -45,9 +50,7 @@ const RecipeView = () => {
         error ? (
             <p>{error}</p>
         ) : (
-            <RecipeContext value={recipe}>
-                <Outlet />
-            </RecipeContext>
+            <Outlet context={{ recipe: recipe, disabled: loading} satisfies RecipeOutletContext} />
         )       
     )
 }

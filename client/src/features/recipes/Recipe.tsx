@@ -1,8 +1,9 @@
-import { useContext } from 'react';
-import RecipeContext from './RecipeContext.js';
+import { useOutletContext } from 'react-router'
+
+import { type RecipeOutletContext } from '../../views/RecipeView.js';
 
 const Recipe = () => {
-    const recipe = useContext(RecipeContext)
+    const { recipe } = useOutletContext<RecipeOutletContext>()
     
     return (
         <div>
