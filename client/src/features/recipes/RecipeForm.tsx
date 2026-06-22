@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 
 import CategorySelector from './CategorySelector';
 import IngredientForm, { type Ingredient } from './IngredientForm';
@@ -7,26 +7,65 @@ import AddButton from '../../components/AddButton';
 import DeleteButton from '../../components/DeleteButton';
 import SortableFieldset from '../../components/SortableFieldset';
 import SortableFieldsetContext from '../../components/SortableFieldsetContext';
+import { type RecipeApi } from '../../utils/ApiTypes';
+import Fraction from '../../utils/Fraction';
+import RecipeContext from './RecipeContext';
 
 import '../../assets/css/recipe.css';
 
 type RecipeFormProps = {
-    nameHook: [string, React.Dispatch<React.SetStateAction<string>>];
-    categoryHook: [string | undefined, React.Dispatch<React.SetStateAction<string | undefined>>];
-    ingredientsHook: [Ingredient[], React.Dispatch<React.SetStateAction<Ingredient[]>>];
-    stepsHook: [Step[], React.Dispatch<React.SetStateAction<Step[]>>];
     disabled?: boolean;
-    onFormSubmit?: React.SubmitEventHandler<HTMLFormElement>;
+    onFormSubmit?: (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => void | Promise<void>;
 };
 
-const RecipeForm = ({ nameHook, categoryHook, ingredientsHook, stepsHook, disabled, onFormSubmit }: RecipeFormProps) => {
-    const [name, setName] = nameHook;
-    const [category, setCategory] = categoryHook;
-    const [ingredients, setIngredients] = ingredientsHook;
-    const [steps, setSteps] = stepsHook;
+const RecipeForm = ({ disabled, onFormSubmit }: RecipeFormProps) => {
+    const recipe = useContext(RecipeContext)
+
+    const [name, setName] = useState<string>(recipe?.name ?? "");
+    const [category, setCategory] = useState<string | undefined>(recipe?.category_id ? recipe.category_id.toString() : undefined);
+    const [ingredients, setIngredients] = useState<Ingredient[]>(
+        recipe?.ingredients.toSorted((a, b) => {return a.index_number - b.index_number})
+            .map((ingredient): Ingredient => ({
+                id: ingredient.id ?? Date.now(),
+                amount: ingredient.amount ? new Fraction(ingredient.amount): undefined,
+                unit: ingredient.unit,
+                text: ingredient.text,
+                comment: ingredient.comment
+            }))
+        ?? []
+    );
+    const [steps, setSteps] = useState<Step[]>(
+        recipe?.steps.toSorted((a, b) => {return a.index_number - b.index_number})
+            .map((step): Step => ({
+                id: Date.now(),
+                text: step.text,
+            }))
+        ?? []
+    );
+
+    const newRecipe = (): RecipeApi => {
+        return {
+            name: name,
+            category_id: category ? parseInt(category) : undefined,
+
+            ingredients:
+                ingredients.map((ingredient, index) => ({
+                    index_number: index,
+                    amount: ingredient.amount?.valueAsNumber,
+                    unit: ingredient.unit,
+                    text: ingredient.text,
+                    comment: ingredient.comment
+                })),
+            steps:
+                steps.map((step, index) => ({
+                    index_number: index,
+                    text: step.text,
+                }))
+            }
+    }
 
     return (
-        <form className='form form-recipe recipe' onSubmit={onFormSubmit} aria-disabled={disabled}>
+        <form className='form form-recipe recipe' onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled}>
             <div className='input-group input-group-head recipe-group-head'>
                 <input
                     type="text"

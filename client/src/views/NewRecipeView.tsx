@@ -1,43 +1,17 @@
 import { useState } from 'react';
 
 import RecipeForm from '../features/recipes/RecipeForm';
-import { type Ingredient } from '../features/recipes/IngredientForm';
-import { type Step } from '../features/recipes/StepForm';
 import { type RecipeApi } from '../utils/ApiTypes';
-import Fraction from '../utils/Fraction';
+import RecipeContext from '../features/recipes/RecipeContext';
 
 const NewRecipeView = () => {
-    const [name, setName] = useState<string>("");
-    const [category, setCategory] = useState<string>();
-    const [ingredients, setIngredients] = useState<Ingredient[]>([{id: 1, amount: new Fraction(500), unit:"g", text:"Flour"}]);
-    const [steps, setSteps] = useState<Step[]>([{id: 1, text:"In a bowl, mix the flour and the salt"}]);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => {
         e.preventDefault();
         setLoading(true);
         setError("");
-
-        const recipe_parsed: RecipeApi = {
-            name: name,
-            category_id: category ? parseInt(category) : undefined,
-
-            ingredients:
-                ingredients.map((ingredient, index) => ({
-                    index_number: index,
-                    amount: ingredient.amount?.valueAsNumber,
-                    unit: ingredient.unit,
-                    text: ingredient.text,
-                    comment: ingredient.comment
-                })),
-            steps:
-                steps.map((step, index) => ({
-                    index_number: index,
-                    text: step.text,
-                }))
-        }
 
         try {
             const response = await fetch("http://localhost:5001/recipe/" , {
@@ -46,7 +20,7 @@ const NewRecipeView = () => {
                     "Content-Type": "application/json"
                 },
                 credentials: "include",
-                body: JSON.stringify(recipe_parsed)
+                body: JSON.stringify(recipe)
             });
 
             const data = await response.json();
@@ -66,17 +40,17 @@ const NewRecipeView = () => {
     }
 
     return (
-        <>
+        <RecipeContext value={{
+            name: "",
+            ingredients: [{index_number: 0, amount: 500, unit:"g", text:"Flour"}],
+            steps: [{index_number: 0, text:"In a bowl, mix the flour and the salt"}]
+        }}>
             <RecipeForm
-                nameHook={[name, setName]}
-                categoryHook={[category, setCategory]}
-                ingredientsHook={[ingredients, setIngredients]}
-                stepsHook={[steps, setSteps]}
                 disabled={loading}
                 onFormSubmit={handleSubmit}
             />
             { error ?? (<p>{error}</p>)}
-        </>
+        </RecipeContext>
     )
 }
 

@@ -3,6 +3,7 @@ import RecipeContext from './RecipeContext.js';
 
 const Recipe = () => {
     const recipe = useContext(RecipeContext)
+    
     return (
         <div>
             <div>
