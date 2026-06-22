@@ -1,10 +1,8 @@
-import { type RecipeApi } from '../../utils/ApiTypes';
+import { useContext } from 'react';
+import RecipeContext from './RecipeContext.js';
 
-type RecipeProps = {
-    recipe?: RecipeApi;
-};
-
-const Recipe = ({ recipe }: RecipeProps) => {
+const Recipe = () => {
+    const recipe = useContext(RecipeContext)
     return (
         <div>
             <div>

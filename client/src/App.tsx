@@ -5,6 +5,7 @@ import Login from './features/auth/Login';
 import AllRecipesView from './views/AllRecipesView';
 import NewRecipeView from './views/NewRecipeView';
 import RecipeView from './views/RecipeView';
+import Recipe from './features/recipes/Recipe';
 
 function App() {
     return (
@@ -16,7 +17,9 @@ function App() {
                 
                 <Route path="recipe">
                     <Route path="new" element={<NewRecipeView />} />
-                    <Route path=":recipeId" element={<RecipeView />} />
+                    <Route path=":recipeId" element={<RecipeView />}>
+                        <Route index element={<Recipe />} />
+                    </Route>
                 </Route>
             </Route>
         </Routes>

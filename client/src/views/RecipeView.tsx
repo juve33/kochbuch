@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from "react-router";
+import { Outlet, useParams } from "react-router";
 
-import Recipe from '../features/recipes/Recipe'
 import { type RecipeApi } from '../utils/ApiTypes';
+import RecipeContext from '../features/recipes/RecipeContext';
 
 const RecipeView = () => {
     let { recipeId } = useParams();
@@ -45,7 +45,9 @@ const RecipeView = () => {
         error ? (
             <p>{error}</p>
         ) : (
-            <Recipe recipe={recipe} />
+            <RecipeContext value={recipe}>
+                <Outlet />
+            </RecipeContext>
         )       
     )
 }
