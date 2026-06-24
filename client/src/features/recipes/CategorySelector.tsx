@@ -46,7 +46,9 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
         fetchCategories();
     }, []);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
         setLoading(true);
         setError("");
 
@@ -121,7 +123,7 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                 <Modal
                     onCloseButtonClick={() => setAction(previousSelectedCategory)}
                 >
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <label htmlFor="new-category">Enter new category:</label>
                         <input
                             ref={newCategoryRef}
@@ -132,7 +134,6 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                         />
                         <button
                             type="submit"
-                            onClick={handleSubmit}
                         >
                             Submit
                         </button>
