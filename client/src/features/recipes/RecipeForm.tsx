@@ -19,6 +19,7 @@ const RecipeForm = () => {
 
     const [name, setName] = useState<string>("");
     const [category, setCategory] = useState<string>();
+    const [servings, setServings] = useState<string>();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [steps, setSteps] = useState<Step[]>([]);
 
@@ -26,6 +27,7 @@ const RecipeForm = () => {
         if (recipe) {
             setName(recipe.name);
             setCategory(recipe.category_id ? recipe.category_id.toString() : undefined);
+            setServings(recipe.servings ? recipe.servings.toString() : undefined);
             setIngredients(recipe.ingredients.map((ingredient): Ingredient => ({
                 id: ingredient.id ?? Date.now(),
                 apiId: ingredient.id,
@@ -46,6 +48,7 @@ const RecipeForm = () => {
         return {
             name: name,
             category_id: category ? parseInt(category) : undefined,
+            servings: servings ? parseInt(servings) : undefined,
 
             ingredients:
                 ingredients.map((ingredient, index) => ({
@@ -77,6 +80,13 @@ const RecipeForm = () => {
                     required
                 />
                 <CategorySelector setAction={setCategory} value={category} />
+                <input
+                    type="number"
+                    id="servings"
+                    min={1}
+                    onChange={(e) => setServings(e.target.value)}
+                    value={servings}
+                />
             </div>
             <fieldset className='input-group input-group-ingredients recipe-group-ingredients'>
                 <SortableFieldsetContext

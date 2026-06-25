@@ -69,7 +69,7 @@ const categoriesPost = async (req, res) => {
 }
 
 const newRecipePost = async (req, res) => {
-    const { name, category_id, images, ingredients, steps } = req.body;
+    const { name, category_id, servings, images, ingredients, steps } = req.body;
 
     if (!name) {
         return res.status(400).json({ message: 'Name must not be empty' });
@@ -87,10 +87,10 @@ const newRecipePost = async (req, res) => {
         await client.query(`BEGIN`);
         
         const recipe_result = await client.query(`
-            INSERT INTO recipes (name, category_id)
-            VALUES ($1, $2)
+            INSERT INTO recipes (name, category_id, servings)
+            VALUES ($1, $2, $3)
             RETURNING id;
-            `, [name, category_id ?? null]);
+            `, [name, category_id ?? null, servings ?? null]);
 
         const recipeId = recipe_result.rows[0].id;
 
@@ -140,7 +140,7 @@ const recipeGet = async (req, res) => {
     const { id } = req.params;
 
     const recipe_data = await db.query(`
-        SELECT r.id, r.name, c.id AS category_id, c.name AS category_name, a.role
+        SELECT r.id, r.name, c.id AS category_id, c.name AS category_name, r.servings, a.role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
         JOIN access_permissions a ON r.id = a.recipe_id AND a.key_id = $1
@@ -185,6 +185,7 @@ const recipeGet = async (req, res) => {
         "name": recipe_data.rows[0].name,
         "category_id": recipe_data.rows[0].category_id,
         "category_name": recipe_data.rows[0].category_name,
+        "servings": recipe_data.rows[0].servings,
         "role":  recipe_data.rows[0].role,
         "images": images_data.rows,
         "ingredients": ingredients_data.rows,
@@ -194,7 +195,7 @@ const recipeGet = async (req, res) => {
 
 const recipePost = async (req, res) => {
     const { id } = req.params;
-    const { name, category_id, images, ingredients, steps } = req.body;
+    const { name, category_id, servings, images, ingredients, steps } = req.body;
 
     const authorization_result = await db.query(`
         SELECT (a.role = 10) AS is_authorized
@@ -227,9 +228,10 @@ const recipePost = async (req, res) => {
             UPDATE recipes
             SET
                 name = $2,
-                category_id = $3
+                category_id = $3,
+                servings = $4
             WHERE id = $1;
-            `, [id, name, category_id ?? null]);
+            `, [id, name, category_id ?? null, servings ?? null]);
 
         await client.query(`
             DELETE FROM ingredients
