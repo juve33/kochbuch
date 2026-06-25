@@ -1,10 +1,14 @@
-type DeleteButtonProps<T> = {
-    index: number;
-    setAction: React.Dispatch<React.SetStateAction<T[]>>;
-    children?: string | React.ReactNode;
-};
+type DeleteButtonProps<T> =
+    Omit<
+        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        "index" | "setAction" | "children"
+    > & {
+        index: number;
+        setAction: React.Dispatch<React.SetStateAction<T[]>>;
+        children?: string | React.ReactNode;
+    }
 
-const DeleteButton = <T,>({ index, setAction, children } : DeleteButtonProps<T>) => {
+const DeleteButton = <T,>({ index, setAction, children, ...props } : DeleteButtonProps<T>) => {
     return (
         <button 
             type="button"
@@ -13,6 +17,7 @@ const DeleteButton = <T,>({ index, setAction, children } : DeleteButtonProps<T>)
                     items.filter((_, i) => i !== index)
                 )
             }
+            {...props}
         >
             {children}
         </button>

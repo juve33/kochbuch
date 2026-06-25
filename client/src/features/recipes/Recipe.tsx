@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router'
+import { createPortal } from "react-dom";
+import { Link, useOutletContext } from 'react-router'
 
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
+import ShareButton from './ShareButton.js';
 
 const Recipe = () => {
     const { recipe } = useOutletContext<RecipeOutletContext>()
@@ -13,9 +15,29 @@ const Recipe = () => {
             setServings(recipe?.servings ?? 1)
         }
     }, [recipe]);
+
+    const headerMain = document.getElementById("header-main");
+    const headerMenu = document.getElementById("header-menu");
     
     return (
         <div>
+            {headerMain && createPortal(
+                <>
+                    <Link relative="route" to="/overview"><button type='button'>Back</button></Link>
+                </>,
+            headerMain)
+            }
+            {headerMenu && createPortal(
+                <>
+                    {recipe?.id &&
+                        <ShareButton
+                            recipeId={recipe.id}
+                        />
+                    }
+                    <Link to="edit"><button type='button'>Edit</button></Link>
+                </>,
+            headerMenu)
+            }
             <div>
                 <h1>
                     {recipe?.name}

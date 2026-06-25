@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router'
+import { createPortal } from "react-dom";
+import { Link, useOutletContext } from 'react-router'
 
 import CategorySelector from './CategorySelector';
 import IngredientForm, { type Ingredient } from './IngredientForm';
@@ -44,6 +45,8 @@ const RecipeForm = () => {
         }
     }, [recipe]);
 
+    const headerMain = document.getElementById("header-main");
+
     const newRecipe = (): RecipeApi => {
         return {
             name: name,
@@ -70,6 +73,11 @@ const RecipeForm = () => {
 
     return (
         <form className='form form-recipe recipe' onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled}>
+            {headerMain && createPortal(
+                <>
+                    <Link relative="path" to=".."><button type='button'>Back</button></Link>
+                </>,
+            headerMain)}
             <div className='input-group input-group-head recipe-group-head'>
                 <input
                     type="text"
@@ -107,9 +115,8 @@ const RecipeForm = () => {
                                 <DeleteButton
                                     index={index}
                                     setAction={setIngredients}
-                                >
-                                    x
-                                </DeleteButton>
+                                    aria-label='Delete this ingredient'
+                                />
                             </SortableFieldset>
                         ))}
                 </SortableFieldsetContext>
@@ -119,9 +126,8 @@ const RecipeForm = () => {
                         text: "",
                     })}
                     setAction={setIngredients}
-                >
-                    Add ingredient
-                </AddButton>
+                    aria-label='Add an ingredient'
+                />
             </fieldset>
             <fieldset className='input-group input-group-steps recipe-group-steps'>
                 <SortableFieldsetContext
@@ -142,9 +148,8 @@ const RecipeForm = () => {
                             <DeleteButton
                                 index={index}
                                 setAction={setSteps}
-                            >
-                                x
-                            </DeleteButton>
+                                aria-label='Delete this step'
+                            />
                         </SortableFieldset>
                     ))}
                 </SortableFieldsetContext>
@@ -154,15 +159,14 @@ const RecipeForm = () => {
                         text: "",
                     })}
                     setAction={setSteps}
-                >
-                    Add step
-                </AddButton>
+                    aria-label='Add a step'
+                />
             </fieldset>
             <button
                 type="submit"
                 disabled={disabled}
             >
-                Submit
+                Save
             </button>
         </form>
     )
