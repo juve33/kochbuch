@@ -1,8 +1,9 @@
 import type { FieldsetFormProps } from '../../utils/FieldsetFormProps';
 
 export type Step = {
-  id: number;
-  text: string;
+    id: number;
+    apiId?: number;
+    text: string;
 };
 
 const StepForm = ({ value, index, setAction }: FieldsetFormProps<Step>) => {

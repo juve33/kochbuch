@@ -21,6 +21,7 @@ function App() {
                         <Route index element={<RecipeForm />} />
                     </Route>
                     <Route path=":recipeId" element={<RecipeView />}>
+                        <Route path="edit" element={<RecipeForm />} />
                         <Route index element={<Recipe />} />
                     </Route>
                 </Route>

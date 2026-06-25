@@ -28,6 +28,7 @@ const RecipeForm = () => {
             setCategory(recipe.category_id ? recipe.category_id.toString() : undefined);
             setIngredients(recipe.ingredients.map((ingredient): Ingredient => ({
                 id: ingredient.id ?? Date.now(),
+                apiId: ingredient.id,
                 amount: ingredient.amount ? new Fraction(ingredient.amount): undefined,
                 unit: ingredient.unit,
                 text: ingredient.text,
@@ -35,6 +36,7 @@ const RecipeForm = () => {
             })));
             setSteps(recipe.steps.map((step): Step => ({
                 id: step.id ?? Date.now(),
+                apiId: step.id,
                 text: step.text,
             })))
         }
@@ -47,6 +49,7 @@ const RecipeForm = () => {
 
             ingredients:
                 ingredients.map((ingredient, index) => ({
+                    id: ingredient.apiId,
                     index_number: index,
                     amount: ingredient.amount?.valueAsNumber,
                     unit: ingredient.unit,
@@ -55,6 +58,7 @@ const RecipeForm = () => {
                 })),
             steps:
                 steps.map((step, index) => ({
+                    id: step.apiId,
                     index_number: index,
                     text: step.text,
                 }))

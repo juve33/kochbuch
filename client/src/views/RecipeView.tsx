@@ -46,11 +46,42 @@ const RecipeView = () => {
         fetchRecipe();
     }, []);
 
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+
+        try {
+            const response = await fetch("http://localhost:5001/recipe/" + recipeId, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(recipe)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Modifying recipe failed");
+            }
+
+            window.location.href = "/recipe/" + recipeId;
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : "Unexpected error";
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         error ? (
             <p>{error}</p>
         ) : (
-            <Outlet context={{ recipe: recipe, disabled: loading} satisfies RecipeOutletContext} />
+            <Outlet context={{ recipe: recipe, disabled: loading, onFormSubmit: handleSubmit} satisfies RecipeOutletContext} />
         )       
     )
 }

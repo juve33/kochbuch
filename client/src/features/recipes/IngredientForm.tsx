@@ -4,6 +4,7 @@ import FractionInput from '../../components/FractionInput';
 
 export type Ingredient = {
     id: number;
+    apiId?: number;
     amount?: Fraction;
     unit?: string;
     text: string;

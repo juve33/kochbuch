@@ -36,7 +36,7 @@ export async function init() {
                 index_number INT NOT NULL,
                 text TEXT NOT NULL,
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-                UNIQUE (recipe_id, index_number)
+                UNIQUE (recipe_id, index_number) DEFERRABLE INITIALLY DEFERRED
             );
 
             CREATE TABLE IF NOT EXISTS ingredients (
@@ -49,7 +49,8 @@ export async function init() {
                 text VARCHAR(64) NOT NULL,
                 comment TEXT,
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-                FOREIGN KEY (step_id) REFERENCES steps(id) ON DELETE SET NULL
+                FOREIGN KEY (step_id) REFERENCES steps(id) ON DELETE SET NULL,
+                UNIQUE (recipe_id, index_number) DEFERRABLE INITIALLY DEFERRED
             );
             
             CREATE TABLE IF NOT EXISTS api_keys_inner (

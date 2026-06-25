@@ -140,7 +140,7 @@ const recipeGet = async (req, res) => {
     const { id } = req.params;
 
     const recipe_data = await db.query(`
-        SELECT r.id, r.name, c.name AS category_name, a.role
+        SELECT r.id, r.name, c.id AS category_id, c.name AS category_name, a.role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
         JOIN access_permissions a ON r.id = a.recipe_id AND a.key_id = $1
@@ -183,12 +183,126 @@ const recipeGet = async (req, res) => {
     res.status(200).json({
         "id": recipe_data.rows[0].id,
         "name": recipe_data.rows[0].name,
+        "category_id": recipe_data.rows[0].category_id,
         "category_name": recipe_data.rows[0].category_name,
         "role":  recipe_data.rows[0].role,
         "images": images_data.rows,
         "ingredients": ingredients_data.rows,
         "steps": steps_data.rows
     });
+}
+
+const recipePost = async (req, res) => {
+    const { id } = req.params;
+    const { name, category_id, images, ingredients, steps } = req.body;
+
+    const authorization_result = await db.query(`
+        SELECT (a.role = 10) AS is_authorized
+        FROM access_permissions a
+        WHERE a.recipe_id = $1 AND a.key_id = $2;
+        `,
+        [id, req.session.apiKeyId]
+    );
+
+    if (!authorization_result.rows[0].is_authorized) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    if (!name) {
+        return res.status(400).json({ message: 'Name must not be empty' });
+    }
+    else if (!Array.isArray(ingredients) || ingredients.length === 0) {
+        return res.status(400).json({ message: 'Ingredients must not be empty' });
+    }
+    else if (!Array.isArray(steps) || steps.length === 0) {
+        return res.status(400).json({ message: 'Steps must not be empty' });
+    }
+
+    const client = await db.pool.connect();
+
+    try {
+        await client.query(`BEGIN`);
+        
+        await client.query(`
+            UPDATE recipes
+            SET
+                name = $2,
+                category_id = $3
+            WHERE id = $1;
+            `, [id, name, category_id ?? null]);
+
+        await client.query(`
+            DELETE FROM ingredients
+            WHERE recipe_id = $1
+                AND id <> ALL($2::int[]);
+            `, [id, ingredients.map(ingredient => {return ingredient.id})]);
+
+        await Promise.all(
+            ingredients.filter(ingredient => {return Number.isInteger(ingredient.id)}).map(ingredient =>
+                client.query(`
+                    UPDATE ingredients
+                    SET
+                        index_number = $2,
+                        amount = $3,
+                        unit = $4,
+                        text = $5,
+                        comment = $6
+                    WHERE id = $1;
+                `, [ingredient.id, ingredient.index_number, ingredient.amount, ingredient.unit, ingredient.text, ingredient.comment])
+            )
+        );
+
+        await Promise.all(
+            ingredients.filter(ingredient => {return !Number.isInteger(ingredient.id)}).map(ingredient =>
+                client.query(`
+                    INSERT INTO ingredients (recipe_id, index_number, amount, unit, text, comment)
+                    VALUES ($1, $2, $3, $4, $5, $6);
+                `, [id, ingredient.index_number, ingredient.amount, ingredient.unit, ingredient.text, ingredient.comment])
+            )
+        );
+
+        await client.query(`
+            DELETE FROM steps
+            WHERE recipe_id = $1
+                AND id <> ALL($2::int[]);
+            `, [id, steps.map(step => {return step.id})]);
+
+        await Promise.all(
+            steps.filter(step => {return Number.isInteger(step.id)}).map(step =>
+                client.query(`
+                    UPDATE steps
+                    SET
+                        index_number = $2,
+                        text = $3
+                    WHERE id = $1;
+                `, [step.id, step.index_number, step.text])
+            )
+        );
+
+        await Promise.all(
+            steps.filter(step => {return !Number.isInteger(step.id)}).map(step =>
+                client.query(`
+                    INSERT INTO steps (recipe_id, index_number, text)
+                    VALUES ($1, $2, $3);
+                `, [id, step.index_number, step.text])
+            )
+        );
+
+        await client.query('COMMIT');
+
+        res.status(201).json({ message: 'Recipe modified successfully', id: id });
+    } catch (err) {
+        await client.query('ROLLBACK');
+
+        console.error(err);
+
+        res.status(500).json({
+            message: 'Modifying recipe failed'
+        });
+
+    } finally {
+        client.release();
+    }
 }
 
 const recipeShareGet = async (req, res) => {
@@ -274,4 +388,4 @@ const recipeSharePost = async (req, res) => {
     }
 }
 
-export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet, recipeShareGet, recipeSharePost}
+export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet, recipePost, recipeShareGet, recipeSharePost}
