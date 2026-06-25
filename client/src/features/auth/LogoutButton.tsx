@@ -37,6 +37,7 @@ const LogoutButton = ({ children }: LogoutButtonProps) => {
             type="button"
             onClick={handleClick}
             disabled={loading}
+            aria-label={children ? undefined : "Log out"}
         >
             {children}
         </button>

@@ -26,9 +26,8 @@ const Modal = ({ onCloseButtonClick, children } : ModalProps) => {
                     type="button"
                     className="button modal-close__button"
                     onClick={onCloseButtonClick}
-                >
-                    x
-                </button>
+                    aria-label="Close"
+                />
             )}
         </div>,
         modalRoot
