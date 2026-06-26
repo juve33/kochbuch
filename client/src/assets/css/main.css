@@ -21,3 +21,7 @@ body {
 button {
     align-self: center !important;
 }
+
+:where(button[aria-label])::before {
+    content: attr(aria-label);
+}
