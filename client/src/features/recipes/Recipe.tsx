@@ -29,12 +29,14 @@ const Recipe = () => {
             }
             {headerMenu && createPortal(
                 <>
-                    {recipe?.id &&
+                    {(recipe?.id && recipe.role == 10) &&
                         <ShareButton
                             recipeId={recipe.id}
                         />
                     }
-                    <Link to="edit"><button type='button'>Edit</button></Link>
+                    {(recipe?.role == 10) &&
+                        <Link to="edit"><button type='button'>Edit</button></Link>
+                    }
                 </>,
             headerMenu)
             }

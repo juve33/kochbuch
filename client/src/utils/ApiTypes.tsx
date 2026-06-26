@@ -3,6 +3,7 @@ export type RecipeApi = {
     name: string;
     category_id?: number;
     category_name?: string;
+    role: number;
     servings?: number;
     duration?: number;
     
