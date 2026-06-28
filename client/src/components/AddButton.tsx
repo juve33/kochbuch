@@ -1,7 +1,7 @@
 type AddButtonProps<T> =
     Omit<
         React.ButtonHTMLAttributes<HTMLButtonElement>,
-        "createItem" | "setAction" | "children"
+        "createItem" | "onClick" | "setAction" | "type" | "children"
     > & {
         createItem: () => T;
         setAction: React.Dispatch<React.SetStateAction<T[]>>;
