@@ -1,7 +1,7 @@
 type DeleteButtonProps<T> =
     Omit<
         React.ButtonHTMLAttributes<HTMLButtonElement>,
-        "createItem" | "setAction" | "type" | "children"
+        "createItem" | "onClick" | "setAction" | "type" | "children"
     > & {
         index: number;
         setAction: React.Dispatch<React.SetStateAction<T[]>>;
