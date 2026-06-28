@@ -1,10 +1,14 @@
 import { useState } from 'react';
 
-type LogoutButtonProps = {
-    children?: string | React.ReactNode;
-};
+type LogoutButtonProps =
+    Omit<
+        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        "onClick" | "type" | "children"
+    > & {
+        children?: string | React.ReactNode;
+    }
 
-const LogoutButton = ({ children }: LogoutButtonProps) => {
+const LogoutButton = ({ children, ...props }: LogoutButtonProps) => {
     const [loading, setLoading] = useState(false);
 
     const handleClick = async () => {
@@ -36,8 +40,8 @@ const LogoutButton = ({ children }: LogoutButtonProps) => {
         <button 
             type="button"
             onClick={handleClick}
-            disabled={loading}
-            aria-label={children ? undefined : "Log out"}
+            disabled={loading || props.disabled}
+            aria-label={props['aria-label'] ?? children ? undefined : "Log out"}
         >
             {children}
         </button>
