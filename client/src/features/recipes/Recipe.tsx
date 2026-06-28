@@ -4,6 +4,7 @@ import { Link, useOutletContext } from 'react-router'
 
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import ShareButton from './ShareButton.js';
+import BackButton from '../../components/BackButton.js';
 
 const Recipe = () => {
     const { recipe } = useOutletContext<RecipeOutletContext>()
@@ -23,7 +24,7 @@ const Recipe = () => {
         <div>
             {headerMain && createPortal(
                 <>
-                    <Link relative="route" to="/overview"><button type='button'>Back</button></Link>
+                    <BackButton />
                 </>,
             headerMain)
             }

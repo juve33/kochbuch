@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from "react-dom";
-import { Link, useOutletContext } from 'react-router'
+import { useOutletContext } from 'react-router'
 
 import CategorySelector from './CategorySelector';
 import IngredientForm, { type Ingredient } from './IngredientForm';
@@ -12,6 +12,7 @@ import SortableFieldsetContext from '../../components/SortableFieldsetContext';
 import { type RecipeApi } from '../../utils/ApiTypes';
 import Fraction from '../../utils/Fraction';
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
+import BackButton from '../../components/BackButton.js';
 
 import '../../assets/css/recipe.css';
 
@@ -76,7 +77,7 @@ const RecipeForm = () => {
         <form className='form form-recipe recipe' onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled}>
             {headerMain && createPortal(
                 <>
-                    <Link relative="path" to=".."><button type='button'>Back</button></Link>
+                    <BackButton />
                 </>,
             headerMain)}
             <div className='input-group input-group-head recipe-group-head'>
