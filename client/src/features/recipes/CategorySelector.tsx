@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import Modal from '../../components/Modal';
+import { useGlobalStateDispatch } from '../../utils/GlobalState';
 
 type Category = {
     id: number | undefined;
@@ -13,6 +14,8 @@ type CategorySelectorProps = {
 };
 
 const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
+    const dispatchGlobalState = useGlobalStateDispatch();
+    
     const [categories, setCategories] = useState<Category[]>([]);
     const [previousSelectedCategory, setPreviousSelectedCategory] = useState<string>("");
     const [newCategory, setNewCategory] = useState<string>("");
@@ -104,6 +107,11 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                 onChange={(e => {
                     setPreviousSelectedCategory(value ?? "");
                     setAction(e.target.value)
+                    if (e.target.value === "new") {
+                        dispatchGlobalState({
+                            type: "open modal"
+                        });
+                    }
                 })}
                 value={value}
                 disabled={loading}
@@ -139,7 +147,12 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                         </button>
                         <button
                             type="button"
-                            onClick={() => setAction(previousSelectedCategory)}
+                            onClick={() => {
+                                setAction(previousSelectedCategory);
+                                dispatchGlobalState({
+                                    type: "close modal"
+                                });
+                            }}
                         >
                             Cancel
                         </button>

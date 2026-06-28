@@ -2,6 +2,7 @@ import { type JSX } from "react";
 import { createPortal } from "react-dom";
 
 import '../assets/css/modal.css';
+import { useGlobalStateDispatch } from "../utils/GlobalState";
 
 type ModalProps = {
     name?: string;
@@ -10,6 +11,8 @@ type ModalProps = {
 };
 
 const Modal = ({ onCloseButtonClick, children } : ModalProps) => {
+    const dispatchGlobalState = useGlobalStateDispatch();
+    
     const modalRoot = document.getElementById("modal-root");
 
     if (!modalRoot) {
@@ -25,7 +28,12 @@ const Modal = ({ onCloseButtonClick, children } : ModalProps) => {
                 <button
                     type="button"
                     className="button modal-close__button"
-                    onClick={onCloseButtonClick}
+                    onClick={(e) => {
+                        onCloseButtonClick(e);
+                        dispatchGlobalState({
+                            type: "close modal"
+                        });
+                    }}
                     aria-label="Close"
                 />
             )}

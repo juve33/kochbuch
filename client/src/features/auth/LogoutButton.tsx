@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useGlobalState } from '../../utils/GlobalState';
+
 type LogoutButtonProps =
     Omit<
         React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -9,6 +11,8 @@ type LogoutButtonProps =
     }
 
 const LogoutButton = ({ children, ...props }: LogoutButtonProps) => {
+    const globalState = useGlobalState();
+    
     const [loading, setLoading] = useState(false);
 
     const handleClick = async () => {
@@ -40,7 +44,7 @@ const LogoutButton = ({ children, ...props }: LogoutButtonProps) => {
         <button 
             type="button"
             onClick={handleClick}
-            disabled={loading || props.disabled}
+            disabled={loading || props.disabled || globalState.modalsOpen > 0}
             aria-label={props['aria-label'] ?? children ? undefined : "Log out"}
         >
             {children}

@@ -5,9 +5,12 @@ import { Link, useOutletContext } from 'react-router'
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import ShareButton from './ShareButton.js';
 import BackButton from '../../components/BackButton.js';
+import { useGlobalState } from '../../utils/GlobalState.js';
 
 const Recipe = () => {
     const { recipe } = useOutletContext<RecipeOutletContext>()
+
+    const globalState = useGlobalState();
 
     const [servings, setServings] = useState<number>(1);
 
@@ -36,7 +39,7 @@ const Recipe = () => {
                         />
                     }
                     {(recipe?.role == 10) &&
-                        <Link to="edit"><button type='button'>Edit</button></Link>
+                        <Link to="edit" tabIndex={-1}><button type='button' disabled={globalState.modalsOpen > 0}>Edit</button></Link>
                     }
                 </>,
             headerMenu)
@@ -50,7 +53,15 @@ const Recipe = () => {
                         {recipe?.category_name}
                     </p>
                 }
-                <input type='number' id='servings' min={0.5} step={0.5} value={servings} onChange={(e) => setServings(Number(e.target.value))} />
+                <input
+                    type='number'
+                    id='servings'
+                    min={0.5}
+                    step={0.5}
+                    value={servings}
+                    onChange={(e) => setServings(Number(e.target.value))}
+                    disabled={globalState.modalsOpen > 0}
+                />
                 <label htmlFor='servings'>Servings</label>
             </div>
             <div>
@@ -69,6 +80,7 @@ const Recipe = () => {
                             <input
                                 type='checkbox'
                                 id={step.id?.toString()}
+                                disabled={globalState.modalsOpen > 0}
                             />
                             <label htmlFor={step.id?.toString()}>
                                 {step.text}

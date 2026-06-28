@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import Modal from '../../components/Modal';
 import { type ShareableUserApi, type ShareableUserListApi } from '../../utils/ApiTypes'
+import { useGlobalState, useGlobalStateDispatch } from '../../utils/GlobalState';
 
 type ShareButtonProps = {
     recipeId: number | string;
@@ -45,6 +46,9 @@ const UserCheckbox = ({ selectedUsersHook, removedUsersHook, user, disabled }: U
 }
 
 const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
+    const globalState = useGlobalState();
+    const dispatchGlobalState = useGlobalStateDispatch();
+    
     const [selectedUsers, setSelectedUsers] = useState<Number[]>([]);
     const [removedUsers, setRemovedUsers] = useState<Number[]>([]);
     const [allUsers, setAllUsers] = useState<ShareableUserListApi>({local: [], foreign: []});
@@ -149,7 +153,13 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
         <>
             <button
                 type="button"
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                    setOpen(true);
+                    dispatchGlobalState({
+                        type: "open modal"
+                    })
+                }}
+                disabled={globalState.modalsOpen > 0}
             >
                 {children}
             </button>
@@ -201,7 +211,12 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                     </button>
                     <button
                         type="button"
-                        onClick={() => setOpen(false)}
+                        onClick={() => {
+                            setOpen(false);
+                            dispatchGlobalState({
+                                type: "close modal"
+                            })
+                        }}
                     >
                         Cancel
                     </button>

@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router"
 
+import { useGlobalState } from "../utils/GlobalState";
+
 type BackButtonProps =
     Omit<
         React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -10,6 +12,8 @@ type BackButtonProps =
     }
 
 const BackButton = ({ delta=-1, children, ...props } : BackButtonProps) => {
+    const globalState = useGlobalState();
+    
     const navigate = useNavigate();
 
     return (
@@ -19,6 +23,7 @@ const BackButton = ({ delta=-1, children, ...props } : BackButtonProps) => {
             onClick={() =>
                 navigate(delta)
             }
+            disabled={(globalState.modalsOpen > 0) || props.disabled}
             {...props}
         >
             {children}
