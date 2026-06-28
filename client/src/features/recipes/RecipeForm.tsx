@@ -51,6 +51,7 @@ const RecipeForm = () => {
         return {
             name: name,
             category_id: category ? parseInt(category) : undefined,
+            role: recipe?.role ?? 0,
             servings: servings ? parseInt(servings) : undefined,
 
             ingredients:
