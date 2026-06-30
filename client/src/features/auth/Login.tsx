@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 
-import { useGlobalStateDispatch } from '../../utils/GlobalState';
-
 const Login = () => {
-    const dispatchGlobalState = useGlobalStateDispatch();
-    
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -31,10 +27,6 @@ const Login = () => {
                 throw new Error(data.error || data.message || "Login failed");
             }
 
-            dispatchGlobalState({
-                type: "set username",
-                username: username
-            });
             window.location.href = "/overview";
         } catch (err) {
             const message =
