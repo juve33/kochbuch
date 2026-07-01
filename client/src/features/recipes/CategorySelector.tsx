@@ -83,6 +83,10 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
 
             setCategories(items => [...items, {id: data.id, name: newCategory}])
 
+            dispatchGlobalState({
+                type: "close modal"
+            });
+
             setAction(String(data.id));
         } catch (err) {
             const message =

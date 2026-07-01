@@ -132,6 +132,10 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                 body: JSON.stringify(users_parsed)
             });
 
+            dispatchGlobalState({
+                type: "close modal"
+            });
+
             setOpen(false);
 
             const data = await response.json();
@@ -140,6 +144,12 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                 throw new Error(data.error || data.message || "Sharing recipe failed");
             }
         } catch (err) {
+            if (!open) {
+                dispatchGlobalState({
+                    type: "open modal"
+                });
+            }
+
             setOpen(true);
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
