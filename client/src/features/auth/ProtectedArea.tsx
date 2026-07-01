@@ -23,7 +23,6 @@ const ProtectedArea = () => {
                         <LogoutButton>
                             Logout
                         </LogoutButton>
-                        {JSON.stringify(globalState)}
                     </>,
                 headerMenu)}
                 <Outlet />
