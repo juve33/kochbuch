@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useGlobalState } from '../../utils/GlobalState';
+import { useGlobalState, useGlobalStateDispatch } from '../../utils/GlobalState';
 
 type LogoutButtonProps =
     Omit<
@@ -12,6 +12,7 @@ type LogoutButtonProps =
 
 const LogoutButton = ({ children, ...props }: LogoutButtonProps) => {
     const globalState = useGlobalState();
+    const dispatchGlobalState = useGlobalStateDispatch();
     
     const [loading, setLoading] = useState(false);
 
@@ -30,7 +31,14 @@ const LogoutButton = ({ children, ...props }: LogoutButtonProps) => {
                 throw new Error(data.error || data.message || "Logging out failed");
             }
 
-            window.location.href = "/login";
+            dispatchGlobalState({
+                type: "set auth status",
+                authStatus: "unauthenticated"
+            });
+
+            dispatchGlobalState({
+                type: "reset user data"
+            })
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";

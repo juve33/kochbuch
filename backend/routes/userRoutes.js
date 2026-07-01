@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.route('/share').get(requireAuth(0), userController.innerApiKeysGet);
 
+router.route('/me').get(requireAuth(0), userController.meGet);
+
 router.route('/new').post(requireAuth(0), userController.newUserPost);
 
 export default router;

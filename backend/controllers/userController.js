@@ -27,6 +27,26 @@ const innerApiKeysGet = async (req, res) => {
     res.status(200).json(innerApiKeys_parsed);
 }
 
+const meGet = async (req, res) => {
+    const result = await db.query(`
+        SELECT u.id, u.name, u.role, u.setting_theme_slug, u.setting_advanced_options
+        FROM users u
+        WHERE u.id = $1;
+        `,
+        [req.session.userId]
+    );
+
+    const user_parsed = {
+        id: result.rows[0].id,
+        name: result.rows[0].name,
+        role: result.rows[0].role,
+        setting_theme_slug: result.rows[0].setting_theme_slug,
+        setting_advanced_options: result.rows[0].setting_advanced_options,
+    }
+
+    res.status(200).json(user_parsed);
+}
+
 const newUserPost = async (req, res) => {
     const { username, password } = req.body;
 
@@ -48,4 +68,4 @@ const newUserPost = async (req, res) => {
     res.status(201).json({ message: 'User created successfully' });
 }
 
-export default {innerApiKeysGet, newUserPost}
+export default {innerApiKeysGet, meGet, newUserPost}

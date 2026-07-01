@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import { Navigate } from 'react-router';
+
+import { useGlobalState, useGlobalStateDispatch } from '../../utils/GlobalState';
 
 const Login = () => {
+    const globalState = useGlobalState();
+    const dispatchGlobalState = useGlobalStateDispatch();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -12,6 +18,11 @@ const Login = () => {
         setError("");
 
         try {
+            dispatchGlobalState({
+                type: "set auth status",
+                authStatus: "loading"
+            });
+
             const response = await fetch("http://localhost:5001/auth/login", {
                 method: "POST",
                 headers: {
@@ -24,10 +35,45 @@ const Login = () => {
             const data = await response.json();
 
             if (!response.ok) {
+                dispatchGlobalState({
+                    type: "set auth status",
+                    authStatus: "unauthenticated"
+                })
                 throw new Error(data.error || data.message || "Login failed");
             }
 
-            window.location.href = "/overview";
+            dispatchGlobalState({
+                type: "set auth status",
+                authStatus: "authenticated"
+            })
+
+            const userResponse = await fetch("http://localhost:5001/user/me", {
+                method: "GET",
+                credentials: "include",
+            });
+
+            const responseData = await userResponse.json();
+
+            if (!userResponse.ok) {
+                throw new Error(data.error || data.message || "Fetching user data failed");
+            }
+
+            const userData = responseData as {
+                name: string;
+                id: number;
+                role: number;
+                setting_theme_slug?: string;
+                setting_advanced_options: boolean;
+            };
+            
+            dispatchGlobalState({
+                type: "set user data",
+                id: userData.id,
+                name: userData.name,
+                role: userData.role,
+                settingThemeSlug: userData.setting_theme_slug,
+                settingAdvancedOptions: userData.setting_advanced_options
+            });
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
@@ -38,33 +84,36 @@ const Login = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username:</label>
-            <input
-                type="text"
-                id="username"
-                placeholder="Enter Username here"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-            />
-            <label htmlFor="password">Password:</label>
-            <input
-                type="password"
-                id="password"
-                placeholder="Enter Password here"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                required
-            />
-            <button
-                type="submit"
-                disabled={loading}
-            >
-                {loading ? "Logging in..." : "Log in"}
-            </button>
-            { error ?? (<p>{error}</p>)}
-        </form>
+        globalState.authStatus === "authenticated" ?
+            <Navigate to="/overview" replace />
+        :
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="username">Username:</label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter Username here"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+                <label htmlFor="password">Password:</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter Password here"
+                    onChange={(e) => setPassword(e.target.value)}
+                    value={password}
+                    required
+                />
+                <button
+                    type="submit"
+                    disabled={loading}
+                >
+                    {loading ? "Logging in..." : "Log in"}
+                </button>
+                { error ?? (<p>{error}</p>)}
+            </form>
     )
 }
 

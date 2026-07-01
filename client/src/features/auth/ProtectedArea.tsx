@@ -1,13 +1,12 @@
-import { useReducer } from "react";
 import { createPortal } from "react-dom";
-import { Link, Outlet, useMatch } from 'react-router';
+import { Link, Outlet, Navigate, useMatch } from 'react-router';
 
 
-import LogoutButton from '../features/auth/LogoutButton';
-import * as gs from '../utils/GlobalState'
+import LogoutButton from './LogoutButton';
+import { useGlobalState } from '../../utils/GlobalState'
 
-const LoggedInLayout = () => {
-    const [globalState, dispatchGlobalState] = useReducer(gs.globalStateReducer, {username: null, modalsOpen: 0} as gs.GlobalState)
+const ProtectedArea = () => {
+    const globalState = useGlobalState();
     
     const recipeEditMatch = useMatch('/recipe/:recipeId/edit');
     const recipeNewMatch = useMatch('/recipe/new');
@@ -15,13 +14,16 @@ const LoggedInLayout = () => {
     const headerMenu = document.getElementById("header-menu");
 
     return (
-        <gs.GlobalStateContext value={globalState}>
-            <gs.GlobalStateDispatchContext value={dispatchGlobalState}>
+        globalState.authStatus === "unauthenticated" ?
+            <Navigate to="/login" replace />
+        :
+            <>
                 {headerMenu && createPortal(
                     <>
                         <LogoutButton>
                             Logout
                         </LogoutButton>
+                        {JSON.stringify(globalState)}
                     </>,
                 headerMenu)}
                 <Outlet />
@@ -36,9 +38,8 @@ const LoggedInLayout = () => {
                         </Link>
                     </>
                 )}
-            </gs.GlobalStateDispatchContext>
-        </gs.GlobalStateContext>
+            </>
     )
 }
 
-export default LoggedInLayout
+export default ProtectedArea
