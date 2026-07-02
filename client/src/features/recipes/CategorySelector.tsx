@@ -3,22 +3,24 @@ import { useEffect, useRef, useState } from 'react';
 import Modal from '../../components/Modal';
 import { useGlobalStateDispatch } from '../../utils/GlobalState';
 
-type Category = {
+export type Category = {
     id: number | undefined;
     name: string;
 };
 
 type CategorySelectorProps = {
-    value?: string;
-    setAction: React.Dispatch<React.SetStateAction<string | undefined>>;
+    value?: Category;
+    setAction: React.Dispatch<React.SetStateAction<Category | undefined>>;
 };
 
 const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
     const dispatchGlobalState = useGlobalStateDispatch();
     
     const [categories, setCategories] = useState<Category[]>([]);
-    const [previousSelectedCategory, setPreviousSelectedCategory] = useState<string>("");
+    const [previousSelectedCategory, setPreviousSelectedCategory] = useState<Category>({id: undefined, name: ""});
     const [newCategory, setNewCategory] = useState<string>("");
+    const [addingCategory, setAddingCategory] = useState(false);
+
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -87,7 +89,8 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                 type: "close modal"
             });
 
-            setAction(String(data.id));
+            setAction({id: data.id, name: newCategory});
+            setAddingCategory(false);
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
@@ -98,7 +101,7 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
     }
 
     useEffect(() => {
-        if (value === "new") {
+        if (addingCategory) {
             newCategoryRef.current?.focus();
         }
     }, [value]);
@@ -109,15 +112,17 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
             <select
                 id="category"
                 onChange={(e => {
-                    setPreviousSelectedCategory(value ?? "");
-                    setAction(e.target.value)
+                    setPreviousSelectedCategory(value ?? {id: undefined, name: ""});
                     if (e.target.value === "new") {
                         dispatchGlobalState({
                             type: "open modal"
                         });
+                        setAddingCategory(true);
+                        return;
                     }
+                    setAction(categories.filter((category) => category.id === parseInt(e.target.value))[0])
                 })}
-                value={value}
+                value={addingCategory ? "new" : value?.id?.toString()}
                 disabled={loading}
             >
                 <option value={""}>None</option>
@@ -131,9 +136,12 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                 <option value={"new"}>Add category</option>
             </select>
             {error && <div>{error}</div>}
-            {value === "new" && (
+            {addingCategory && (
                 <Modal
-                    onCloseButtonClick={() => setAction(previousSelectedCategory)}
+                    onCloseButtonClick={() => {
+                        setAction(previousSelectedCategory);
+                        setAddingCategory(false);
+                    }}
                 >
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="new-category">Enter new category:</label>
@@ -156,6 +164,7 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                                 dispatchGlobalState({
                                     type: "close modal"
                                 });
+                                setAddingCategory(false);
                             }}
                         >
                             Cancel

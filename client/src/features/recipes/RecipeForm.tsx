@@ -14,6 +14,7 @@ import Fraction from '../../utils/Fraction';
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import BackButton from '../../components/BackButton.js';
 import { useGlobalState } from '../../utils/GlobalState.js';
+import { type Category } from './CategorySelector';
 
 import '../../assets/css/recipe.css';
 
@@ -22,7 +23,7 @@ const RecipeForm = () => {
     const globalState = useGlobalState();
 
     const [name, setName] = useState<string>("");
-    const [category, setCategory] = useState<string>();
+    const [category, setCategory] = useState<Category>();
     const [servings, setServings] = useState<string>();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [steps, setSteps] = useState<Step[]>([]);
@@ -30,7 +31,7 @@ const RecipeForm = () => {
     useEffect(() => {
         if (recipe) {
             setName(recipe.name);
-            setCategory(recipe.category_id ? recipe.category_id.toString() : undefined);
+            setCategory({id: recipe.category_id ? recipe.category_id : undefined, name: recipe.category_name ? recipe.category_name : ""});
             setServings(recipe.servings ? recipe.servings.toString() : undefined);
             setIngredients(recipe.ingredients.map((ingredient): Ingredient => ({
                 id: ingredient.id ?? Date.now(),
@@ -53,7 +54,8 @@ const RecipeForm = () => {
     const newRecipe = (): RecipeApi => {
         return {
             name: name,
-            category_id: category ? parseInt(category) : undefined,
+            category_id: category?.id,
+            category_name: category?.name,
             role: recipe?.role ?? 0,
             servings: servings ? parseInt(servings) : undefined,
 

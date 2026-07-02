@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useParams } from "react-router";
+import { Outlet, useParams, useNavigate } from "react-router";
 
 import { type RecipeApi } from '../utils/ApiTypes';
 
@@ -11,6 +11,8 @@ export type RecipeOutletContext = {
 
 const RecipeView = () => {
     let { recipeId } = useParams();
+
+    const navigate = useNavigate();
 
     const [recipe, setRecipe] = useState<RecipeApi>();
 
@@ -67,7 +69,8 @@ const RecipeView = () => {
                 throw new Error(data.error || data.message || "Modifying recipe failed");
             }
 
-            window.location.href = "/recipe/" + recipeId;
+            setRecipe(recipe);
+            navigate(-1);
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
