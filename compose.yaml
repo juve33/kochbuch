@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
     ports:
-      - "5002:5432"
+      - "5432:5432"
 
 
 
@@ -23,6 +23,13 @@ services:
     restart: always
     ports:
       - "5001:5001"
+    develop:
+      watch:
+        - path: ./backend
+          action: sync+restart
+          target: /app
+        - path: ./backend/package.json
+          action: rebuild
     environment:
       - CHOKIDAR_USEPOLLING=true
       - DATABASE_HOST=db
@@ -32,42 +39,29 @@ services:
       - PORT=5001
     depends_on:
       - db
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
 
 
 
   # Client
   
   client:
-    build: ./client
+    build:
+      context: ./client
+      target: production
     restart: always
     ports:
-      - "5000:5173"
+      - "80:80"
+    develop:
+      watch:
+        - path: ./client
+          action: sync
+          target: /app
+        - path: ./client/package.json
+          action: rebuild
     depends_on:
       - backend
-    volumes:
-      - ./client:/app
-      - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
-
-
-
-  # pgAdmin
-
-  pgadmin:
-    image: elestio/pgadmin:latest
-    restart: always
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=login@pgadmin.org
-      - PGADMIN_DEFAULT_PASSWORD=password
-      - PGADMIN_LISTEN_PORT=5004
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    ports:
-      - "5004:5004"
 
 
 

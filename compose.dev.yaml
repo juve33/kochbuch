@@ -1,0 +1,26 @@
+services:
+
+  # Client
+
+  client:
+    build:
+      context: ./client
+      target: development
+    ports:
+      - "5000:5173"
+
+
+
+  # pgAdmin
+
+  pgadmin:
+    image: elestio/pgadmin:latest
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=login@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=password
+      - PGADMIN_LISTEN_PORT=5004
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5004:5004"
