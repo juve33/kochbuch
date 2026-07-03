@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { createPortal } from "react-dom";
 import { useOutletContext } from 'react-router'
 
 import CategorySelector from './CategorySelector';
@@ -12,7 +11,6 @@ import SortableFieldsetContext from '../../components/SortableFieldsetContext';
 import { type RecipeApi } from '../../utils/ApiTypes';
 import Fraction from '../../utils/Fraction';
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
-import BackButton from '../../components/BackButton.js';
 import { useGlobalState } from '../../utils/GlobalState.js';
 import { type Category } from './CategorySelector';
 
@@ -49,8 +47,6 @@ const RecipeForm = () => {
         }
     }, [recipe]);
 
-    const headerMain = document.getElementById("header-main");
-
     const newRecipe = (): RecipeApi => {
         return {
             name: name,
@@ -80,11 +76,6 @@ const RecipeForm = () => {
     return (
         <form className='form form-recipe recipe' onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled || (globalState.modalsOpen > 0)}>
             <fieldset disabled={disabled || (globalState.modalsOpen > 0)}>
-                {headerMain && createPortal(
-                    <>
-                        <BackButton />
-                    </>,
-                headerMain)}
                 <div className='input-group input-group-head recipe-group-head'>
                     <input
                         type="text"

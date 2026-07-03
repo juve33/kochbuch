@@ -38,7 +38,7 @@ const RecipeView = () => {
     }, []);
 
     return (
-        <div>
+        <div className={loading ? 'loading' : undefined}>
             <h1>All recipes</h1>
             <div>
                 {recipes?.map((recipe) => (

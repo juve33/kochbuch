@@ -4,7 +4,6 @@ import { Link, useOutletContext } from 'react-router'
 
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import ShareButton from './ShareButton.js';
-import BackButton from '../../components/BackButton.js';
 import { useGlobalState } from '../../utils/GlobalState.js';
 
 const Recipe = () => {
@@ -20,17 +19,10 @@ const Recipe = () => {
         }
     }, [recipe]);
 
-    const headerMain = document.getElementById("header-main");
     const headerMenu = document.getElementById("header-menu");
     
     return (
         <div>
-            {headerMain && createPortal(
-                <>
-                    <BackButton />
-                </>,
-            headerMain)
-            }
             {headerMenu && createPortal(
                 <>
                     {(recipe?.id && recipe.role == 10) &&

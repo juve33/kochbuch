@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useParams, useNavigate } from "react-router";
+import { createPortal } from "react-dom";
 
 import { type RecipeApi } from '../utils/ApiTypes';
+import BackButton from '../components/BackButton';
 
 export type RecipeOutletContext = {
     recipe?: RecipeApi;
@@ -18,6 +20,8 @@ const RecipeView = () => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const headerMain = document.getElementById("header-main");
 
     useEffect(() => {
         const fetchRecipe = async () => {
@@ -81,11 +85,18 @@ const RecipeView = () => {
     }
 
     return (
-        error ? (
-            <p>{error}</p>
-        ) : (
-            <Outlet context={{ recipe: recipe, disabled: loading, onFormSubmit: handleSubmit} satisfies RecipeOutletContext} />
-        )       
+        <>
+            {headerMain && createPortal(
+                <>
+                    <BackButton />
+                </>,
+            headerMain)}
+            {error ? (
+                <p>{error}</p>
+            ) : (
+                <Outlet context={{ recipe: recipe, disabled: loading, onFormSubmit: handleSubmit} satisfies RecipeOutletContext} />
+            )}
+        </>      
     )
 }
 

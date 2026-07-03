@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router';
+import { createPortal } from "react-dom";
 
 import { type RecipeApi } from '../utils/ApiTypes';
 import { type RecipeOutletContext } from './RecipeView.js';
+import BackButton from '../components/BackButton';
 
 const NewRecipeView = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const headerMain = document.getElementById("header-main");
 
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => {
         e.preventDefault();
@@ -41,6 +45,11 @@ const NewRecipeView = () => {
 
     return (
         <>
+            {headerMain && createPortal(
+                <>
+                    <BackButton />
+                </>,
+            headerMain)}
             <Outlet
                 context={{
                     recipe: {
