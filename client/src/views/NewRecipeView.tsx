@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import { createPortal } from "react-dom";
 
 import { type RecipeApi } from '../utils/ApiTypes';
@@ -9,6 +9,8 @@ import BackButton from '../components/BackButton';
 const NewRecipeView = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const navigate = useNavigate();
 
     const headerMain = document.getElementById("header-main");
 
@@ -33,7 +35,7 @@ const NewRecipeView = () => {
                 throw new Error(data.error || data.message || "Creating recipe failed");
             }
 
-            window.location.href = "/recipe/" + data.id;
+            navigate({pathname: "/recipe/" + data.id}, {replace: true});
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
