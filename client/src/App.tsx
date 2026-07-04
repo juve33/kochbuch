@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router';
+import { Routes, Route, Navigate } from 'react-router';
 
 import ProtectedArea from './features/auth/ProtectedArea';
 import Login from './features/auth/Login';
@@ -13,11 +13,11 @@ function App() {
     return (
         <GlobalStateProvider>
             <Routes>
+                <Route index element={<Navigate to="/login" replace />} />
                 <Route path="login" element={<Login />} />
 
                 <Route element={<ProtectedArea />}>
                     <Route path="overview" element={<AllRecipesView />} />
-                    <Route index element={<></>} />
                     
                     <Route path="recipe">
                         <Route path="new" element={<NewRecipeView />}>
