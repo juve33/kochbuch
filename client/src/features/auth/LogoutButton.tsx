@@ -20,7 +20,7 @@ const LogoutButton = ({ children, ...props }: LogoutButtonProps) => {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:5001/auth/logout" , {
+            const response = await fetch("http://localhost/api/auth/logout" , {
                 method: "POST",
                 credentials: "include"
             });

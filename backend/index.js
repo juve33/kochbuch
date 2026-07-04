@@ -31,11 +31,11 @@ app.use(
   })
 );
 
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
-app.use('/user', userRoutes);
+app.use('/api/user', userRoutes);
 
-app.use('/recipe', recipeRoutes);
+app.use('/api/recipe', recipeRoutes);
 
 
 

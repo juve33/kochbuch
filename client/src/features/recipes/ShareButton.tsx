@@ -62,7 +62,7 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
             setLoading(true);
 
             try {
-                const response = await fetch("http://localhost:5001/user/share", {
+                const response = await fetch("http://localhost/api/user/share", {
                     method: "GET",
                     credentials: "include",
                 });
@@ -87,7 +87,7 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
             setLoading(true);
 
             try {
-                const response = await fetch("http://localhost:5001/recipe/" + recipeId + "/share", {
+                const response = await fetch("http://localhost/api/recipe/" + recipeId + "/share", {
                     method: "GET",
                     credentials: "include",
                 });
@@ -123,7 +123,7 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
         }
 
         try {
-            const response = await fetch("http://localhost:5001/recipe/" + recipeId + "/share", {
+            const response = await fetch("http://localhost/api/recipe/" + recipeId + "/share", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

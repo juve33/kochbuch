@@ -29,7 +29,7 @@ const RecipeView = () => {
             setError("");
 
             try {
-                const response = await fetch("http://localhost:5001/recipe/" + recipeId, {
+                const response = await fetch("http://localhost/api/recipe/" + recipeId, {
                     method: "GET",
                     credentials: "include",
                 });
@@ -58,7 +58,7 @@ const RecipeView = () => {
         setError("");
 
         try {
-            const response = await fetch("http://localhost:5001/recipe/" + recipeId, {
+            const response = await fetch("http://localhost/api/recipe/" + recipeId, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

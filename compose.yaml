@@ -1,5 +1,15 @@
 services:
 
+  # Proxy
+  
+  proxy:
+    image: traefik:v3.7
+    command: --providers.docker
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   # Database
 
   db:
@@ -11,8 +21,6 @@ services:
       - POSTGRES_DB=kochbuch
     volumes:
       - postgres_data:/var/lib/postgresql
-    ports:
-      - "5432:5432"
 
 
 
@@ -21,8 +29,6 @@ services:
   backend:
     build: ./backend
     restart: always
-    ports:
-      - "5001:5001"
     develop:
       watch:
         - path: ./backend
@@ -39,6 +45,9 @@ services:
       - PORT=5001
     depends_on:
       - db
+    labels:
+      traefik.http.routers.backend.rule: Host(`localhost`) && PathPrefix(`/api`)
+      traefik.http.services.backend.loadbalancer.server.port: 5001
 
 
 
@@ -49,8 +58,6 @@ services:
       context: ./client
       target: production
     restart: always
-    ports:
-      - "80:80"
     develop:
       watch:
         - path: ./client
@@ -67,4 +74,3 @@ services:
 
 volumes:
   postgres_data:
-  pgadmin_data:

@@ -23,7 +23,7 @@ const Login = () => {
                 authStatus: "loading"
             });
 
-            const response = await fetch("http://localhost:5001/auth/login", {
+            const response = await fetch("http://localhost/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -47,7 +47,7 @@ const Login = () => {
                 authStatus: "authenticated"
             })
 
-            const userResponse = await fetch("http://localhost:5001/user/me", {
+            const userResponse = await fetch("http://localhost/api/user/me", {
                 method: "GET",
                 credentials: "include",
             });

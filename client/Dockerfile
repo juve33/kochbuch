@@ -15,7 +15,7 @@ COPY . .
 
 FROM base as development
 
-EXPOSE 5000
+EXPOSE 5173
 
 CMD ["npm", "run", "dev", "--", "--host"]
 

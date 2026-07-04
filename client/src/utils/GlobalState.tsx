@@ -105,7 +105,7 @@ export const GlobalStateProvider = ({ children }: GlobalStateProviderProps) => {
                     authStatus: "loading"
                 });
 
-                const response = await fetch("http://localhost:5001/user/me", {
+                const response = await fetch("http://localhost/api/user/me", {
                     method: "GET",
                     credentials: "include",
                 });
