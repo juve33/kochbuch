@@ -4,11 +4,16 @@ services:
   
   proxy:
     image: traefik:v3.7
+    restart: always
     command: --providers.docker
     ports:
       - 80:80
+    depends_on:
+      - client
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+
 
   # Database
 
