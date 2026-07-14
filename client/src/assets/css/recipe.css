@@ -1,88 +1,66 @@
-.form-recipe {
+.recipe {
     display: grid !important;
-
     grid-template-areas:
-        "head head"
-        "ingredients steps" !important;
-
-    overflow: hidden !important;
+        "head"
+        "ingredients"
+        "steps" !important;
+    width: 100% !important;
 }
 
-:where(.form-recipe) {
-    grid-template-columns: .4fr .6fr;
-    grid-template-rows: auto 1fr;
+@media (orientation: landscape) {
+    .recipe {
+        grid-template-areas:
+            "head head"
+            "ingredients steps" !important;
+    }
+
+    :where(.recipe) {
+        grid-template-columns: 2fr 3fr;
+    }
 }
 
-
-
-textarea {
-    resize: none !important;
+.form-recipe,
+.form-recipe fieldset {
+    padding: 0 !important;
+    border: unset !important;
 }
 
-:where(fieldset),
-:where(input),
-:where(textarea) {
-    margin: 0;
-    padding: 0;
-
-    border: none;
-}
-
-:where(input),
-:where(textarea) {
-    background: unset;
-    
-    font-family: inherit;
-    font-size: 1em;
-}
-
-:where(input:invalid) {
-    box-shadow: inset 0px 0px 0px 2px red;
-}
-
-
-
-.input__hidden {
-    position: absolute !important;
-    pointer-events: none !important;
-    opacity: 0 !important;
-}
-
-:where(.input__hidden:checked + label) {
-    box-shadow: inset 0px 0px 0px 1px #0008;
-}
-
-
-
-.input-group-head {
+.recipe-group-head {
     grid-area: head !important;
 }
 
-.input-group-ingredients {
+.input-recipe-ingredient__wrapper,
+.input-recipe-step__wrapper {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto;
+}
+
+.recipe-group-ingredients {
     grid-area: ingredients !important;
 }
 
-.input-group-steps {
+:where(.recipe-group-ingredients ul) {
+    list-style: none;
+}
+
+.recipe-group-steps {
     grid-area: steps !important;
 }
 
-.input-item-ingredients,
-.input-item-steps {
-    display: grid !important;
-    grid-template-columns: auto 1fr auto !important;
+.recipe-step__wrapper {
+    display: flex;
+    flex-direction: row;
 }
 
-:where(.input-item-ingredients),
-:where(.input-item-steps) {
-    gap: .5em;
+:where(.recipe-group-steps ol) {
+    list-style: none;
 }
 
-.input-item-form {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
+.recipe-step__content {
+    display: flex;
+    flex-direction: row;
 }
 
-.input-item-form-ingredients :first-child {
-    text-align: right;
+:where(.recipe-step-index) {
+    padding-inline: .5em;
 }

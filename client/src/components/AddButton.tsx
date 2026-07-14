@@ -15,6 +15,7 @@ const AddButton = <T,>({ createItem, setAction, children, ...props } : AddButton
             onClick={() =>
                 setAction(items => [...items, createItem()])
             }
+            className={"add-button " + (props.className ?? "")}
             {...props}
         >
             {children}

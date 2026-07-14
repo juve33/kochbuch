@@ -17,6 +17,7 @@ const DeleteButton = <T,>({ index, setAction, children, ...props } : DeleteButto
                     items.filter((_, i) => i !== index)
                 )
             }
+            className={"delete-button " + (props.className ?? "")}
             {...props}
         >
             {children}

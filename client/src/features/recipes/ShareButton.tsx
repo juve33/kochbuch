@@ -177,7 +177,7 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                 <Modal
                     onCloseButtonClick={() => setOpen(false)}
                 >
-                    <fieldset>
+                    <form id='share-form' onSubmit={handleSubmit}>
                         <legend>Select users:</legend>
                         {allUsers.foreign.length > 0 ?
                             <>
@@ -212,10 +212,10 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                                 />
                             ))
                         }
-                    </fieldset>
+                    </form>
                     <button
-                        type="button"
-                        onClick={handleSubmit}
+                        type="submit"
+                        form='share-form'
                     >
                         Submit
                     </button>

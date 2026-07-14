@@ -13,7 +13,7 @@ export type Ingredient = {
 
 const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredient>) => {
     return (
-        <div className='input-item-form input-item-form-ingredients'>
+        <div className='input-recipe-ingredient__content recipe-ingredient__content'>
             <FractionInput
                 id="amount"
                 onValueChange={(e) => {

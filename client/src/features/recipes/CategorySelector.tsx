@@ -9,11 +9,12 @@ export type Category = {
 };
 
 type CategorySelectorProps = {
+    className?: string;
     value?: Category;
     setAction: React.Dispatch<React.SetStateAction<Category | undefined>>;
 };
 
-const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
+const CategorySelector = ({ className, value, setAction }: CategorySelectorProps) => {
     const dispatchGlobalState = useGlobalStateDispatch();
     
     const [categories, setCategories] = useState<Category[]>([]);
@@ -111,6 +112,7 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
             <label htmlFor="category">Category:</label>
             <select
                 id="category"
+                className={className}
                 onChange={(e => {
                     setPreviousSelectedCategory(value ?? {id: undefined, name: ""});
                     if (e.target.value === "new") {

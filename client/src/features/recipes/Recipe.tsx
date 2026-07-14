@@ -22,7 +22,7 @@ const Recipe = () => {
     const headerMenu = document.getElementById("header-menu");
     
     return (
-        <div>
+        <div className='recipe'>
             {headerMenu && createPortal(
                 <>
                     {(recipe?.id && recipe.role == 10) &&
@@ -36,17 +36,18 @@ const Recipe = () => {
                 </>,
             headerMenu)
             }
-            <div>
-                <h1>
+            <div className='recipe-group-head'>
+                <h1 className='recipe-name'>
                     {recipe?.name}
                 </h1>
                 {recipe?.category_id &&
-                    <p>
+                    <p className='recipe-category'>
                         {recipe?.category_name}
                     </p>
                 }
                 <input
                     type='number'
+                    className='recipe-servings'
                     id='servings'
                     min={0.5}
                     step={0.5}
@@ -54,30 +55,36 @@ const Recipe = () => {
                     onChange={(e) => setServings(Number(e.target.value))}
                     disabled={globalState.modalsOpen > 0}
                 />
-                <label htmlFor='servings'>Servings</label>
+                <label className='recipe-servings-label' htmlFor='servings'>Servings</label>
             </div>
-            <div>
+            <div className='recipe-group-ingredients'>
                 <ul>
                     {recipe?.ingredients.map((ingredient) => (
-                        <li>
+                        <li className='recipe-ingredient__wrapper recipe-ingredient__content'>
                             {ingredient.amount ? ingredient.amount * servings / (recipe.servings ?? 1) : undefined} {ingredient.unit} {ingredient.text} {ingredient.comment && <em>{ingredient.comment}</em>}
                         </li>
                     ))}
                 </ul>
             </div>
-            <div>
+            <div className='recipe-group-steps'>
                 <ol>
-                    {recipe?.steps.map((step) => (
-                        <li>
+                    {recipe?.steps.map((step, index) => (
+                        <div className='recipe-step__wrapper'>
                             <input
                                 type='checkbox'
-                                id={step.id?.toString()}
+                                className='recipe-step-checkbox'
+                                id={'step-' + step.id?.toString()}
                                 disabled={globalState.modalsOpen > 0}
                             />
-                            <label htmlFor={step.id?.toString()}>
-                                {step.text}
+                            <label className='recipe-step-checkbox-label' htmlFor={'step-' + step.id?.toString()}>
+                                <li className='recipe-step__content'>
+                                    <div className='recipe-step-index'>
+                                        {index + 1}
+                                    </div>
+                                    {step.text}
+                                </li>
                             </label>
-                        </li>
+                        </div>
                     ))}
                 </ol>
             </div>

@@ -8,8 +8,8 @@ export type Step = {
 
 const StepForm = ({ value, index, setAction }: FieldsetFormProps<Step>) => {
     return (
-        <div className='input-item-form input-item-form-steps'>
-            <div>
+        <div className='input-recipe-step__content recipe-step__content'>
+            <div className='recipe-step-index'>
                 {index + 1}
             </div>
             <textarea

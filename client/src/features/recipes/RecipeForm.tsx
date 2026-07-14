@@ -74,49 +74,56 @@ const RecipeForm = () => {
     }
 
     return (
-        <form className='form form-recipe recipe' onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled || (globalState.modalsOpen > 0)}>
-            <fieldset disabled={disabled || (globalState.modalsOpen > 0)}>
-                <div className='input-group input-group-head recipe-group-head'>
+        <form onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled || (globalState.modalsOpen > 0)}>
+            <fieldset className='form form-recipe recipe' disabled={disabled || (globalState.modalsOpen > 0)}>
+                <div className='input-recipe-group-head recipe-group-head'>
                     <input
                         type="text"
+                        className="input-recipe-name recipe-name"
                         id="recipe-name"
                         placeholder="New recipe"
                         onChange={(e) => setName(e.target.value)}
                         value={name}
                         required
                     />
-                    <CategorySelector setAction={setCategory} value={category} />
+                    <CategorySelector
+                        className='input-recipe-category recipe-category'
+                        setAction={setCategory}
+                        value={category}
+                    />
                     <input
                         type="number"
+                        className='input-recipe-servings recipe-servings'
                         id="servings"
                         min={1}
                         onChange={(e) => setServings(e.target.value)}
                         value={servings}
                     />
+                    <label className='input-recipe-servings-label recipe-servings-label' htmlFor='servings'>Servings</label>
                 </div>
-                <fieldset className='input-group input-group-ingredients recipe-group-ingredients'>
+                <div className='input-recipe-group-ingredients recipe-group-ingredients'>
                     <SortableFieldsetContext
                         value={ingredients}
                         setAction={setIngredients}
                     >
                         {ingredients.map((ingredient, index) => (
-                                <SortableFieldset
-                                    key={ingredient.id}
-                                    id={ingredient.id}
-                                    className='input-item input-item-ingredients recipe-item-ingredients'
-                                >
-                                    <IngredientForm
-                                        index={index}
-                                        value={ingredient}
-                                        setAction={setIngredients}
-                                    />
-                                    <DeleteButton
-                                        index={index}
-                                        setAction={setIngredients}
-                                        aria-label='Delete this ingredient'
-                                    />
-                                </SortableFieldset>
-                            ))}
+                            <SortableFieldset
+                                key={ingredient.id}
+                                id={ingredient.id}
+                                className='input-recipe-ingredient__wrapper recipe-ingredient__wrapper'
+                            >
+                                <IngredientForm
+                                    index={index}
+                                    value={ingredient}
+                                    setAction={setIngredients}
+                                />
+                                <DeleteButton
+                                    index={index}
+                                    setAction={setIngredients}
+                                    aria-label='Delete this ingredient'
+                                />
+                            </SortableFieldset>
+                        ))}
                     </SortableFieldsetContext>
                     <AddButton
                         createItem={() => ({
@@ -126,8 +133,8 @@ const RecipeForm = () => {
                         setAction={setIngredients}
                         aria-label='Add an ingredient'
                     />
-                </fieldset>
-                <fieldset className='input-group input-group-steps recipe-group-steps'>
+                </div>
+                <div className='input-recipe-group-steps recipe-group-steps'>
                     <SortableFieldsetContext
                         value={steps}
                         setAction={setSteps}
@@ -136,7 +143,7 @@ const RecipeForm = () => {
                             <SortableFieldset
                                 key={step.id}
                                 id={step.id}
-                                className='input-item input-item-steps recipe-item-steps'
+                                className='input-recipe-step__wrapper recipe-step__wrapper'
                             >
                                 <StepForm
                                     index={index}
@@ -159,7 +166,7 @@ const RecipeForm = () => {
                         setAction={setSteps}
                         aria-label='Add a step'
                     />
-                </fieldset>
+                </div>
                 <button
                     type="submit"
                     disabled={disabled}
