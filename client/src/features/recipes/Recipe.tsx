@@ -76,14 +76,14 @@ const Recipe = () => {
                                 id={'step-' + step.id?.toString()}
                                 disabled={globalState.modalsOpen > 0}
                             />
-                            <label className='recipe-step-checkbox-label' htmlFor={'step-' + step.id?.toString()}>
-                                <li className='recipe-step__content'>
+                            <li>
+                                <label className='recipe-step__content' htmlFor={'step-' + step.id?.toString()}>
                                     <div className='recipe-step-index'>
                                         {index + 1}
                                     </div>
                                     {step.text}
-                                </li>
-                            </label>
+                                </label>
+                            </li>
                         </div>
                     ))}
                 </ol>

@@ -64,3 +64,7 @@
 :where(.recipe-step-index) {
     padding-inline: .5em;
 }
+
+:where(.recipe-step-index)::after {
+    content: '.';
+}
