@@ -4,7 +4,6 @@
         "head"
         "ingredients"
         "steps" !important;
-    width: 100% !important;
 }
 
 @media (orientation: landscape) {
@@ -16,6 +15,12 @@
 
     :where(.recipe) {
         grid-template-columns: 2fr 3fr;
+    }
+}
+
+@media print {
+    body > :not(:has(.recipe)) {
+        display: none !important;
     }
 }
 
@@ -48,8 +53,8 @@
 }
 
 .recipe-step__wrapper {
-    display: flex;
-    flex-direction: row;
+    display: flex !important;
+    flex-direction: row !important;
 }
 
 :where(.recipe-group-steps ol) {
@@ -57,8 +62,14 @@
 }
 
 .recipe-step__content {
-    display: flex;
-    flex-direction: row;
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+@media print {
+    .recipe-step-checkbox {
+        display: none !important;
+    }
 }
 
 :where(.recipe-step-index) {
@@ -67,4 +78,9 @@
 
 :where(.recipe-step-index)::after {
     content: '.';
+}
+
+.recipe input[type=number],
+.recipe input[type=text] {
+    field-sizing: content;
 }

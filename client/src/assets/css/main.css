@@ -36,8 +36,20 @@ button {
     align-self: center !important;
 }
 
+@media print {
+    button {
+        display: none !important;
+    }
+}
+
 :where(button[aria-label])::before {
     content: attr(aria-label);
+}
+
+@media print {
+    input[type=number] {
+        appearance: textfield !important;
+    }
 }
 
 .input__hidden {
