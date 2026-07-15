@@ -13,7 +13,7 @@ COPY . .
 
 # Development
 
-FROM base as development
+FROM base AS development
 
 EXPOSE 5173
 
