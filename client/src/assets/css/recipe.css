@@ -74,15 +74,13 @@
 @media (orientation: landscape) {
     .recipe-group-head {
         display: grid !important;
-        grid-template:
-            "name name name" auto
-            "category servings author" auto / 1fr 1fr 1fr !important;
+        grid-template-columns: 1fr 1fr 1fr !important;
         justify-items: center !important;
     }
 }
 
 .recipe-name {
-    grid-area: name !important;
+    grid-column: span 3 !important;
 }
 
 :where(.recipe-name) {
@@ -96,24 +94,12 @@
     text-decoration: inherit;
 }
 
-.recipe-category {
-    grid-area: category !important;
-}
-
 :where(.recipe-category) {
     justify-self: start;
 }
 
-.recipe-servings {
-    grid-area: servings !important;
-}
-
 :where(.recipe-servings-label) {
     display: initial;
-}
-
-.recipe-author {
-    grid-area: author !important;
 }
 
 :where(.recipe-author) {
