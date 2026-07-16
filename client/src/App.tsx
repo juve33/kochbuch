@@ -8,10 +8,12 @@ import RecipeView from './views/RecipeView';
 import Recipe from './features/recipes/Recipe';
 import RecipeForm from './features/recipes/RecipeForm';
 import { GlobalStateProvider } from './utils/GlobalState';
+import Header from './components/Header';
 
 function App() {
     return (
         <GlobalStateProvider>
+            <Header />
             <Routes>
                 <Route index element={<Navigate to="/login" replace />} />
                 <Route path="login" element={<Login />} />

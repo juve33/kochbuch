@@ -11,6 +11,10 @@ type GlobalState = {
         themeSlug?: string;
         advancedOptions?: boolean
     };
+    refs: {
+        headerMain?: HTMLElement | null;
+        headerMenu?: HTMLElement | null;
+    }
     modalsOpen: number;
 };
 
@@ -29,6 +33,14 @@ type GlobalStateReducerAction =
     }
     | { type: "open modal" }
     | { type: "close modal" }
+    | {
+        type: "set header main ref",
+        headerMainRef: HTMLElement | null
+    }
+    | {
+        type: "set header menu ref",
+        headerMenuRef: HTMLElement | null
+    }
 
 
 export function globalStateReducer(state: GlobalState, action: GlobalStateReducerAction) {
@@ -81,6 +93,22 @@ export function globalStateReducer(state: GlobalState, action: GlobalStateReduce
             return {
                 ...state,
                 modalsOpen: Math.max(state.modalsOpen - 1, 0),
+            };
+        }
+        case "set header main ref": {
+            return {
+                ...state,
+                refs: {
+                    headerMain: action.headerMainRef
+                }
+            };
+        }
+        case "set header menu ref": {
+            return {
+                ...state,
+                refs: {
+                    headerMenu: action.headerMenuRef
+                }
             };
         }
     }
