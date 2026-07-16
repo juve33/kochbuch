@@ -5,14 +5,15 @@ import { createPortal } from "react-dom";
 import { type RecipeApi } from '../utils/ApiTypes';
 import { type RecipeOutletContext } from './RecipeView.js';
 import BackButton from '../components/BackButton';
+import { useGlobalState } from '../utils/GlobalState.js';
 
 const NewRecipeView = () => {
+    const globalState = useGlobalState();
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
-
-    const headerMain = document.getElementById("header-main");
 
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => {
         e.preventDefault();
@@ -47,11 +48,11 @@ const NewRecipeView = () => {
 
     return (
         <>
-            {headerMain && createPortal(
+            {globalState.refs?.headerMain?.current && createPortal(
                 <>
                     <BackButton />
                 </>,
-            headerMain)}
+            globalState.refs.headerMain.current)}
             <Outlet
                 context={{
                     recipe: {

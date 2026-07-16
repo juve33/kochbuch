@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 
 import { type RecipeApi } from '../utils/ApiTypes';
 import BackButton from '../components/BackButton';
+import { useGlobalState } from '../utils/GlobalState';
 
 export type RecipeOutletContext = {
     recipe?: RecipeApi;
@@ -14,14 +15,14 @@ export type RecipeOutletContext = {
 const RecipeView = () => {
     let { recipeId } = useParams();
 
+    const globalState = useGlobalState();
+
     const navigate = useNavigate();
 
     const [recipe, setRecipe] = useState<RecipeApi>();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
-    const headerMain = document.getElementById("header-main");
 
     useEffect(() => {
         const fetchRecipe = async () => {
@@ -86,11 +87,11 @@ const RecipeView = () => {
 
     return (
         <>
-            {headerMain && createPortal(
+            {globalState.refs?.headerMain?.current && createPortal(
                 <>
                     <BackButton />
                 </>,
-            headerMain)}
+            globalState.refs.headerMain.current)}
             {error ? (
                 <p>{error}</p>
             ) : (

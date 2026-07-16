@@ -11,20 +11,18 @@ const ProtectedArea = () => {
     const recipeEditMatch = useMatch('/recipe/:recipeId/edit');
     const recipeNewMatch = useMatch('/recipe/new');
 
-    const headerMenu = document.getElementById("header-menu");
-
     return (
         globalState.authStatus === "unauthenticated" ?
             <Navigate to="/login" replace />
         :
             <>
-                {headerMenu && createPortal(
+                {globalState.refs?.headerMenu?.current && createPortal(
                     <>
                         <LogoutButton>
                             Logout
                         </LogoutButton>
                     </>,
-                headerMenu)}
+                globalState.refs.headerMenu.current)}
                 <Outlet />
                 {!(recipeEditMatch || recipeNewMatch) && (
                     <>

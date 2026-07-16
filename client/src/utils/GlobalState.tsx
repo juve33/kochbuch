@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, type ActionDispatch, type JSX } from 'react';
+import { createContext, useContext, useReducer, useEffect, type ActionDispatch, type JSX, type RefObject } from 'react';
 
 type GlobalState = {
     authStatus: "loading" | "authenticated" | "unauthenticated";
@@ -12,8 +12,8 @@ type GlobalState = {
         advancedOptions?: boolean
     };
     refs: {
-        headerMain?: HTMLElement | null;
-        headerMenu?: HTMLElement | null;
+        headerMain?: RefObject<HTMLElement | null>;
+        headerMenu?: RefObject<HTMLElement | null>;
     }
     modalsOpen: number;
 };
@@ -34,12 +34,9 @@ type GlobalStateReducerAction =
     | { type: "open modal" }
     | { type: "close modal" }
     | {
-        type: "set header main ref",
-        headerMainRef: HTMLElement | null
-    }
-    | {
-        type: "set header menu ref",
-        headerMenuRef: HTMLElement | null
+        type: "set header refs",
+        headerMainRef: RefObject<HTMLElement | null>,
+        headerMenuRef: RefObject<HTMLElement | null>
     }
 
 
@@ -95,18 +92,11 @@ export function globalStateReducer(state: GlobalState, action: GlobalStateReduce
                 modalsOpen: Math.max(state.modalsOpen - 1, 0),
             };
         }
-        case "set header main ref": {
+        case "set header refs": {
             return {
                 ...state,
                 refs: {
-                    headerMain: action.headerMainRef
-                }
-            };
-        }
-        case "set header menu ref": {
-            return {
-                ...state,
-                refs: {
+                    headerMain: action.headerMainRef,
                     headerMenu: action.headerMenuRef
                 }
             };

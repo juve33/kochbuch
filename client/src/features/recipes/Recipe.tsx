@@ -18,12 +18,10 @@ const Recipe = () => {
             setServings(recipe?.servings ?? 1)
         }
     }, [recipe]);
-
-    const headerMenu = document.getElementById("header-menu");
     
     return (
         <div className='recipe'>
-            {headerMenu && createPortal(
+            {globalState.refs?.headerMenu?.current && createPortal(
                 <>
                     {(recipe?.id && recipe.role == 10) &&
                         <ShareButton
@@ -34,7 +32,7 @@ const Recipe = () => {
                         <Link to="edit" tabIndex={-1}><button type='button' disabled={globalState.modalsOpen > 0}>Edit</button></Link>
                     }
                 </>,
-            headerMenu)
+            globalState.refs.headerMenu.current)
             }
             <div className='recipe-group-head'>
                 <h1 className='recipe-name'>
