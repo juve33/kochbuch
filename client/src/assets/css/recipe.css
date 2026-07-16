@@ -3,14 +3,20 @@
     grid-template-areas:
         "head"
         "ingredients"
-        "steps" !important;
+        "steps"
+        "footer" !important;
+}
+
+:where(.recipe) {
+    gap: 1em;
 }
 
 @media (orientation: landscape) {
     .recipe {
         grid-template-areas:
             "head head"
-            "ingredients steps" !important;
+            "ingredients steps"
+            "footer footer" !important;
     }
 
     :where(.recipe) {
@@ -30,31 +36,141 @@
     border: unset !important;
 }
 
+:where(.recipe label) {
+    display: none;
+}
+
+:where(.recipe select) {
+    background: none;
+}
+
+:where(.recipe input),
+:where(.recipe textarea) {
+    background-color: unset;
+}
+
+:where(.recipe input[type=number]),
+:where(.recipe input[type=text]),
+:where(.recipe textarea) {
+    field-sizing: content;
+    min-width: 1ch;
+}
+
+.recipe textarea {
+    resize: none !important;
+}
+
 .recipe-group-head {
     grid-area: head !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+:where(.recipe-group-head) {
+    align-items: center;
+}
+
+@media (orientation: landscape) {
+    .recipe-group-head {
+        display: grid !important;
+        grid-template:
+            "name name name" auto
+            "category servings author" auto / 1fr 1fr 1fr !important;
+        justify-items: center !important;
+    }
+}
+
+.recipe-name {
+    grid-area: name !important;
+}
+
+:where(.recipe-name) {
+    padding-bottom: 1rem;
+    
+    font-size: 1.5em;
+    text-decoration: underline;
+}
+
+:where(.input-recipe-name) {
+    text-decoration: inherit;
+}
+
+.recipe-category {
+    grid-area: category !important;
+}
+
+:where(.recipe-category) {
+    justify-self: start;
+}
+
+.recipe-servings {
+    grid-area: servings !important;
+}
+
+:where(.recipe-servings-label) {
+    display: initial;
+}
+
+.recipe-author {
+    grid-area: author !important;
+}
+
+:where(.recipe-author) {
+    justify-self: end;
+}
+
+.recipe-step__wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+:where(.input-recipe-group-ingredients),
+:where(.input-recipe-group-steps) {
+    text-align: center;
 }
 
 .input-recipe-ingredient__wrapper,
-.input-recipe-step__wrapper {
+.recipe-step__wrapper {
     display: grid !important;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto !important;
+}
+
+:where(.recipe-ingredient__wrapper),
+:where(.recipe-step__wrapper) {
+    margin-bottom: .5em;
+}
+
+:where(.recipe-ingredient__wrapper:last-child),
+:where(.recipe-step__wrapper:last-child) {
+    margin-bottom: 0;
 }
 
 .recipe-group-ingredients {
     grid-area: ingredients !important;
 }
 
+.input-recipe-ingredient__content {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+}
+
+:where(.input-recipe-ingredient__content) {
+    gap: .4ch;
+}
+
 :where(.recipe-group-ingredients ul) {
     list-style: none;
 }
 
-.recipe-group-steps {
-    grid-area: steps !important;
+:where(.input-recipe-ingredient__content #comment) {
+    font-style: italic;
+    padding-right: .25ch;
 }
 
-.recipe-step__wrapper {
-    display: flex !important;
-    flex-direction: row !important;
+.recipe-group-steps {
+    grid-area: steps !important;
 }
 
 :where(.recipe-group-steps ol) {
@@ -80,7 +196,15 @@
     content: '.';
 }
 
-.recipe input[type=number],
-.recipe input[type=text] {
-    field-sizing: content;
+.input-recipe-group-footer {
+    grid-area: footer !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+}
+
+:where(.input-recipe-group-footer) {
+    justify-content: center;
+    gap: 1em;
 }

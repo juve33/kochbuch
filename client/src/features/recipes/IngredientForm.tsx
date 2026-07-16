@@ -63,8 +63,7 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                 size={(value.text) ? Math.max(value.text.length, 4) : 4}
                 required
             />
-            <input
-                type="text"
+            <textarea
                 id="comment"
                 onChange={(e) => {
                     setAction(prev => {
@@ -76,7 +75,6 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                     });
                 }}
                 value={value.comment}
-                size={(value.comment) ? Math.max(value.comment.length, 5) : 5}
             />
         </div>
     )

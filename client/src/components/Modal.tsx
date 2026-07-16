@@ -27,7 +27,7 @@ const Modal = ({ onCloseButtonClick, children } : ModalProps) => {
             {onCloseButtonClick && (
                 <button
                     type="button"
-                    className="button modal-close__button"
+                    className="close-button"
                     onClick={(e) => {
                         onCloseButtonClick(e);
                         dispatchGlobalState({

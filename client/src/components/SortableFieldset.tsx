@@ -13,7 +13,7 @@ const SortableFieldset = ({ id, children, className }: SortableFieldsetProps) =>
     return (
         <fieldset
             ref={setNodeRef}
-            className={className}
+            className={'sortable-fieldset ' + className}
             style={{
                 transform: transform
                     ? `translateY(${transform.y}px)`
@@ -23,6 +23,7 @@ const SortableFieldset = ({ id, children, className }: SortableFieldsetProps) =>
         >
             <button
                 type="button"
+                className='drag-button'
                 {...attributes}
                 {...listeners}
             />

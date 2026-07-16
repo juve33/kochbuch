@@ -21,8 +21,13 @@
     background-color: #fff;
 }
 
-.modal-close__button {
+.modal__wrapper .close-button {
     position: fixed !important;
     top: 0 !important;
     right: 0 !important;
+}
+
+:where(.modal__wrapper .close-button) {
+    padding: 1em;
+    margin: .75em;
 }

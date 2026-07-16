@@ -77,29 +77,37 @@ const RecipeForm = () => {
         <form onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled || (globalState.modalsOpen > 0)}>
             <fieldset className='form form-recipe recipe' disabled={disabled || (globalState.modalsOpen > 0)}>
                 <div className='input-recipe-group-head recipe-group-head'>
-                    <input
-                        type="text"
-                        className="input-recipe-name recipe-name"
-                        id="recipe-name"
-                        placeholder="New recipe"
-                        onChange={(e) => setName(e.target.value)}
-                        value={name}
-                        required
-                    />
-                    <CategorySelector
-                        className='input-recipe-category recipe-category'
-                        setAction={setCategory}
-                        value={category}
-                    />
-                    <input
-                        type="number"
-                        className='input-recipe-servings recipe-servings'
-                        id="servings"
-                        min={1}
-                        onChange={(e) => setServings(e.target.value)}
-                        value={servings}
-                    />
-                    <label className='input-recipe-servings-label recipe-servings-label' htmlFor='servings'>Servings</label>
+                    <div className='recipe-name'>
+                        <label className='input-recipe-name-label' id='recipe-name-label' htmlFor='recipe-name'>Name:</label>
+                        <input
+                            type="text"
+                            className="input-recipe-name"
+                            id="recipe-name"
+                            placeholder="New recipe"
+                            onChange={(e) => setName(e.target.value)}
+                            value={name}
+                            aria-labelledby='recipe-name-label'
+                            required
+                        />
+                    </div>
+                    <div className='recipe-category'>
+                        <CategorySelector
+                            setAction={setCategory}
+                            value={category}
+                        />
+                    </div>
+                    <div className='recipe-servings'>
+                        <input
+                            type="number"
+                            className='input-recipe-servings'
+                            id="recipe-servings"
+                            min={1}
+                            onChange={(e) => setServings(e.target.value)}
+                            value={servings}
+                            aria-labelledby='servings-label'
+                        />
+                        <label className='input-recipe-servings-label recipe-servings-label' id='recipe-servings-label' htmlFor='recipe-servings'>Servings</label>
+                    </div>
                 </div>
                 <div className='input-recipe-group-ingredients recipe-group-ingredients'>
                     <SortableFieldsetContext
@@ -167,12 +175,14 @@ const RecipeForm = () => {
                         aria-label='Add a step'
                     />
                 </div>
-                <button
-                    type="submit"
-                    disabled={disabled}
-                >
-                    Save
-                </button>
+                <div className='input-recipe-group-footer'>
+                    <button
+                        type="submit"
+                        disabled={disabled}
+                    >
+                        Save
+                    </button>
+                </div>
             </fieldset>
         </form>
     )

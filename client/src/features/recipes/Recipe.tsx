@@ -45,9 +45,10 @@ const Recipe = () => {
                         {recipe?.category_name}
                     </p>
                 }
+                <div className='recipe-servings'>
                 <input
                     type='number'
-                    className='recipe-servings'
+                    className='input-recipe-servings'
                     id='servings'
                     min={0.5}
                     step={0.5}
@@ -56,6 +57,7 @@ const Recipe = () => {
                     disabled={globalState.modalsOpen > 0}
                 />
                 <label className='recipe-servings-label' htmlFor='servings'>Servings</label>
+                </div>
             </div>
             <div className='recipe-group-ingredients'>
                 <ul>

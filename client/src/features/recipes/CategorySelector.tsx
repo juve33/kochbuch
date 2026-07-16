@@ -9,12 +9,11 @@ export type Category = {
 };
 
 type CategorySelectorProps = {
-    className?: string;
     value?: Category;
     setAction: React.Dispatch<React.SetStateAction<Category | undefined>>;
 };
 
-const CategorySelector = ({ className, value, setAction }: CategorySelectorProps) => {
+const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
     const dispatchGlobalState = useGlobalStateDispatch();
     
     const [categories, setCategories] = useState<Category[]>([]);
@@ -109,10 +108,10 @@ const CategorySelector = ({ className, value, setAction }: CategorySelectorProps
 
     return (
         <>
-            <label htmlFor="category">Category:</label>
+            <label className='recipe-category-label' htmlFor="recipe-category" id='recipe-category-label'>Category:</label>
             <select
-                id="category"
-                className={className}
+                id="recipe-category"
+                className='input-recipe-category'
                 onChange={(e => {
                     setPreviousSelectedCategory(value ?? {id: undefined, name: ""});
                     if (e.target.value === "new") {
@@ -125,6 +124,7 @@ const CategorySelector = ({ className, value, setAction }: CategorySelectorProps
                     setAction(categories.filter((category) => category.id === parseInt(e.target.value))[0])
                 })}
                 value={addingCategory ? "new" : value?.id?.toString()}
+                aria-labelledby='recipe-category-label'
                 disabled={loading}
             >
                 <option value={""}>None</option>
