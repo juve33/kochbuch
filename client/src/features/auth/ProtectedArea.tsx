@@ -26,9 +26,10 @@ const ProtectedArea = () => {
                 <Outlet />
                 {!(recipeEditMatch || recipeNewMatch) && (
                     <>
-                        <Link relative="route" to="/recipe/new" tabIndex={-1}>
+                        <Link relative="route" to="/recipe/new" tabIndex={-1} className="new-recipe-button__wrapper">
                             <button
                                 type='button'
+                                className="new-recipe-button"
                                 aria-label="Create new recipe"
                                 disabled={globalState.modalsOpen > 0}
                             />
