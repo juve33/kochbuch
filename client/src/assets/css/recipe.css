@@ -98,6 +98,10 @@
     justify-self: start;
 }
 
+:where(.input-recipe-servings) {
+    margin-right: .4ch;
+}
+
 :where(.recipe-servings-label) {
     display: initial;
 }
@@ -163,15 +167,20 @@
     list-style: none;
 }
 
+@media print {
+    .recipe-step-checkbox {
+        display: none !important;
+    }
+}
+
 .recipe-step__content {
     display: flex !important;
     flex-direction: row !important;
 }
 
-@media print {
-    .recipe-step-checkbox {
-        display: none !important;
-    }
+:where(.recipe-step-checkbox:checked + li) {
+    text-decoration: line-through;
+    opacity: .5;
 }
 
 :where(.recipe-step-index) {
