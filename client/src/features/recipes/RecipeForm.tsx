@@ -49,6 +49,7 @@ const RecipeForm = () => {
 
     const newRecipe = (): RecipeApi => {
         return {
+            id: recipe?.id,
             name: name,
             category_id: category?.id,
             category_name: category?.name,
