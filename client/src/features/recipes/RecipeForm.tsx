@@ -13,6 +13,7 @@ import Fraction from '../../utils/Fraction';
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import { useGlobalState } from '../../utils/GlobalState.js';
 import { type Category } from './CategorySelector';
+import BackButton from '../../components/BackButton.js';
 
 import '../../assets/css/recipe.css';
 
@@ -177,6 +178,9 @@ const RecipeForm = () => {
                     />
                 </div>
                 <div className='input-recipe-group-footer'>
+                    <BackButton>
+                        Back
+                    </BackButton>
                     <button
                         type="submit"
                         disabled={disabled}

@@ -24,7 +24,7 @@ const BackButton = ({ delta=-1, children, ...props } : BackButtonProps) => {
                 navigate(delta)
             }
             disabled={(globalState.modalsOpen > 0) || props.disabled}
-            className={"back-button " + (props.className ?? "")}
+            className={(children ? "has-children " : "") + "back-button " + (props.className ?? "")}
             {...props}
         >
             {children}
