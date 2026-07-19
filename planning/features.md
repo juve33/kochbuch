@@ -4,7 +4,7 @@
 
 - [x] Rezepte auflisten
 - [ ] Rezepte von anderen Instanzen auflisten
-- [ ] sortiert nach Kategorien
+- [x] sortiert nach Kategorien
 - [x] Rezeptlinks
 
 ## Rezepte

@@ -17,6 +17,10 @@
     }
 }
 
+.recipe-list-category {
+    column-span: all !important;
+}
+
 :where(.recipe-list-item) {
     margin-bottom: .5em;
 }

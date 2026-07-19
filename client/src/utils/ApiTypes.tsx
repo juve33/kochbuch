@@ -11,10 +11,14 @@ export type RecipeApi = {
     steps: StepApi[];
 }
 
-export type RecipeOverviewApi = {
+type RecipeSimplifiedApi = {
     id: number;
     name: string;
+}
+
+export type RecipeListByCategoryApi = {
     category_name?: string;
+    recipes: RecipeSimplifiedApi[];
 }
 
 export type IngredientApi = {

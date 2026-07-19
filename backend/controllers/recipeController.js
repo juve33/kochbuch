@@ -4,7 +4,7 @@ import * as db from '../db/index.js';
 
 const allRecipesGet = async (req, res) => {
     const result = await db.query(`
-        SELECT r.id, r.name, c.name AS category, a.role
+        SELECT r.id, r.name, c.id AS category_id, c.name AS category_name, a.role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
         JOIN access_permissions a ON r.id = a.recipe_id AND a.key_id = $1
@@ -13,7 +13,21 @@ const allRecipesGet = async (req, res) => {
         [req.session.apiKeyId]
     );
 
-    res.status(200).json(result.rows);
+    /* das kann später die Datenbank selber machen */
+
+    let currentCategoryId = undefined;
+    let parsedResult = [{recipes: []}]
+
+    result.rows.forEach(recipe => {
+        if (recipe.category_id === currentCategoryId) {
+            parsedResult[parsedResult.length - 1].recipes.push({id: recipe.id, name: recipe.name});
+        } else {
+            parsedResult.push({category_name: recipe.category_name, recipes: []});
+            parsedResult[parsedResult.length - 1].recipes.push({id: recipe.id, name: recipe.name});
+        }
+    });
+
+    res.status(200).json(parsedResult);
 }
 
 const categoriesGet = async (req, res) => {

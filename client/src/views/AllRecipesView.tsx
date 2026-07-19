@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { type RecipeOverviewApi } from '../utils/ApiTypes';
+import { type RecipeListByCategoryApi } from '../utils/ApiTypes';
 
 import '../assets/css/recipe-list.css';
 
 const RecipeView = () => {
-    const [recipes, setRecipes] = useState<RecipeOverviewApi[]>([]);
+    const [categories, setCategories] = useState<RecipeListByCategoryApi[]>([]);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -27,7 +27,7 @@ const RecipeView = () => {
                     throw new Error(data.error || data.message || "Fetching recipes failed");
                 }
                 
-                setRecipes(data as RecipeOverviewApi[]);
+                setCategories(data as RecipeListByCategoryApi[]);
             } catch (err) {
                 const message =
                     err instanceof Error ? err.message : "Unexpected error";
@@ -44,12 +44,17 @@ const RecipeView = () => {
             <h1>Recipes</h1>
             {error ?? <p>{error}</p>}
             <ul className='recipe-list__wrapper'>
-                {recipes?.map((recipe) => (
-                    <li className='recipe-list-item'>
-                        <a href={'/recipe/' + recipe.id}>
-                            {recipe.name}
-                        </a>
-                    </li>
+                {categories?.map((category) => (
+                    <>
+                        {category.category_name && <div className='recipe-list-category'>{category.category_name}</div>}
+                        {category.recipes.map((recipe) => (
+                            <li className='recipe-list-item'>
+                                <a href={'/recipe/' + recipe.id}>
+                                    {recipe.name}
+                                </a>
+                            </li>
+                        ))}
+                    </>
                 ))}
             </ul>
         </div>
