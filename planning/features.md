@@ -25,9 +25,9 @@
 
 ### Rezeptlayout
 
-- [ ] Grid-Layout
-- [ ] Druck-Design
-- [ ] Rezept erstellen, bearbeiten und ansehen im selben Layout
+- [x] Grid-Layout
+- [x] Druck-Design
+- [x] Rezept erstellen, bearbeiten und ansehen im selben Layout
 
 ## User
 

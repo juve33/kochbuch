@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { type RecipeOverviewApi } from '../utils/ApiTypes';
 
+import '../assets/css/recipe-list.css';
+
 const RecipeView = () => {
-    const [recipes, setRecipes] = useState<RecipeOverviewApi[]>();
+    const [recipes, setRecipes] = useState<RecipeOverviewApi[]>([]);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -39,17 +41,17 @@ const RecipeView = () => {
 
     return (
         <div className={loading ? 'loading' : undefined}>
-            <h1>All recipes</h1>
-            <div>
+            <h1>Recipes</h1>
+            {error ?? <p>{error}</p>}
+            <ul className='recipe-list__wrapper'>
                 {recipes?.map((recipe) => (
-                    <div>
+                    <li className='recipe-list-item'>
                         <a href={'/recipe/' + recipe.id}>
                             {recipe.name}
                         </a>
-                    </div>
+                    </li>
                 ))}
-                {error ?? error}
-            </div>
+            </ul>
         </div>
     )
 }
