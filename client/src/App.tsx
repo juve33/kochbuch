@@ -9,6 +9,7 @@ import Recipe from './features/recipes/Recipe';
 import RecipeForm from './features/recipes/RecipeForm';
 import { GlobalStateProvider } from './utils/GlobalState';
 import Header from './components/Header';
+import SettingsView from './views/SettingsView';
 
 function App() {
     return (
@@ -29,6 +30,11 @@ function App() {
                             <Route path="edit" element={<RecipeForm />} />
                             <Route index element={<Recipe />} />
                         </Route>
+                    </Route>
+
+                    <Route path="settings" element={<SettingsView />}>
+                        <Route index element={<p>test</p>} />
+                        <Route path='*' element={<p>test</p>} />
                     </Route>
                 </Route>
             </Routes>

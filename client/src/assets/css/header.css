@@ -66,6 +66,8 @@
 
     padding: .5em;
 
+    line-height: 1.5;
+
     background-color: white;
     box-shadow:
         inset 2px 0px 0px 0px gray,
@@ -93,4 +95,8 @@
 
 :where(.header__portal-menu__items > *) {
     align-self: unset;
+}
+
+:where(.header__wrapper a) {
+    text-decoration: inherit;
 }

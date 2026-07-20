@@ -1,0 +1,45 @@
+.settings__wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.settings__menu {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+
+    list-style: none !important;
+
+    overflow-x: auto !important;
+}
+
+:where(.settings__menu) {
+    gap: 1em;
+
+    margin-bottom: .5em;
+    padding-block: .5em;
+    border-bottom: solid 2px gray;
+
+    scrollbar-width: thin;
+}
+
+.settings__menu-item a {
+    display: block !important;
+    width: max-content !important;
+}
+
+:where(.settings__menu-item a) {
+    text-decoration: inherit;
+}
+
+:where(.settings__menu-item a.active) {
+    font-weight: bold;
+}
+
+.settings__content {
+    display: grid !important;
+}
+
+:where(.settings__content) {
+    grid-template-columns: 1fr 1fr !important;
+}

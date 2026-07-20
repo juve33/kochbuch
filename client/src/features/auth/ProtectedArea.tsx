@@ -21,6 +21,7 @@ const ProtectedArea = () => {
                         <LogoutButton>
                             Logout
                         </LogoutButton>
+                        <Link to='/settings'>Settings</Link>
                     </>,
                 globalState.refs.headerMenu.current)}
                 <Outlet />
