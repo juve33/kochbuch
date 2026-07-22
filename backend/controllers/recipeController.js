@@ -157,14 +157,18 @@ const recipeGet = async (req, res) => {
         SELECT r.id, r.name, c.id AS category_id, c.name AS category_name, r.servings, a.role
         FROM recipes r
         LEFT JOIN categories c ON r.category_id = c.id
-        JOIN access_permissions a ON r.id = a.recipe_id AND a.key_id = $1
+        LEFT JOIN access_permissions a ON r.id = a.recipe_id AND a.key_id = $1
         WHERE r.id = $2;
         `,
         [req.session.apiKeyId, id]
     );
 
     if (recipe_data.rows.length === 0) {
-        return res.status(400).json({ message: 'Recipe not found or not permitted to access' });
+        return res.status(404).json({ message: 'Recipe not found' });
+    }
+
+    if (recipe_data.rows[0].role === null) {
+        return res.status(403).json({ message: 'Recipe not permitted to access' });
     }
 
     const images_data = await db.query(`

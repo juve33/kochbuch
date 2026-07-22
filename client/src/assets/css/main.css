@@ -93,6 +93,15 @@ button {
     opacity: 0 !important;
 }
 
+:where(.input__hidden + label) {
+    padding: .5em;
+    border-radius: 1em;
+}
+
+:where(.input__hidden:checked + label) {
+    box-shadow: inset 0px 0px 0px 2px gray;
+}
+
 :where(.add-button)::before,
 :where(.back-button)::before,
 :where(.close-button)::before,

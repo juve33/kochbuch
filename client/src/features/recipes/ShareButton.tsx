@@ -112,7 +112,8 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
         fetchShared();
     }, []);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setLoading(true);
         setError("");
 
