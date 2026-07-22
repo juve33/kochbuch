@@ -39,5 +39,5 @@
 - [ ] nicht-lokale User löschen
 - [x] einloggen
 - [x] ausloggen
-- [ ] Einstellungen bearbeiten
+- [x] Einstellungen bearbeiten
 - [ ] Themes

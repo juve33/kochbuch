@@ -47,6 +47,82 @@ const meGet = async (req, res) => {
     res.status(200).json(user_parsed);
 }
 
+const mePost = async (req, res) => {
+    const { username, new_password, current_password } = req.body;
+
+    const password = await db.query(`
+        SELECT u.password_hash
+        FROM users u
+        WHERE u.id = $1;
+        `,
+        [req.session.userId]
+    );
+
+    const valid = await bcrypt.compare(current_password, password.rows[0].password_hash);
+    if (!valid) {
+        return res.status(400).json({ error: 'Wrong password' });
+    }
+
+    const client = await db.pool.connect();
+    
+    try {
+        await client.query(`BEGIN`);
+
+        if (username && new_password) {
+            const hashedPassword = await bcrypt.hash(new_password, 10);
+
+            await client.query(`
+                UPDATE users
+                SET
+                    name = $2,
+                    password_hash = $3
+                WHERE id = $1;
+                `, [req.session.userId, username, hashedPassword]);
+        } else if (username) {
+            await client.query(`
+                UPDATE users
+                SET
+                    name = $2
+                WHERE id = $1;
+                `, [req.session.userId, username]);
+        } else if (new_password) {
+            const hashedPassword = await bcrypt.hash(new_password, 10);
+
+            await client.query(`
+                UPDATE users
+                SET
+                    password_hash = $2
+                WHERE id = $1;
+                `, [req.session.userId, hashedPassword]);
+        }
+
+        await client.query('COMMIT');
+
+        req.session.userName = username;
+
+        res.status(201).json({ message: 'User modified successfully' });
+    } catch (err) {
+        await client.query('ROLLBACK');
+
+        if (err.code === '23502') {
+            return res.status(400).json({ message: 'Username must not be empty' });
+        }
+
+        if (err.code === '23505') {
+            return res.status(400).json({ message: 'Username already taken' });
+        }
+
+        console.error(err);
+
+        res.status(500).json({
+            message: 'Modifying user failed'
+        });
+
+    } finally {
+        client.release();
+    }
+}
+
 const newUserPost = async (req, res) => {
     const { username, password } = req.body;
 
@@ -68,4 +144,4 @@ const newUserPost = async (req, res) => {
     res.status(201).json({ message: 'User created successfully' });
 }
 
-export default {innerApiKeysGet, meGet, newUserPost}
+export default {innerApiKeysGet, meGet, mePost, newUserPost}

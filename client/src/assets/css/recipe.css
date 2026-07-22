@@ -150,15 +150,6 @@
     flex-wrap: wrap !important;
 }
 
-:where(.input-recipe-ingredient__content input),
-:where(.input-recipe-ingredient__content textarea) {
-    padding-inline: .2ch;
-
-    box-shadow:
-        inset 0px 0px 5px 0px #0004,
-        inset 0px -2px 0px 0px gray;
-}
-
 :where(.input-recipe-ingredient__content input:first-child) {
     padding-left: 0;
 }

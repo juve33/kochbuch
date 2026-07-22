@@ -14,9 +14,9 @@ const SettingsView = ({  } : SettingsProps) => {
 
     const pages = [
         {to: '', text: 'General'},
-        {to: 'admin', text: 'Admin'},
+        ...((globalState.user?.role === 10) ? [{ to: 'admin', text: 'Admin' }] : []),
         {to: 'account', text: 'User'},
-    ] as { to: To; text: string; }[];
+    ] satisfies { to: To; text: string; }[];
 
     return (
         <>
@@ -33,9 +33,7 @@ const SettingsView = ({  } : SettingsProps) => {
                         </li>
                     ))}
                 </ul>
-                <div className="settings__content">
-                    <Outlet />
-                </div>
+                <Outlet />
             </div>
         </>
     )
