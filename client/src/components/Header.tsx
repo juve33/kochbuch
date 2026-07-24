@@ -28,7 +28,7 @@ const Header = ({ children } : HeaderProps) => {
 
     return createPortal(
         <>
-            <title>{globalState.user?.name + "s Kochbuch"}</title>
+            <title>{globalState.user?.name ? globalState.user.name + "s Kochbuch" : "Kochbuch"}</title>
             <header className="header__wrapper">
                 <div className="header__inner">
                     <div className="header__portal-main" ref={headerMainRef}></div>
