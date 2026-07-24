@@ -12,7 +12,7 @@
 - [x] Rezept anzeigen
 - [x] Rezept erstellen
 - [x] Rezept bearbeiten
-- [ ] Rezept löschen
+- [x] Rezept löschen
 - [x] Rezept mit lokalen Usern teilen
 - [x] Rezept mit nicht-lokalen Usern teilen
 - [x] Kategorie erstellen

@@ -150,6 +150,29 @@ const newRecipePost = async (req, res) => {
     }
 }
 
+const recipeDelete = async (req, res) => {
+    const { id } = req.params;
+
+    const authorization_result = await db.query(`
+        SELECT (a.role = 10) AS is_authorized
+        FROM access_permissions a
+        WHERE a.recipe_id = $1 AND a.key_id = $2;
+        `,
+        [id, req.session.apiKeyId]
+    );
+
+    if (!authorization_result.rows[0].is_authorized) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    await db.query(`
+        DELETE FROM recipes
+        WHERE id = $1;
+        `, [id]);
+
+    res.status(200).json({ message: 'Recipe deleted' });
+}
+
 const recipeGet = async (req, res) => {
     const { id } = req.params;
 
@@ -408,4 +431,4 @@ const recipeSharePost = async (req, res) => {
     }
 }
 
-export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeGet, recipePost, recipeShareGet, recipeSharePost}
+export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeDelete, recipeGet, recipePost, recipeShareGet, recipeSharePost}

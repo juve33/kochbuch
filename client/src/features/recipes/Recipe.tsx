@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from "react-dom";
-import { Link, useOutletContext } from 'react-router'
+import { Link, useOutletContext, useNavigate } from 'react-router'
 
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import ShareButton from './ShareButton.js';
@@ -11,7 +11,34 @@ const Recipe = () => {
 
     const globalState = useGlobalState();
 
+    const navigate = useNavigate();
+
     const [servings, setServings] = useState<number>(1);
+
+    const handleDelete = async () => {
+        try {
+            const response = await fetch("http://localhost/api/recipe/" + recipe?.id, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Modifying recipe failed");
+            }
+
+            navigate(-1);
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : "Unexpected error";
+            
+            console.log(message);
+        }
+    }
 
     useEffect(() => {
         if (recipe) {
@@ -24,9 +51,16 @@ const Recipe = () => {
             {globalState.refs?.headerMenu?.current && createPortal(
                 <>
                     {(recipe?.id && recipe.role == 10) &&
-                        <ShareButton
-                            recipeId={recipe.id}
-                        />
+                        <>
+                            <ShareButton
+                                recipeId={recipe.id}
+                            />
+                            <button
+                                type='button'
+                                aria-label='Delete'
+                                onClick={handleDelete}
+                            ></button>
+                        </>
                     }
                     {(recipe?.role == 10) &&
                         <Link to="edit" tabIndex={-1}><button type='button' disabled={globalState.modalsOpen > 0}>Edit</button></Link>
