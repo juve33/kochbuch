@@ -2,6 +2,17 @@ import bcrypt from 'bcrypt';
 
 import * as db from '../db/index.js';
 
+const allUsersGet = async (req, res) => {
+    const result = await db.query(`
+        SELECT u.id, u.name, u.role
+        FROM users u
+        ORDER BY LOWER(u.name) ASC;
+        `
+    );
+
+    res.status(200).json(result.rows);
+}
+
 const innerApiKeysGet = async (req, res) => {
     const result = await db.query(`
         SELECT a.id AS key_id, a.name as foreign_user_name, u.name as local_user_name
@@ -128,7 +139,11 @@ const newUserPost = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await db.query(`INSERT INTO users (name, password_hash) VALUES ($1, $2)`, [username, hashedPassword])
+    const result = await db.query(`
+        INSERT INTO users (name, password_hash, role)
+            VALUES ($1, $2, 0)
+            RETURNING id;
+        `, [username, hashedPassword])
         .catch(err => {
             if (err.code === '23502') {
                 return res.status(400).json({ message: 'Username must not be empty' });
@@ -141,7 +156,103 @@ const newUserPost = async (req, res) => {
             return res.status(400).json({ message: 'Bad Request' });
         });
 
-    res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({ message: 'User created successfully', id: result.rows[0].id });
 }
 
-export default {innerApiKeysGet, meGet, mePost, newUserPost}
+const userDelete = async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+        return res.status(400).json({ error: 'Wrong password' });
+    }
+
+    const password_check = await db.query(`
+        SELECT u.password_hash
+        FROM users u
+        WHERE u.id = $1;
+        `,
+        [req.session.userId]
+    );
+
+    const valid = await bcrypt.compare(password, password_check.rows[0].password_hash);
+    if (!valid) {
+        return res.status(400).json({ error: 'Wrong password' });
+    }
+
+    await db.query(`
+        DELETE FROM users
+        WHERE id = $1;
+        `, [id]);
+    
+    res.status(200).json({ message: 'User deleted' });
+}
+
+
+const userPost = async (req, res) => {
+    const { id } = req.params;
+    const { username, role, new_password, admin_password } = req.body;
+
+    const client = await db.pool.connect();
+
+    try {
+        await client.query(`BEGIN`);
+
+        if (username && role) {
+            await client.query(`
+                UPDATE users
+                SET
+                    name = $2,
+                    role = $3
+                WHERE id = $1;
+                `, [id, username, role]);
+        } else if (new_password && admin_password) {
+            const password_check = await db.query(`
+                SELECT u.password_hash
+                FROM users u
+                WHERE u.id = $1;
+                `,
+                [req.session.userId]
+            );
+
+            const valid = await bcrypt.compare(admin_password, password_check.rows[0].password_hash);
+            if (!valid) {
+                return res.status(400).json({ error: 'Wrong password' });
+            }
+            
+            const hashedPassword = await bcrypt.hash(new_password, 10);
+
+            await client.query(`
+                UPDATE users
+                SET
+                    password_hash = $2
+                WHERE id = $1;
+                `, [id, hashedPassword]);
+        }
+
+        await client.query('COMMIT');
+
+        res.status(201).json({ message: 'User modified successfully' });
+    } catch (err) {
+        await client.query('ROLLBACK');
+
+        if (err.code === '23502') {
+            return res.status(400).json({ message: 'Username must not be empty' });
+        }
+
+        if (err.code === '23505') {
+            return res.status(400).json({ message: 'Username already taken' });
+        }
+
+        console.error(err);
+
+        res.status(500).json({
+            message: 'Modifying user failed'
+        });
+
+    } finally {
+        client.release();
+    }
+}
+
+export default {allUsersGet, innerApiKeysGet, meGet, mePost, newUserPost, userDelete, userPost}

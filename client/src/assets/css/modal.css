@@ -31,3 +31,16 @@
     padding: 1em;
     margin: .75em;
 }
+
+.modal__controls {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+
+    grid-column: span 2;
+}
+
+:where(.modal__controls) {
+    gap: 1em;
+}

@@ -12,6 +12,7 @@
 - [x] Rezept anzeigen
 - [x] Rezept erstellen
 - [x] Rezept bearbeiten
+- [ ] Rezept löschen
 - [x] Rezept mit lokalen Usern teilen
 - [x] Rezept mit nicht-lokalen Usern teilen
 - [x] Kategorie erstellen
@@ -31,9 +32,9 @@
 
 ## User
 
-- [ ] User erstellen
-- [ ] User löschen
-- [ ] User bearbeiten
+- [x] User erstellen
+- [x] User löschen
+- [x] User bearbeiten
 - [ ] nicht-lokale User hinzufügen
 - [ ] nicht-lokale User bearbeiten
 - [ ] nicht-lokale User löschen

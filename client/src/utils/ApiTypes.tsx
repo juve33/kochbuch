@@ -45,3 +45,9 @@ export type ShareableUserListApi = {
     local: ShareableUserApi[];
     foreign: ShareableUserApi[];
 }
+
+export type UserApi = {
+    id: number;
+    name: string;
+    role: number;
+}

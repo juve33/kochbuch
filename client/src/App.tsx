@@ -11,6 +11,7 @@ import { GlobalStateProvider } from './utils/GlobalState';
 import Header from './components/Header';
 import SettingsView from './views/SettingsView';
 import AccountSettings from './features/user/AccountSettings';
+import AdminSettings from './features/user/AdminSettings';
 
 function App() {
     return (
@@ -36,7 +37,7 @@ function App() {
                     <Route path="settings" element={<SettingsView />}>
                         <Route index element={<p>test</p>} />
                         <Route path='account' element={<AccountSettings />} />
-                        <Route path='*' element={<p>test</p>} />
+                        <Route path='admin' element={<AdminSettings />} />
                         <Route path='*' element={<p>test</p>} />
                     </Route>
                 </Route>

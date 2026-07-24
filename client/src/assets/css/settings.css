@@ -45,15 +45,62 @@
     gap: 1em .4ch;
 }
 
-:where(.settings__content > :nth-child(odd)) {
+:where(.settings__content:not(.settings-admin) > :nth-child(odd)) {
     text-align: right;
 }
 
-:where(.settings__content > :nth-child(even)) {
+:where(.settings__content:not(.settings-admin) > :nth-child(even)) {
     text-align: left;
 }
 
 :where(.settings__content button[type=submit]) {
     grid-column: span 2;
     justify-self: center;
+}
+
+.settings-admin {
+    display: grid !important;
+    grid-template-columns: 40% 30% auto !important;
+}
+
+:where(.settings-admin) {
+    gap: 1em .4ch;
+}
+
+.settings-admin .user-head {
+    position: sticky !important;
+}
+
+:where(.settings-admin .user-head) {
+    top: 3em;
+
+    background-color: white;
+    font-weight: bold;
+}
+
+.settings-admin .user,
+.settings-admin .user form {
+    display: grid !important;
+    grid-column: span 3 !important;
+    justify-items: start !important;
+    
+    grid-template-columns: subgrid !important;
+}
+
+.settings-admin input {
+    field-sizing: content !important;
+}
+
+.settings__controls {
+    justify-self: center;
+    grid-column: span 2;
+}
+
+.settings__controls,
+.user__controls {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-self: stretch !important;
+    justify-content: space-evenly !important;
+    gap: 1em;
 }

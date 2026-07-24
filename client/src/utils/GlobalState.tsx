@@ -21,9 +21,9 @@ type GlobalState = {
 type GlobalStateReducerAction =
     | {
         type: "set user data",
-        id: number,
-        name: string,
-        role: number, 
+        id?: number,
+        name?: string,
+        role?: number, 
         settingThemeSlug?: string,
         settingAdvancedOptions?: boolean
     }
@@ -52,23 +52,14 @@ export function globalStateReducer(state: GlobalState, action: GlobalStateReduce
                 ...state,
                 user: {
                     ...state.user,
-                    id: action.id,
-                    name: action.name,
-                    role: action.role
+                    id: action.id ?? state.user.id,
+                    name: action.name ?? state.user.name,
+                    role: action.role ?? state.user.role
                 },
                 settings: {
                     ...state.settings,
                     themeSlug: action.settingThemeSlug,
                     advancedOptions: action.settingAdvancedOptions
-                }
-            };
-        }
-        case "change user name": {
-            return {
-                ...state,
-                user: {
-                    ...state.user,
-                    name: action.name,
                 }
             };
         }
