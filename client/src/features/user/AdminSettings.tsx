@@ -340,7 +340,7 @@ const AdminSettings = () => {
                                         setChangingPassword(index);
                                         globalStateDispatch({ type: "open modal" });
                                     }}></button>
-                                    <button type='button' aria-label='Delete' onClick={() => {
+                                    <button type='button' aria-label='Delete' className='delete-button' onClick={() => {
                                         setDeleting(index);
                                         setCurrentlyEditting(undefined);
                                         setChangingPassword(undefined);
