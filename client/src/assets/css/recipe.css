@@ -102,6 +102,16 @@
     justify-self: start;
 }
 
+.recipe-category:has(.input-recipe-category) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+}
+
+:where(.recipe-category:has(.input-recipe-category)) {
+    column-gap: 1em;
+}
+
 .recipe-servings {
     grid-column: 2 !important;
 }
