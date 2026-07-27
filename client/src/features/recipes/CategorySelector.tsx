@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Modal from '../../components/Modal';
-import { useGlobalStateDispatch } from '../../utils/GlobalState';
+import { useGlobalState, useGlobalStateDispatch } from '../../utils/GlobalState';
+import AddButton from '../../components/AddButton';
+
+import '../../assets/css/category-selector.css';
 
 export type Category = {
     id: number | undefined;
@@ -14,18 +17,17 @@ type CategorySelectorProps = {
 };
 
 const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
-    const dispatchGlobalState = useGlobalStateDispatch();
+    const globalState = useGlobalState();
+    const globalStateDispatch = useGlobalStateDispatch();
     
     const [categories, setCategories] = useState<Category[]>([]);
-    const [previousSelectedCategory, setPreviousSelectedCategory] = useState<Category>({id: undefined, name: ""});
     const [newCategory, setNewCategory] = useState<string>("");
-    const [addingCategory, setAddingCategory] = useState(false);
+    const [edittingCategories, setEdittingCategories] = useState(false);
+    const [currentlyEditting, setCurrentlyEditting] = useState<number>();
 
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
-    const newCategoryRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -51,60 +53,100 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
         fetchCategories();
     }, []);
 
-    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    const handleCategorySubmit = async (e: React.SyntheticEvent<HTMLFormElement>, categoryId: number | undefined, index: number) => {
         e.preventDefault();
         e.stopPropagation();
         setLoading(true);
         setError("");
 
-        if (!newCategory) {
-            setAction(previousSelectedCategory);
-            setLoading(false);
-            return;
-        };
-
-        const category_parsed = {
-            name: newCategory
-        }
-
         try {
-            const response = await fetch("http://localhost/api/recipe/categories" , {
+            setCurrentlyEditting(undefined);
+
+            let requestInfo = "" as RequestInfo;
+
+            if (categoryId === undefined) {
+                requestInfo = "http://localhost/api/recipe/categories" as RequestInfo;
+            } else {
+                requestInfo = "http://localhost/api/recipe/categories/" + categoryId as RequestInfo;
+            }
+
+            const response = await fetch(requestInfo, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 credentials: "include",
-                body: JSON.stringify(category_parsed)
+                body: JSON.stringify({
+                    name: newCategory
+                })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || data.message || "Creating category failed");
+                if (categoryId === undefined) {
+                    throw new Error(data.error || data.message || "Creating category failed");
+                } else {
+                    throw new Error(data.error || data.message || "Editting category failed");
+                }
             }
 
-            setCategories(items => [...items, {id: data.id, name: newCategory}])
+            setCategories(prev => {
+                const next = [...prev];
 
-            dispatchGlobalState({
-                type: "close modal"
+                next[index].id = next[index].id ?? data.id;
+                next[index].name = newCategory;
+
+                return next;
             });
-
-            setAction({id: data.id, name: newCategory});
-            setAddingCategory(false);
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
+
+            setCurrentlyEditting(index);
             setError(message);
         } finally {
             setLoading(false);
         }
     }
 
-    useEffect(() => {
-        if (addingCategory) {
-            newCategoryRef.current?.focus();
+    const handleDelete = async (categoryId: number | undefined, index: number) => {
+        setLoading(true);
+        setError("");
+
+        setCurrentlyEditting(undefined);
+
+        try {
+            if (categoryId === undefined) {
+                throw new Error("Error occured while selecting category to be deleted");
+            }
+
+            const response = await fetch("http://localhost/api/recipe/categories/" + categoryId, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Deleting category failed");
+            }
+
+            setCategories(items => 
+                items.filter((_, i) => i !== index)
+            );
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : "Unexpected error";
+
+            setError(message);
+        } finally {
+            setLoading(false);
         }
-    }, [value]);
+    }
 
     return (
         <>
@@ -113,19 +155,11 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                 id="recipe-category"
                 className='input-recipe-category'
                 onChange={(e => {
-                    setPreviousSelectedCategory(value ?? {id: undefined, name: ""});
-                    if (e.target.value === "new") {
-                        dispatchGlobalState({
-                            type: "open modal"
-                        });
-                        setAddingCategory(true);
-                        return;
-                    }
                     setAction(categories.filter((category) => category.id === parseInt(e.target.value))[0])
                 })}
-                value={addingCategory ? "new" : value?.id?.toString()}
+                value={value?.id?.toString()}
                 aria-labelledby='recipe-category-label'
-                disabled={loading}
+                disabled={loading || globalState.modalsOpen > 0}
             >
                 <option value={""}>None</option>
                 {
@@ -135,43 +169,99 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                         </option>
                     ))
                 }
-                <option value={"new"}>Add category</option>
             </select>
+            <button
+                type='button'
+                aria-label='Edit categories'
+                onClick={() => {
+                    setEdittingCategories(true);
+                    globalStateDispatch({ type: 'open modal' })
+                }}></button>
             {error && <div>{error}</div>}
-            {addingCategory && (
+            {edittingCategories && (
                 <Modal
                     onCloseButtonClick={() => {
-                        setAction(previousSelectedCategory);
-                        setAddingCategory(false);
+                        setEdittingCategories(false);
+                        setCurrentlyEditting(undefined);
+                        setNewCategory("");
+                        globalStateDispatch({ type: 'close modal' })
                     }}
                 >
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="new-category">Enter new category:</label>
-                        <input
-                            ref={newCategoryRef}
-                            id="new-category"
-                            type="text"
-                            value={newCategory}
-                            onChange={(e) => setNewCategory(e.target.value)}
-                        />
+                    <ul className='categories'>
+                        {categories.map((category, index) => (
+                            <li className='category'>
+                                {currentlyEditting === index ?
+                                    <form id='category-form' onSubmit={(e) => handleCategorySubmit(e, category.id, index)}>
+                                        <input
+                                            type='text'
+                                            className='category__name'
+                                            aria-labelledby='username'
+                                            value={newCategory}
+                                            onChange={(e) => {
+                                                setNewCategory(e.target.value);
+                                            }}
+                                            required
+                                        />
+                                        <div className='category__controls'>
+                                            <button
+                                                type='button'
+                                                aria-label='Cancel'
+                                                onClick={() => {
+                                                    setCurrentlyEditting(undefined);
+                                                    setNewCategory("");
+                                                }}
+                                            ></button>
+                                            <button type='submit' form='category-form' aria-label='Save'></button>
+                                        </div>
+                                    </form>
+                                :
+                                    <>
+                                        <div className='category__name'>{category.name}</div>
+                                        <div className='category__controls'>
+                                            <button
+                                                type='button'
+                                                aria-label='Edit'
+                                                onClick={() => {
+                                                    setCurrentlyEditting(index);
+                                                    setNewCategory(category.name);
+                                                }}
+                                            ></button>
+                                            <button
+                                                type='button'
+                                                className='delete-button'
+                                                aria-label='Delete'
+                                                onClick={() => {
+                                                    handleDelete(category.id, index)
+                                                }}
+                                            ></button>
+                                        </div>
+                                    </>
+                                }
+                            </li>
+                        ))}
+                    </ul>
+                    <AddButton
+                        createItem={() => ({ id: undefined, name: "" } as Category)}
+                        setAction={setCategories}
+                        aria-label='Add category'
+                        onClick={() => {
+                            setCurrentlyEditting(categories.length);
+                            setNewCategory(categories[categories.length].name);
+                        }}
+                    />
+                    {error && <p>{error}</p>}
+                    <div>
                         <button
-                            type="submit"
-                        >
-                            Submit
-                        </button>
-                        <button
-                            type="button"
+                            type='button'
+                            aria-label='Close'
                             onClick={() => {
-                                setAction(previousSelectedCategory);
-                                dispatchGlobalState({
-                                    type: "close modal"
-                                });
-                                setAddingCategory(false);
+                                setCurrentlyEditting(undefined);
+                                setNewCategory("");
+                                setEdittingCategories(false);
+                                globalStateDispatch({ type: 'close modal' })
                             }}
-                        >
-                            Cancel
-                        </button>
-                    </form>
+                        ></button>
+                    </div>
                 </Modal>
             )}
         </>

@@ -82,6 +82,10 @@ button {
         inset 0px -2px 0px 0px gray;
 }
 
+:where(input[type=text]) {
+    min-width: 4ch;
+}
+
 @media print {
     input[type=number] {
         appearance: textfield !important;

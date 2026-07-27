@@ -41,7 +41,43 @@ const categoriesGet = async (req, res) => {
     res.status(200).json(result.rows);
 }
 
-const categoriesPost = async (req, res) => {
+const categoryDelete = async (req, res) => {
+    const { id } = req.params;
+
+    await db.query(`
+        DELETE FROM categories
+        WHERE id = $1;
+        `, [id]);
+    
+    res.status(200).json({ message: 'Category deleted' });
+}
+
+const categoryPost = async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    await db.query(`
+        UPDATE categories
+        SET
+            name = $2
+        WHERE id = $1;
+        `, [id, name])
+        .catch(err => {
+            if (err.code === '23502') {
+                return res.status(400).json({ message: 'Name must not be empty' });
+            }
+
+            if (err.code === '23505') {
+                return res.status(400).json({ message: 'Category already exists' });
+            }
+            
+            return res.status(400).json({ message: 'Bad Request' });
+        });
+    
+    res.status(200).json({ message: 'User deleted' });
+}
+
+const newCategoryPost = async (req, res) => {
     const { name } = req.body;
 
     if (!name) {
@@ -431,4 +467,4 @@ const recipeSharePost = async (req, res) => {
     }
 }
 
-export default {allRecipesGet, categoriesGet, categoriesPost, newRecipePost, recipeDelete, recipeGet, recipePost, recipeShareGet, recipeSharePost}
+export default {allRecipesGet, categoriesGet, categoryDelete, categoryPost, newCategoryPost, newRecipePost, recipeDelete, recipeGet, recipePost, recipeShareGet, recipeSharePost}

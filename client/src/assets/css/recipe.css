@@ -94,8 +94,16 @@
     text-decoration: inherit;
 }
 
+.recipe-category {
+    grid-column: 1 !important;
+}
+
 :where(.recipe-category) {
     justify-self: start;
+}
+
+.recipe-servings {
+    grid-column: 2 !important;
 }
 
 :where(.input-recipe-servings) {
@@ -104,6 +112,10 @@
 
 :where(.recipe-servings-label) {
     display: initial;
+}
+
+.recipe-author {
+    grid-column: 3 !important;
 }
 
 :where(.recipe-author) {

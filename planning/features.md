@@ -16,8 +16,8 @@
 - [x] Rezept mit lokalen Usern teilen
 - [x] Rezept mit nicht-lokalen Usern teilen
 - [x] Kategorie erstellen
-- [ ] Kategorie bearbeiten
-- [ ] Kategorie löschen
+- [x] Kategorie bearbeiten
+- [x] Kategorie löschen
 - [x] Schritte abhaken
 - [x] Zutaten hochrechnen
 - [ ] Bilder für Rezepte hochladen
