@@ -195,7 +195,6 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                                         <input
                                             type='text'
                                             className='category__name'
-                                            aria-labelledby='username'
                                             value={newCategory}
                                             onChange={(e) => {
                                                 setNewCategory(e.target.value);
