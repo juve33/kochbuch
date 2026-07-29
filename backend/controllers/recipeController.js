@@ -24,6 +24,7 @@ const allRecipesGet = async (req, res) => {
         } else {
             parsedResult.push({category_name: recipe.category_name, recipes: []});
             parsedResult[parsedResult.length - 1].recipes.push({id: recipe.id, name: recipe.name});
+            currentCategoryId = recipe.category_id;
         }
     });
 
