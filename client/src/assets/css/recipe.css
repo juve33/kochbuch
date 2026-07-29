@@ -74,8 +74,11 @@
 @media (orientation: landscape) {
     .recipe-group-head {
         display: grid !important;
-        grid-template-columns: 1fr 1fr 1fr !important;
-        justify-items: center !important;
+    }
+
+    :where(.recipe-group-head) {
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-items: center;
     }
 }
 
