@@ -77,6 +77,7 @@ const ImageForm = ({ value, slot, index, setAction }: ImageFormProps) => {
             createItem={(): Image => ({
                 id: Date.now(),
                 slot: slot,
+                type: "image/",
                 fileWasChanged: false
             })}
             setAction={setAction}
