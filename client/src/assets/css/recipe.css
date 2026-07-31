@@ -82,11 +82,9 @@
     }
 }
 
-.recipe-name {
-    grid-column: span 3 !important;
-}
-
 :where(.recipe-name) {
+    grid-column: span 3;
+
     margin-bottom: 1rem;
 
     font-size: 1.5em;
@@ -97,11 +95,8 @@
     text-decoration: inherit;
 }
 
-.recipe-category {
-    grid-column: 1 !important;
-}
-
 :where(.recipe-category) {
+    grid-column: 1;
     justify-self: start;
 }
 
@@ -115,8 +110,8 @@
     column-gap: 1em;
 }
 
-.recipe-servings {
-    grid-column: 2 !important;
+:where(.recipe-servings) {
+    grid-column: 2;
 }
 
 :where(.input-recipe-servings) {
@@ -127,11 +122,8 @@
     display: initial;
 }
 
-.recipe-author {
-    grid-column: 3 !important;
-}
-
 :where(.recipe-author) {
+    grid-column: 3;
     justify-self: end;
 }
 
@@ -220,6 +212,88 @@
 
 :where(.recipe-step-index)::after {
     content: '.';
+}
+
+:where(.recipe-image) {
+    width: 100%;
+
+    margin-bottom: 1rem;
+}
+
+@media (orientation: landscape) {
+    :where(.recipe-image) {
+        grid-column: span 3;
+        justify-self: stretch;
+    }
+}
+
+.input-recipe-image__wrapper .input-recipe-image__inner {
+    display: block !important;
+    position: relative !important;
+}
+
+:where(.input-recipe-image__wrapper .input-recipe-image__inner) {
+    height: 200px;
+    width: 100%;
+
+    box-shadow:
+        inset 0px 0px 0px 2px gray;
+    
+    overflow: hidden;
+}
+
+.input-recipe-image__wrapper .input-recipe-image__image {
+    display: block !important;
+    
+    height: 100% !important;
+    width: 100% !important;
+
+    cursor: pointer !important;
+}
+
+.input-recipe-image__wrapper .input-recipe-image__inner input {
+    position: absolute !important;
+
+    width: 100% !important;
+
+    box-sizing: border-box !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+}
+
+.input-recipe-image__wrapper .input-recipe-image__inner img {
+    height: 100% !important;
+    width: 100% !important;
+
+    object-fit: cover !important;
+}
+
+.input-recipe-image__controls {
+    display: none !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: space-evenly !important;
+
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+}
+
+.input-recipe-image__inner:hover .input-recipe-image__controls {
+    display: flex !important;
+}
+
+:where(.input-recipe-image__controls) {
+    column-gap: 1em;
+
+    padding-inline: 1em;
+
+    background-color: #0004;
+    color: white;
 }
 
 .input-recipe-group-footer {

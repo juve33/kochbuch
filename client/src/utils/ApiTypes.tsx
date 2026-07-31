@@ -7,6 +7,7 @@ export type RecipeApi = {
     servings?: number;
     duration?: number;
     
+    images: ImageApi[];
     ingredients: IngredientApi[];
     steps: StepApi[];
 }
@@ -19,6 +20,14 @@ type RecipeSimplifiedApi = {
 export type RecipeListByCategoryApi = {
     category_name?: string;
     recipes: RecipeSimplifiedApi[];
+}
+
+export type ImageApi = {
+    id?: number;
+    slot: number;
+    caption?: string;
+    file_name?: string;
+    type: string;
 }
 
 export type IngredientApi = {

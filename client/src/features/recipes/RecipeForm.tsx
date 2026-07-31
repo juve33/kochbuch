@@ -8,12 +8,13 @@ import AddButton from '../../components/AddButton';
 import DeleteButton from '../../components/DeleteButton';
 import SortableFieldset from '../../components/SortableFieldset';
 import SortableFieldsetContext from '../../components/SortableFieldsetContext';
-import { type RecipeApi } from '../../utils/ApiTypes';
+import { type RecipeApi, type ImageApi, type IngredientApi, type StepApi } from '../../utils/ApiTypes';
 import Fraction from '../../utils/Fraction';
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import { useGlobalState } from '../../utils/GlobalState.js';
 import { type Category } from './CategorySelector';
 import BackButton from '../../components/BackButton.js';
+import ImageForm, { type Image } from './ImageForm.js';
 
 import '../../assets/css/recipe.css';
 
@@ -26,6 +27,7 @@ const RecipeForm = () => {
     const [servings, setServings] = useState<string>();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [steps, setSteps] = useState<Step[]>([]);
+    const [images, setImages] = useState<Image[]>([]);
 
     useEffect(() => {
         if (recipe) {
@@ -44,7 +46,16 @@ const RecipeForm = () => {
                 id: step.id ?? Date.now(),
                 apiId: step.id,
                 text: step.text,
-            })))
+            })));
+            setImages(recipe.images.map((image): Image => ({
+                id: image.id ?? Date.now(),
+                apiId: image.id,
+                slot: image.slot,
+                url: image.file_name ? "/api/files/" + image.file_name : undefined,
+                type: image.type,
+                caption: image.caption,
+                fileWasChanged: false
+            })));
         }
     }, [recipe]);
 
@@ -57,8 +68,16 @@ const RecipeForm = () => {
             role: recipe?.role ?? 0,
             servings: servings ? parseInt(servings) : undefined,
 
+            images:
+                images.filter(image => {return image.url ? true : false}).map((image): ImageApi => ({
+                    id: image.apiId,
+                    slot: image.slot,
+                    caption: image.caption,
+                    file_name: "recipe-" + recipe?.id + "_" + image.slot + (image.file?.type.replace("image/", ".") ?? ""),
+                    type: image.type
+                })),
             ingredients:
-                ingredients.map((ingredient, index) => ({
+                ingredients.map((ingredient, index): IngredientApi => ({
                     id: ingredient.apiId,
                     index_number: index,
                     amount: ingredient.amount?.valueAsNumber,
@@ -67,7 +86,7 @@ const RecipeForm = () => {
                     comment: ingredient.comment
                 })),
             steps:
-                steps.map((step, index) => ({
+                steps.map((step, index): StepApi => ({
                     id: step.apiId,
                     index_number: index,
                     text: step.text,
@@ -92,6 +111,12 @@ const RecipeForm = () => {
                             required
                         />
                     </div>
+                    <ImageForm
+                        index={images.findIndex(image => {return image.slot === 0})}
+                        slot={0}
+                        value={images[images.findIndex(image => {return image.slot === 0})]}
+                        setAction={setImages}
+                    />
                     <div className='recipe-category'>
                         <CategorySelector
                             setAction={setCategory}

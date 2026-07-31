@@ -72,23 +72,24 @@ const Recipe = () => {
                 <h1 className='recipe-name'>
                     {recipe?.name}
                 </h1>
-                {recipe?.category_id &&
-                    <p className='recipe-category'>
-                        {recipe?.category_name}
-                    </p>
-                }
+                <p className='recipe-category'>
+                    {recipe?.category_id && recipe?.category_name}
+                </p>
                 <div className='recipe-servings'>
-                <input
-                    type='number'
-                    className='input-recipe-servings'
-                    id='servings'
-                    min={0.5}
-                    step={0.5}
-                    value={servings}
-                    onChange={(e) => setServings(Number(e.target.value))}
-                    disabled={globalState.modalsOpen > 0}
-                />
-                <label className='recipe-servings-label' htmlFor='servings'>Servings</label>
+                    <input
+                        type='number'
+                        className='input-recipe-servings'
+                        id='servings'
+                        min={0.5}
+                        step={0.5}
+                        value={servings}
+                        onChange={(e) => setServings(Number(e.target.value))}
+                        disabled={globalState.modalsOpen > 0}
+                    />
+                    <label className='recipe-servings-label' htmlFor='servings'>Servings</label>
+                </div>
+                <div className='recipe-image'>
+                    {(recipe?.images[recipe?.images.findIndex(image => {return image.slot === 0})]) ? recipe?.images[recipe?.images.findIndex(image => {return image.slot === 0})].file_name + " " + recipe?.images[recipe?.images.findIndex(image => {return image.slot === 0})].caption : ""}
                 </div>
             </div>
             <div className='recipe-group-ingredients'>

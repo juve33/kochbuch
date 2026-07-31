@@ -146,6 +146,15 @@ const newRecipePost = async (req, res) => {
         const recipeId = recipe_result.rows[0].id;
 
         await Promise.all(
+            images.map(image =>
+                client.query(`
+                    INSERT INTO recipe_images (recipe_id, slot, caption, type)
+                    VALUES ($1, $2, $3, $4);
+                `, [id, image.slot, image.caption, image.type.replace("image/", "")])
+            )
+        );
+
+        await Promise.all(
             steps.map(step =>
                 client.query(`
                     INSERT INTO steps (recipe_id, index_number, text)
@@ -232,10 +241,10 @@ const recipeGet = async (req, res) => {
     }
 
     const images_data = await db.query(`
-        SELECT i.id, ri.slot, ri.caption, i.location
-        FROM images i
-        JOIN recipe_images ri ON i.id = ri.image_id
-        WHERE ri.recipe_id = $1;
+        SELECT i.id, i.caption, i.slot, i.file_name
+        FROM recipe_images i
+        WHERE i.recipe_id = $1
+        ORDER BY slot ASC;
         `,
         [id]
     );
@@ -310,6 +319,40 @@ const recipePost = async (req, res) => {
                 servings = $4
             WHERE id = $1;
             `, [id, name, category_id ?? null, servings ?? null]);
+        
+        if (images.length === 0) {
+            await client.query(`
+                DELETE FROM recipe_images
+                WHERE recipe_id = $1;
+                `, [id]);
+        } else {
+            await client.query(`
+                DELETE FROM recipe_images
+                WHERE recipe_id = $1
+                    AND id <> ALL($2::int[]);
+                `, [id, images.map(image => {return image.id})]);
+
+            await Promise.all(
+                images.filter(image => {return Number.isInteger(image.id)}).map(image =>
+                    client.query(`
+                        UPDATE recipe_images
+                        SET
+                            slot = $2,
+                            caption = $3
+                        WHERE id = $1;
+                    `, [image.id, image.slot, image.caption])
+                )
+            );
+
+            await Promise.all(
+                images.filter(image => {return !Number.isInteger(image.id)}).map(image =>
+                    client.query(`
+                        INSERT INTO recipe_images (recipe_id, slot, caption, type)
+                        VALUES ($1, $2, $3, $4);
+                    `, [id, image.slot, image.caption, image.type.replace("image/", "")])
+                )
+            );
+        }
 
         await client.query(`
             DELETE FROM ingredients

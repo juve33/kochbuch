@@ -59,6 +59,7 @@ const NewRecipeView = () => {
                         name: "",
                         role: 10,
                         servings: 1,
+                        images: [],
                         ingredients: [{index_number: 0, amount: 500, unit:"g", text:"Flour"}],
                         steps: [{index_number: 0, text:"In a bowl, mix the flour and the salt"}]
                     },
