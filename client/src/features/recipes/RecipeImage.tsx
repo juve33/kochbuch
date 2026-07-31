@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { type ImageApi } from "../../utils/ApiTypes";
 
 type RecipeImageProps = {
