@@ -150,7 +150,7 @@ const newRecipePost = async (req, res) => {
                 client.query(`
                     INSERT INTO recipe_images (recipe_id, slot, caption, type)
                     VALUES ($1, $2, $3, $4);
-                `, [id, image.slot, image.caption, image.type.replace("image/", "")])
+                `, [recipeId, image.slot, image.caption, image.type.replace("image/", "")])
             )
         );
 
