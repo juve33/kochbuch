@@ -31,7 +31,7 @@ const Recipe = () => {
                 throw new Error(data.error || data.message || "Modifying recipe failed");
             }
 
-            navigate(-1);
+            navigate("/overview", { replace: true });
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
