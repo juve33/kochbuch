@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt';
+import fs from "fs/promises";
 
 import * as db from '../db/index.js';
+import { uploadDir } from './uploadsController.js';
+import console from 'console';
 
 const allRecipesGet = async (req, res) => {
     const result = await db.query(`
@@ -148,9 +151,9 @@ const newRecipePost = async (req, res) => {
         await Promise.all(
             images.map(image =>
                 client.query(`
-                    INSERT INTO recipe_images (recipe_id, slot, caption, type)
-                    VALUES ($1, $2, $3, $4);
-                `, [recipeId, image.slot, image.caption, image.type.replace("image/", "")])
+                    INSERT INTO recipe_images (recipe_id, slot, caption)
+                    VALUES ($1, $2, $3);
+                `, [recipeId, image.slot, image.caption])
             )
         );
 
@@ -207,7 +210,7 @@ const recipeDelete = async (req, res) => {
         [id, req.session.apiKeyId]
     );
 
-    if (!authorization_result.rows[0].is_authorized) {
+    if (!authorization_result.rows[0]?.is_authorized) {
         return res.status(403).json({ message: 'Forbidden' });
     }
 
@@ -215,6 +218,8 @@ const recipeDelete = async (req, res) => {
         DELETE FROM recipes
         WHERE id = $1;
         `, [id]);
+
+    await fs.rm(`${uploadDir}/recipe-${id}`, { recursive: true, force: true });
 
     res.status(200).json({ message: 'Recipe deleted' });
 }
@@ -241,7 +246,7 @@ const recipeGet = async (req, res) => {
     }
 
     const images_data = await db.query(`
-        SELECT i.id, i.caption, i.slot, i.file_name
+        SELECT i.id, i.caption, i.slot
         FROM recipe_images i
         WHERE i.recipe_id = $1
         ORDER BY slot ASC;
@@ -292,7 +297,7 @@ const recipePost = async (req, res) => {
         [id, req.session.apiKeyId]
     );
 
-    if (!authorization_result.rows[0].is_authorized) {
+    if (!authorization_result.rows[0]?.is_authorized) {
         return res.status(403).json({ message: 'Forbidden' });
     }
 
@@ -325,13 +330,33 @@ const recipePost = async (req, res) => {
                 DELETE FROM recipe_images
                 WHERE recipe_id = $1;
                 `, [id]);
+
+                await fs.rm(`${uploadDir}/recipe-${id}`, { recursive: true, force: true });
         } else {
-            await client.query(`
+            const image_response = await client.query(`
                 DELETE FROM recipe_images
                 WHERE recipe_id = $1
-                    AND id <> ALL($2::int[]);
+                    AND id <> ALL($2::int[])
+                RETURNING slot;
                 `, [id, images.map(image => {return image.id})]);
 
+            const getFileNames = async (path) => {
+                try {
+                    return await fs.readdir(path);
+                } catch (err) {
+                    if (err.code === "ENOENT") {
+                        return [];
+                    }
+                    throw err;
+                }
+            }
+
+            const deleted_files = image_response.rows.map(file => {return `${file.slot}.webp`});
+
+            for (const file of deleted_files) {
+                await fs.rm(`${uploadDir}/recipe-${id}/${file}`, { recursive: true, force: true });
+            }
+            
             await Promise.all(
                 images.filter(image => {return Number.isInteger(image.id)}).map(image =>
                     client.query(`
@@ -347,9 +372,9 @@ const recipePost = async (req, res) => {
             await Promise.all(
                 images.filter(image => {return !Number.isInteger(image.id)}).map(image =>
                     client.query(`
-                        INSERT INTO recipe_images (recipe_id, slot, caption, type)
-                        VALUES ($1, $2, $3, $4);
-                    `, [id, image.slot, image.caption, image.type.replace("image/", "")])
+                        INSERT INTO recipe_images (recipe_id, slot, caption)
+                        VALUES ($1, $2, $3);
+                    `, [id, image.slot, image.caption])
                 )
             );
         }
@@ -439,7 +464,7 @@ const recipeShareGet = async (req, res) => {
         [id, req.session.apiKeyId]
     );
 
-    if (!authorization_result.rows[0].is_authorized) {
+    if (!authorization_result.rows[0]?.is_authorized) {
         return res.status(403).json({ message: 'Forbidden' });
     }
 
@@ -466,7 +491,7 @@ const recipeSharePost = async (req, res) => {
         [id, req.session.apiKeyId]
     );
 
-    if (!authorization_result.rows[0].is_authorized) {
+    if (!authorization_result.rows[0]?.is_authorized) {
         return res.status(403).json({ message: 'Forbidden' });
     }
 

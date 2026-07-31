@@ -1,0 +1,26 @@
+import { useEffect, useState } from "react";
+
+import { type ImageApi } from "../../utils/ApiTypes";
+
+type RecipeImageProps = {
+    slot: number;
+    recipeId: number | undefined;
+    images: ImageApi[] |undefined;
+}
+
+const RecipeImage = ({ slot, recipeId, images }: RecipeImageProps) => {
+    const image = images?.find(image => image.slot === slot);
+    
+    return (
+        <div className='recipe-image'>
+            {(image && recipeId) &&
+                <>
+                    <img src={"/api/uploads/recipe/" + recipeId + "/" + slot + ".webp"} />
+                    <div>{image.caption}</div>
+                </>
+            }
+        </div>
+    )
+}
+
+export default RecipeImage

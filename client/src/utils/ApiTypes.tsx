@@ -26,8 +26,6 @@ export type ImageApi = {
     id?: number;
     slot: number;
     caption?: string;
-    file_name?: string;
-    type: string;
 }
 
 export type IngredientApi = {

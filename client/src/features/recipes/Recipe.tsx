@@ -5,6 +5,7 @@ import { Link, useOutletContext, useNavigate } from 'react-router'
 import { type RecipeOutletContext } from '../../views/RecipeView.js';
 import ShareButton from './ShareButton.js';
 import { useGlobalState } from '../../utils/GlobalState.js';
+import RecipeImage from './RecipeImage.js';
 
 const Recipe = () => {
     const { recipe } = useOutletContext<RecipeOutletContext>()
@@ -88,9 +89,7 @@ const Recipe = () => {
                     />
                     <label className='recipe-servings-label' htmlFor='servings'>Servings</label>
                 </div>
-                <div className='recipe-image'>
-                    {(recipe?.images[recipe?.images.findIndex(image => {return image.slot === 0})]) ? recipe?.images[recipe?.images.findIndex(image => {return image.slot === 0})].file_name + " " + recipe?.images[recipe?.images.findIndex(image => {return image.slot === 0})].caption : ""}
-                </div>
+                <RecipeImage slot={0} recipeId={recipe?.id} images={recipe?.images} />
             </div>
             <div className='recipe-group-ingredients'>
                 <ul>
@@ -123,6 +122,7 @@ const Recipe = () => {
                     ))}
                 </ol>
             </div>
+            <RecipeImage slot={1} recipeId={recipe?.id} images={recipe?.images} />
         </div>
     )
 }

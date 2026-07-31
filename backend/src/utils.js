@@ -93,14 +93,10 @@ export async function init() {
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
             );
 
-            DROP TABLE IF EXISTS recipe_images;
-
             CREATE TABLE IF NOT EXISTS recipe_images (
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 recipe_id INT NOT NULL,
                 slot INT NOT NULL,
-                type VARCHAR(8) NOT NULL,
-                file_name VARCHAR(32) GENERATED ALWAYS AS ('recipe-' || recipe_id::text || '_' || slot::text || '.' || type) STORED,
                 caption TEXT,
                 UNIQUE (recipe_id, slot) DEFERRABLE INITIALLY DEFERRED,
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE

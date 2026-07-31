@@ -16,7 +16,6 @@ export type Image = {
     slot: number;
     url?: string;
     file?: File;
-    type: string;
     caption?: string;
     fileWasChanged: boolean;
 };
@@ -58,7 +57,6 @@ const ImageForm = ({ value, slot, index, setAction }: ImageFormProps) => {
                     ...next[index],
                     url: URL.createObjectURL(file),
                     file: file,
-                    type: file.type,
                     fileWasChanged: true
                 };
 
@@ -77,7 +75,6 @@ const ImageForm = ({ value, slot, index, setAction }: ImageFormProps) => {
             createItem={(): Image => ({
                 id: Date.now(),
                 slot: slot,
-                type: "image/",
                 fileWasChanged: false
             })}
             setAction={setAction}
@@ -92,6 +89,7 @@ const ImageForm = ({ value, slot, index, setAction }: ImageFormProps) => {
                         id={"image-" + index}
                         onChange={handleFileChange}
                     />
+                    {value.url && <img src={value.url} />}
                 </label>
                 {value.url &&
                     <div className='input-recipe-image__controls'>
@@ -130,6 +128,7 @@ const ImageForm = ({ value, slot, index, setAction }: ImageFormProps) => {
                     </div>
                 }
             </div>
+            {error && <p>{error}</p>}
             {(addingCaption) &&
                 <>
                     <label htmlFor={"image-caption-" + index} id={"image-caption-label-" + index}>Caption:</label>

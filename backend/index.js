@@ -7,6 +7,7 @@ import waitPort from 'wait-port';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import recipeRoutes from './routes/recipeRoutes.js';
+import uploadsRoutes from './routes/uploadsRoutes.js';
 
 import bcrypt from 'bcrypt';
 import * as db from './db/index.js';
@@ -36,6 +37,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
 app.use('/api/recipe', recipeRoutes);
+
+app.use('/api/uploads', uploadsRoutes);
 
 
 

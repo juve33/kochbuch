@@ -20,6 +20,8 @@ const NewRecipeView = () => {
         setLoading(true);
         setError("");
 
+        let id: string | undefined = undefined;
+
         try {
             const response = await fetch("http://localhost/api/recipe/", {
                 method: "POST",
@@ -36,6 +38,7 @@ const NewRecipeView = () => {
                 throw new Error(data.error || data.message || "Creating recipe failed");
             }
 
+            id = data.id
             navigate({pathname: "/recipe/" + data.id}, {replace: true});
         } catch (err) {
             const message =
@@ -43,6 +46,7 @@ const NewRecipeView = () => {
             setError(message);
         } finally {
             setLoading(false);
+            return id ?? "-1";
         }
     }
 

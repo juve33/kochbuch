@@ -48,6 +48,8 @@ services:
       - DATABASE_PASSWORD=password
       - DATABASE_DB=kochbuch
       - PORT=5001
+    volumes:
+      - uploads:/app/uploads
     depends_on:
       - db
     labels:
@@ -79,3 +81,4 @@ services:
 
 volumes:
   postgres_data:
+  uploads:

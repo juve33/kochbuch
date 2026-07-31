@@ -9,7 +9,7 @@ import { useGlobalState } from '../utils/GlobalState';
 export type RecipeOutletContext = {
     recipe?: RecipeApi;
     disabled?: boolean;
-    onFormSubmit?: (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => void | Promise<void>;
+    onFormSubmit?: (e: React.SyntheticEvent<HTMLFormElement>, recipe: RecipeApi) => Promise<string>;
 };
 
 const RecipeView = () => {
@@ -59,6 +59,10 @@ const RecipeView = () => {
         setError("");
 
         try {
+            if (!recipeId) {
+                throw new Error("Modifying recipe failed");
+            }
+
             const response = await fetch("http://localhost/api/recipe/" + recipeId, {
                 method: "POST",
                 headers: {
@@ -82,6 +86,7 @@ const RecipeView = () => {
             setError(message);
         } finally {
             setLoading(false);
+            return recipeId ?? "-1";
         }
     }
 

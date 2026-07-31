@@ -51,8 +51,7 @@ const RecipeForm = () => {
                 id: image.id ?? Date.now(),
                 apiId: image.id,
                 slot: image.slot,
-                url: image.file_name ? "/api/files/" + image.file_name : undefined,
-                type: image.type,
+                url: recipe.id ? "/api/uploads/recipe/" + recipe.id + "/" + image.slot + ".webp" : undefined,
                 caption: image.caption,
                 fileWasChanged: false
             })));
@@ -73,8 +72,6 @@ const RecipeForm = () => {
                     id: image.apiId,
                     slot: image.slot,
                     caption: image.caption,
-                    file_name: "recipe-" + recipe?.id + "_" + image.slot + (image.file?.type.replace("image/", ".") ?? ""),
-                    type: image.type
                 })),
             ingredients:
                 ingredients.map((ingredient, index): IngredientApi => ({
@@ -94,8 +91,50 @@ const RecipeForm = () => {
             }
     }
 
+    const handleImagesSubmit = async (recipeId: string) => {
+        try {
+            if (images.length === 0) return;
+
+            const formData = new FormData();
+
+            images.forEach(image => {
+                if (!(image.file && image.fileWasChanged)) return;
+
+                formData.append("images", image.file);
+
+                formData.append("slots", image.slot.toString())
+            })
+
+            const response = await fetch("http://localhost/api/uploads/recipe/" + recipeId, {
+                method: "POST",
+                credentials: "include",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || "Uploading images failed");
+            }
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : "Unexpected error";
+            console.log("ERROR: " + message)
+        }
+    }
+
     return (
-        <form onSubmit={(e) => onFormSubmit?.(e, newRecipe())} aria-disabled={disabled || (globalState.modalsOpen > 0)}>
+        <form
+            onSubmit={(e) => {
+                onFormSubmit?.(e, newRecipe())
+                    .then(id => {
+                        if (id === "-1") return;
+
+                        handleImagesSubmit(id);
+                    });
+            }}
+            aria-disabled={disabled || (globalState.modalsOpen > 0)}
+        >
             <fieldset className='form form-recipe recipe' disabled={disabled || (globalState.modalsOpen > 0)}>
                 <div className='input-recipe-group-head recipe-group-head'>
                     <div className='recipe-name'>
@@ -213,6 +252,12 @@ const RecipeForm = () => {
                         Save
                     </button>
                 </div>
+                <ImageForm
+                    index={images.findIndex(image => {return image.slot === 1})}
+                    slot={1}
+                    value={images[images.findIndex(image => {return image.slot === 1})]}
+                    setAction={setImages}
+                />
             </fieldset>
         </form>
     )
