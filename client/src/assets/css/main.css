@@ -3,6 +3,7 @@ html {
 }
 
 * {
+    max-width: 100%;
     margin: 0;
 	padding: 0;
 	border: 0;
@@ -32,8 +33,6 @@ body {
 
 #root {
     width: 100% !important;
-
-    box-sizing: border-box;
 }
 
 :where(#root) {
@@ -43,6 +42,10 @@ body {
     max-width: 1000px;
     margin: 3em auto 0;
     padding: 1em;
+
+    box-sizing: border-box;
+
+    overflow-x: hidden;
 }
 
 :where(em) {
@@ -73,9 +76,14 @@ button {
     content: unset;
 }
 
-input,
-textarea {
+input[type=text],
+input[type=password],
+input[type=number] {
     height: 1lh !important;
+}
+
+:where(.checkbox) {
+    display: none;
 }
 
 :where(input),
@@ -103,6 +111,18 @@ textarea {
     font-size: 1.5em;
     text-align: center;
     text-decoration: underline;
+    text-align: center;
+}
+
+:where(h2) {
+    margin-bottom: .5rem;
+
+    font-size: 1.25em;
+    text-align: center;
+}
+
+:where(.empty) {
+    display: none;
 }
 
 .input__hidden {

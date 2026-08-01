@@ -46,7 +46,7 @@ const RecipeView = () => {
             <ul className='recipe-list__wrapper'>
                 {categories?.map((category) => (
                     <>
-                        {category.category_name && <div className='recipe-list-category'>{category.category_name}</div>}
+                        {category.category_name && <h2 className='recipe-list-category'>{category.category_name}</h2>}
                         {category.recipes.map((recipe) => (
                             <li className='recipe-list-item'>
                                 <a href={'/recipe/' + recipe.id}>

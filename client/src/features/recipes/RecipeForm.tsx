@@ -176,6 +176,7 @@ const RecipeForm = () => {
                     </div>
                 </div>
                 <div className='input-recipe-group-ingredients recipe-group-ingredients'>
+                    <h2>Ingredients</h2>
                     <SortableFieldsetContext
                         value={ingredients}
                         setAction={setIngredients}
@@ -209,6 +210,7 @@ const RecipeForm = () => {
                     />
                 </div>
                 <div className='input-recipe-group-steps recipe-group-steps'>
+                    <h2>Directions</h2>
                     <SortableFieldsetContext
                         value={steps}
                         setAction={setSteps}
@@ -241,6 +243,18 @@ const RecipeForm = () => {
                         aria-label='Add a step'
                     />
                 </div>
+                <ImageForm
+                    index={images.findIndex(image => {return image.slot === 1})}
+                    slot={1}
+                    value={images[images.findIndex(image => {return image.slot === 1})]}
+                    setAction={setImages}
+                />
+                <ImageForm
+                    index={images.findIndex(image => {return image.slot === 2})}
+                    slot={2}
+                    value={images[images.findIndex(image => {return image.slot === 2})]}
+                    setAction={setImages}
+                />
                 <div className='input-recipe-group-footer'>
                     <BackButton>
                         Back
@@ -252,12 +266,6 @@ const RecipeForm = () => {
                         Save
                     </button>
                 </div>
-                <ImageForm
-                    index={images.findIndex(image => {return image.slot === 1})}
-                    slot={1}
-                    value={images[images.findIndex(image => {return image.slot === 1})]}
-                    setAction={setImages}
-                />
             </fieldset>
         </form>
     )

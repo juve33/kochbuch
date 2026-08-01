@@ -4,6 +4,8 @@
         "head"
         "ingredients"
         "steps"
+        "image-1"
+        "image-2"
         "footer" !important;
 }
 
@@ -11,11 +13,12 @@
     gap: 1em;
 }
 
-@media (orientation: landscape) {
+@media (orientation: landscape) and (min-width: 1000px) {
     .recipe {
         grid-template-areas:
             "head head"
             "ingredients steps"
+            "image-1 image-2"
             "footer footer" !important;
     }
 
@@ -47,11 +50,12 @@
 :where(.recipe input),
 :where(.recipe textarea) {
     background-color: unset;
+
+    outline: solid 2px red;
 }
 
 :where(.recipe input[type=number]),
-:where(.recipe input[type=text]),
-:where(.recipe textarea) {
+:where(.recipe input[type=text]) {
     field-sizing: content;
     min-width: 1ch;
 }
@@ -71,7 +75,7 @@
     align-items: center;
 }
 
-@media (orientation: landscape) {
+@media (orientation: landscape) and (min-width: 1000px) {
     .recipe-group-head {
         display: grid !important;
     }
@@ -158,7 +162,19 @@
 }
 
 :where(.recipe-group-ingredients ul) {
+    width: fit-content;
+
+    margin-inline: auto;
+    
     list-style: none;
+}
+
+@media (orientation: landscape) and (min-width: 1000px) {
+    :where(.recipe-group-ingredients ul) {
+        width: initial;
+
+        margin-inline: none;
+    }
 }
 
 .input-recipe-ingredient__content {
@@ -172,6 +188,9 @@
 }
 
 :where(.input-recipe-ingredient__content #comment) {
+    field-sizing: content;
+    flex: 1;
+    
     font-style: italic;
     padding-right: .25ch;
 }
@@ -196,14 +215,19 @@
 }
 
 :where(.input-recipe-step__content textarea) {
+    field-sizing: content;
+    flex: 1;
+
     box-shadow:
         inset 0px 0px 5px 0px #0004,
         inset 0px -2px 0px 0px gray;
 }
 
-:where(.recipe-step-checkbox:checked + li) {
+@media not print {
+    :where(.recipe-step-checkbox:checked ~ li) {
     text-decoration: line-through;
     opacity: .5;
+}
 }
 
 :where(.recipe-step-index) {
@@ -220,7 +244,15 @@
     margin-bottom: 1rem;
 }
 
-@media (orientation: landscape) {
+:where(.image-1) {
+    grid-area: image-1;
+}
+
+:where(.image-2) {
+    grid-area: image-2;
+}
+
+@media (orientation: landscape) and (min-width: 1000px) {
     :where(.recipe-image) {
         grid-column: span 3;
         justify-self: stretch;
@@ -269,7 +301,7 @@
 }
 
 .input-recipe-image__controls {
-    display: none !important;
+    display: flex !important;
     flex-direction: row !important;
     flex-wrap: wrap !important;
     justify-content: space-evenly !important;
@@ -283,8 +315,14 @@
     box-sizing: border-box !important;
 }
 
-.input-recipe-image__inner:hover .input-recipe-image__controls {
-    display: flex !important;
+@media (pointer: fine) {
+    .input-recipe-image__controls {
+        display: none !important;
+    }
+
+    .input-recipe-image__inner:hover .input-recipe-image__controls {
+        display: flex !important;
+    }
 }
 
 :where(.input-recipe-image__controls) {

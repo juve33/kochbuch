@@ -73,7 +73,8 @@ const Recipe = () => {
                 <h1 className='recipe-name'>
                     {recipe?.name}
                 </h1>
-                <p className='recipe-category'>
+                <RecipeImage slot={0} recipeId={recipe?.id} images={recipe?.images} />
+                <p className={'recipe-category' + (recipe?.category_name ? '' : ' empty')}>
                     {recipe?.category_id && recipe?.category_name}
                 </p>
                 <div className='recipe-servings'>
@@ -89,9 +90,9 @@ const Recipe = () => {
                     />
                     <label className='recipe-servings-label' htmlFor='servings'>Servings</label>
                 </div>
-                <RecipeImage slot={0} recipeId={recipe?.id} images={recipe?.images} />
             </div>
             <div className='recipe-group-ingredients'>
+                <h2>Ingredients</h2>
                 <ul>
                     {recipe?.ingredients.map((ingredient) => (
                         <li className='recipe-ingredient__wrapper recipe-ingredient__content'>
@@ -101,6 +102,7 @@ const Recipe = () => {
                 </ul>
             </div>
             <div className='recipe-group-steps'>
+                <h2>Directions</h2>
                 <ol>
                     {recipe?.steps.map((step, index) => (
                         <div className='recipe-step__wrapper'>
@@ -110,6 +112,7 @@ const Recipe = () => {
                                 id={'step-' + step.id?.toString()}
                                 disabled={globalState.modalsOpen > 0}
                             />
+                            <span className='checkbox'></span>
                             <li>
                                 <label className='recipe-step__content' htmlFor={'step-' + step.id?.toString()}>
                                     <div className='recipe-step-index'>
@@ -123,6 +126,7 @@ const Recipe = () => {
                 </ol>
             </div>
             <RecipeImage slot={1} recipeId={recipe?.id} images={recipe?.images} />
+            <RecipeImage slot={2} recipeId={recipe?.id} images={recipe?.images} />
         </div>
     )
 }
