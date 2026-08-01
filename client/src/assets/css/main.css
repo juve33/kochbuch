@@ -95,6 +95,23 @@ input[type=number] {
         inset 0px -2px 0px 0px gray;
 }
 
+:where(input):focus-visible,
+:where(textarea):focus-visible {
+    box-shadow: inset 0px 0px 0px 2px gray;
+
+    outline: none;
+}
+
+:where(input)::placeholder,
+:where(textarea)::placeholder {
+    font-size: 0;
+}
+
+:where(input:focus-visible)::placeholder,
+:where(textarea:focus-visible)::placeholder {
+    font-size: inherit;
+}
+
 :where(input[type=text]) {
     min-width: 4ch;
 }

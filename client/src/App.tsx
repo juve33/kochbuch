@@ -13,6 +13,8 @@ import SettingsView from './views/SettingsView';
 import AccountSettings from './features/user/AccountSettings';
 import AdminSettings from './features/user/AdminSettings';
 
+import './assets/default-theme/theme.css';
+
 function App() {
     return (
         <GlobalStateProvider>

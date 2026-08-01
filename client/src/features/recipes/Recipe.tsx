@@ -112,9 +112,9 @@ const Recipe = () => {
                                 id={'step-' + step.id?.toString()}
                                 disabled={globalState.modalsOpen > 0}
                             />
-                            <span className='checkbox'></span>
                             <li>
                                 <label className='recipe-step__content' htmlFor={'step-' + step.id?.toString()}>
+                            <span className='checkbox'></span>
                                     <div className='recipe-step-index'>
                                         {index + 1}
                                     </div>

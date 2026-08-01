@@ -50,8 +50,6 @@
 :where(.recipe input),
 :where(.recipe textarea) {
     background-color: unset;
-
-    outline: solid 2px red;
 }
 
 :where(.recipe input[type=number]),
@@ -97,6 +95,10 @@
 
 :where(.input-recipe-name) {
     text-decoration: inherit;
+}
+
+:where(.input-recipe-name)::placeholder {
+    font-size: inherit;
 }
 
 :where(.recipe-category) {

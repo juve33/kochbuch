@@ -16,6 +16,8 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
         <div className='input-recipe-ingredient__content recipe-ingredient__content'>
             <FractionInput
                 id="amount"
+                placeholder='Amount'
+                title='Amount'
                 onValueChange={(e) => {
                     setAction(prev => {
                         console.log("onChange", JSON.stringify(e.target.value));
@@ -45,6 +47,8 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
             <input
                 type="text"
                 id="unit"
+                placeholder='Unit'
+                title='Unit'
                 onChange={(e) => {
                     setAction(prev => {
                         const next = [...prev];
@@ -60,6 +64,8 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
             <input
                 type="text"
                 id="text"
+                placeholder='Ingredient'
+                title='Ingredient'
                 onChange={(e) => {
                     setAction(prev => {
                         const next = [...prev];
@@ -75,6 +81,8 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
             />
             <textarea
                 id="comment"
+                placeholder='Comment'
+                title='Comment'
                 onChange={(e) => {
                     setAction(prev => {
                         const next = [...prev];
