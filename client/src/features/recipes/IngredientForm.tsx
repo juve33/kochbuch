@@ -18,13 +18,23 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
                 id="amount"
                 onValueChange={(e) => {
                     setAction(prev => {
+                        console.log("onChange", JSON.stringify(e.target.value));
+                        console.log("updater");
                         const next = [...prev];
 
-                        if (next[index].amount === undefined) {
-                            next[index].amount = new Fraction(e.target.value);
-                        } else {
-                            next[index].amount.valueAsString = e.target.value
-                        }
+                        next[index] = {
+                            ...next[index],
+                            amount: new Fraction(e.target.value),
+                        };
+
+                        console.log(
+                            "stored string:",
+                            JSON.stringify(next[index].amount?.valueAsString)
+                        );
+                        console.log(
+                            "stored value:",
+                            JSON.stringify(next[index].amount?.valueAsNumber)
+                        );
 
                         return next;
                     });

@@ -10,12 +10,13 @@ type FractionInputProps =
     }
 
 const FractionInput = ({ value, onValueChange, ...props } : FractionInputProps) => {
-    
+    console.log("render", JSON.stringify(value?.valueAsString));
     return (
         <input
             {...props}
             type="text"
             pattern={[
+                "^$",
                 "^\\d+(\\.\\d+)?$",
                 "^\\d+\\s*\\/\\s*\\d+$",
                 "^\\d+\\s+\\d+\\s*\\/\\s*\\d+$"

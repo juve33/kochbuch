@@ -24,24 +24,21 @@ class Fraction {
         if (value === undefined) {
             this._valueAsNumber = undefined;
             this._valueAsString = "";
-        }
-        if (typeof value == "number") {
+        } else if (typeof value == "number") {
             this._valueAsNumber = value;
             this._valueAsString = value.toString();
-        }
-
-        if (typeof value == "string") {
+        } else if (typeof value == "string") {
             this._valueAsNumber = Fraction.parseFraction(value);
             this._valueAsString = value;
         }
     }
 
     private static parseFraction(value: string | undefined): number | undefined {
-        if (!value) return undefined;
+        if (!value || value === "") return undefined;
 
         const str = value.trim();
 
-        if (!str) return undefined;
+        if (!str || str === "") return undefined;
 
         if (/^\d+(\.\d+)?$/.test(str)) {
             return parseFloat(str);
