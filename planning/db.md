@@ -4,86 +4,79 @@
 erDiagram
 direction LR
 
-Users {
-    serial UserID PK
-    varchar(32) Name "unique not null"
-    varchar(60) PasswortHash "not null"
-    int rank "default 0"
-    text SettingThemeSlug
-    bool SettingAdvancedOptions
+u[users] {
+    int id PK "generated always as identity"
+    varchar(32) name "unique not null"
+    varchar(60) passwort_hash "not null"
+    int role "not null default 0"
+    varchar(32) setting_theme_slug
+    bool setting_advanced_options "default false"
 }
 
-Categories {
-    serial CategoryID PK
-    varchar(32) Name "unique not null"
+c[categories] {
+    int id PK "generated always as identity"
+    varchar(32) name "unique not null"
 }
 
-Recipes {
-    serial RecipeID PK
-    varchar(64) Name "not null"
-    int CategoryID FK "on delete set null"
+r[recipes] {
+    int id PK "generated always as identity"
+    varchar(64) name "not null"
+    int category_id FK "on delete set null"
     int servings
     int duration
 }
 
-Steps {
-    serial StepID PK
-    int RecipeID FK "not null on delete cascade"
-    int IndexNumber "not null"
-    text Text "not null"
+s[steps] {
+    int id PK "generated always as identity"
+    int recipe_id FK "not null on delete cascade"
+    int index_number "not null"
+    text text "not null"
 }
 
-Ingredients {
-    serial IngredientID PK
-    int RecipeID FK
-    int IndexNumber "not null"
-    numeric Amount
-    varchar(16) Unit
-    varchar(64) Text "not null"
+i[ingredients] {
+    int id PK "generated always as identity"
+    int recipe_id FK "not null on delete cascade"
+    int StepID FK "on delete set null"
+    int index_number "not null"
+    numeric amount
+    varchar(16) unit
+    varchar(64) text "not null"
     text comment
-    int StepID FK
 }
 
-ApiKeysInner {
-    serial ApiKeyInner PK
-    int UserID FK "unique on delete cascade"
-    varchar(32) Name "unique"
+apii[api_keys_inner] {
+    int id PK "generated always as identity"
+    varchar(60) key_hash "unique"
+    int user_id FK "unique on delete cascade"
+    varchar(32) name "unique"
 }
 
-ApiKeysOuter {
-    int ApiKeyOuter PK
-    int UserID PK, FK "on delete cascade"
-    varchar(32) Domain "not null"
+apio[api_keys_outer] {
+    varchar(60) key PK
+    int user_id PK, FK "on delete cascade"
+    varchar(32) domain "not null"
 }
 
-AccessPermissions {
-    int ApiKeyInner PK, FK "on delete cascade"
-    int RecipeID PK, FK "on delete cascade"
-    int Role "not null"
+a[access_permissions] {
+    int key_id PK, FK "on delete cascade"
+    int recipe_id PK, FK "on delete cascade"
+    int role "not null default 0"
 }
 
-Images {
-    serial ImageID PK
-    varchar(64) Location "unique not null"
-    int UserID FK "not null"
+i[recipe_images] {
+    int id PK "generated always as identity"
+    int recipe_id FK "not null on delete cascade"
+    int slot "not null"
+    text caption
 }
 
-RecipeImages {
-    int ImageID FK "not null"
-    int RecipeID PK, FK
-    int Slot PK
-    text Caption
-}
-
-Recipes }o--o| Categories: gehörtZu
-Images ||--|{ RecipeImages: ist
-Recipes ||--o{ RecipeImages: siehtAusWie
-Images ||--|{ Users: gehört
-Recipes ||--|{ Ingredients: enthält
-Recipes ||--|{ Steps: hatSchritt
-Steps |o--o{ Ingredients: benötigt
-ApiKeysInner ||--o| Users: gehörtZu
-ApiKeysOuter }o--|| Users: gehörtZu
-ApiKeysInner ||--o{ AccessPermissions: hatZugriff
-Recipes ||--|{ AccessPermissions: kannZugegriffenWerdenDurch
+r }o--o| c: gehörtZu
+r ||--o{ i: hat
+r ||--|{ i: hat
+r ||--|{ s: hat
+s |o--o{ i: benötigt
+apii ||--o| u: gehörtZu
+apio }o--|| u: gehörtZu
+apii ||--o{ a: gehörtZu
+r ||--|{ a: kannZugegriffenWerdenDurch
 ```
