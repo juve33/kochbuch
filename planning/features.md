@@ -20,9 +20,9 @@
 - [x] Kategorie löschen
 - [x] Schritte abhaken
 - [x] Zutaten hochrechnen
-- [ ] Bilder für Rezepte hochladen
-- [ ] Bilder löschen
-- [ ] Bilder-Meta-Daten bearbeiten
+- [x] Bilder für Rezepte hochladen
+- [x] Bilder löschen
+- [x] Bilder-Meta-Daten bearbeiten
 
 ### Rezeptlayout
 
