@@ -66,6 +66,7 @@ const RecipeForm = () => {
             category_name: category?.name,
             role: recipe?.role ?? 0,
             servings: servings ? parseInt(servings) : undefined,
+            author: recipe?.author,
 
             images:
                 images.filter(image => {return image.url ? true : false}).map((image): ImageApi => ({
