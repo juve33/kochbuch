@@ -63,7 +63,7 @@ a[access_permissions] {
     int role "not null default 0"
 }
 
-i[recipe_images] {
+im[recipe_images] {
     int id PK "generated always as identity"
     int recipe_id FK "not null on delete cascade"
     int slot "not null"
@@ -71,7 +71,7 @@ i[recipe_images] {
 }
 
 r }o--o| c: gehörtZu
-r ||--o{ i: hat
+r ||--o{ im: hat
 r ||--|{ i: hat
 r ||--|{ s: hat
 s |o--o{ i: benötigt
