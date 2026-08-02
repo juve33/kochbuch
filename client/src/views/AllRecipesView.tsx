@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { type RecipeListByCategoryApi } from '../utils/ApiTypes';
+import Modal from '../components/Modal';
 
 import '../assets/css/recipe-list.css';
 
@@ -42,7 +43,13 @@ const RecipeView = () => {
     return (
         <div className={loading ? 'loading' : undefined}>
             <h1>Recipes</h1>
-            {error ?? <p>{error}</p>}
+            {error &&
+                <Modal onCloseButtonClick={() => setError("")}>
+                    <h2>Error</h2>
+                    <p>{error}</p>
+                    <button type='button' onClick={() => setError("")}>OK</button>
+                </Modal>
+            }
             <ul className='recipe-list__wrapper'>
                 {categories?.map((category) => (
                     <>

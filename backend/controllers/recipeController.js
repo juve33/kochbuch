@@ -67,6 +67,10 @@ const categoryPost = async (req, res) => {
         WHERE id = $1;
         `, [id, name])
         .catch(err => {
+            if (err.code === '22001') {
+                return res.status(400).json({ message: 'Name too long' });
+            }
+
             if (err.code === '23502') {
                 return res.status(400).json({ message: 'Name must not be empty' });
             }
@@ -108,6 +112,10 @@ const newCategoryPost = async (req, res) => {
         await client.query('ROLLBACK');
 
         console.error(err);
+
+        if (err.code === '22001') {
+                return res.status(400).json({ message: 'Name too long' });
+            }
 
         if (err.code === '23505') {
             return res.status(400).json({ message: 'Category already exists' });
@@ -190,6 +198,10 @@ const newRecipePost = async (req, res) => {
 
         console.error(err);
 
+        if (err.code === '22001') {
+            return res.status(400).json({ message: 'Too long string submitted' });
+        }
+
         res.status(500).json({
             message: 'Creating recipe failed'
         });
@@ -245,6 +257,17 @@ const recipeGet = async (req, res) => {
         return res.status(403).json({ message: 'Recipe not permitted to access' });
     }
 
+    const recipe_author = await db.query(`
+        SELECT u.name
+        FROM recipes r
+        LEFT JOIN access_permissions a ON r.id = a.recipe_id AND a.role = 10
+        LEFT JOIN api_keys_inner k ON k.id = a.key_id
+        LEFT JOIN users u ON u.id = k.user_id
+        WHERE r.id = $1;
+        `,
+        [id]
+    );
+
     const images_data = await db.query(`
         SELECT i.id, i.caption, i.slot
         FROM recipe_images i
@@ -275,6 +298,7 @@ const recipeGet = async (req, res) => {
     res.status(200).json({
         "id": recipe_data.rows[0].id,
         "name": recipe_data.rows[0].name,
+        "author": recipe_author.rows[0].name,
         "category_id": recipe_data.rows[0].category_id,
         "category_name": recipe_data.rows[0].category_name,
         "servings": recipe_data.rows[0].servings,
@@ -338,18 +362,7 @@ const recipePost = async (req, res) => {
                 WHERE recipe_id = $1
                     AND id <> ALL($2::int[])
                 RETURNING slot;
-                `, [id, images.map(image => {return image.id})]);
-
-            const getFileNames = async (path) => {
-                try {
-                    return await fs.readdir(path);
-                } catch (err) {
-                    if (err.code === "ENOENT") {
-                        return [];
-                    }
-                    throw err;
-                }
-            }
+                `, [id, images.filter(image => Number.isInteger(image.id)).map(image => {return image.id})]);
 
             const deleted_files = image_response.rows.map(file => {return `${file.slot}.webp`});
 
@@ -373,7 +386,8 @@ const recipePost = async (req, res) => {
                 images.filter(image => {return !Number.isInteger(image.id)}).map(image =>
                     client.query(`
                         INSERT INTO recipe_images (recipe_id, slot, caption)
-                        VALUES ($1, $2, $3);
+                        VALUES ($1, $2, $3)
+                        ON CONFLICT DO NOTHING;
                     `, [id, image.slot, image.caption])
                 )
             );
@@ -443,6 +457,10 @@ const recipePost = async (req, res) => {
         await client.query('ROLLBACK');
 
         console.error(err);
+
+        if (err.code === '22001') {
+            return res.status(400).json({ message: 'Too long string submitted' });
+        }
 
         res.status(500).json({
             message: 'Modifying recipe failed'

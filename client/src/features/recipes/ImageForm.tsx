@@ -71,17 +71,19 @@ const ImageForm = ({ value, slot, index, setAction }: ImageFormProps) => {
     
     return (
         (value === undefined) ?
-        <AddButton
-            className={'recipe-image__add image-' + slot}
-            createItem={(): Image => ({
-                id: Date.now(),
-                slot: slot,
-                fileWasChanged: false
-            })}
-            setAction={setAction}
-            aria-label='Add image'
-            title='Add image'
-        />
+        <div className={'input-recipe-image__wrapper recipe-image image-' + slot}>
+            <AddButton
+                className='recipe-image__add'
+                createItem={(): Image => ({
+                    id: Date.now(),
+                    slot: slot,
+                    fileWasChanged: false
+                })}
+                setAction={setAction}
+                aria-label='Add image'
+                title='Add image'
+            />  
+        </div>
         :
         <div className={'input-recipe-image__wrapper recipe-image image-' + slot}>
             <div className='input-recipe-image__inner'>
@@ -129,7 +131,7 @@ const ImageForm = ({ value, slot, index, setAction }: ImageFormProps) => {
                     ></button>
                 </div>
             </div>
-            {error && <p>{error}</p>}
+            {error && <div>{error}</div>}
             {(addingCaption) &&
                 <>
                     <label htmlFor={"image-caption-" + index} id={"image-caption-label-" + index}>Caption:</label>

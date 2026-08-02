@@ -37,7 +37,7 @@ const Recipe = () => {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
             
-            console.log(message);
+            throw new Error(message);
         }
     }
 
@@ -74,9 +74,9 @@ const Recipe = () => {
                     {recipe?.name}
                 </h1>
                 <RecipeImage slot={0} recipeId={recipe?.id} images={recipe?.images} />
-                <p className={'recipe-category' + (recipe?.category_name ? '' : ' empty')}>
+                <div className={'recipe-category' + (recipe?.category_name ? '' : ' empty')}>
                     {recipe?.category_id && recipe?.category_name}
-                </p>
+                </div>
                 <div className='recipe-servings'>
                     <input
                         type='number'
@@ -89,6 +89,10 @@ const Recipe = () => {
                         disabled={globalState.modalsOpen > 0}
                     />
                     <label className='recipe-servings-label' htmlFor='servings'>Servings</label>
+                </div>
+                <div className={'recipe-author' + (recipe?.author ? '' : ' empty')}>
+                    {recipe?.author}
+                    <div className='recipe-author__title'>Author</div>
                 </div>
             </div>
             <div className='recipe-group-ingredients'>

@@ -6,6 +6,7 @@ import { type RecipeApi } from '../utils/ApiTypes';
 import { type RecipeOutletContext } from './RecipeView.js';
 import BackButton from '../components/BackButton';
 import { useGlobalState } from '../utils/GlobalState.js';
+import Modal from '../components/Modal.js';
 
 const NewRecipeView = () => {
     const globalState = useGlobalState();
@@ -63,6 +64,7 @@ const NewRecipeView = () => {
                         name: "",
                         role: 10,
                         servings: 1,
+                        author: globalState.user.name,
                         images: [],
                         ingredients: [{index_number: 0, amount: 500, unit:"g", text:"Flour"}],
                         steps: [{index_number: 0, text:"In a bowl, mix the flour and the salt"}]
@@ -71,7 +73,13 @@ const NewRecipeView = () => {
                     onFormSubmit: handleSubmit
                 } satisfies RecipeOutletContext}
             />
-            { error ?? (<p>{error}</p>)}
+            { error &&
+                <Modal onCloseButtonClick={() => setError("")}>
+                    <h2>Error</h2>
+                    <p>{error}</p>
+                    <button type='button' onClick={() => setError("")}>OK</button>
+                </Modal>
+            }
         </>
     )
 }

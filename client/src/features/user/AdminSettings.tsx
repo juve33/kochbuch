@@ -286,6 +286,7 @@ const AdminSettings = () => {
                                 <input
                                     type='text'
                                     className='user__name'
+                                    maxLength={32}
                                     aria-labelledby='username'
                                     value={name}
                                     onChange={(e) => {
@@ -356,6 +357,7 @@ const AdminSettings = () => {
                         setDeleting(undefined);
                         globalStateDispatch({ type: "close modal" });
                     }}>
+                        <h2>Warning</h2>
                         <p>Are you sure you want to delete user {users[deleting].name}? This is not reversible!</p>
                         <form className='settings__content' id='password-form' onSubmit={(e) => handleDelete(e, users[deleting].id, deleting)}>
                         <label htmlFor="password">Your password:</label>
@@ -382,6 +384,7 @@ const AdminSettings = () => {
                         setChangingPassword(undefined);
                         globalStateDispatch({ type: "close modal" });
                     }}>
+                        <h2>Change {users[changingPassword].name}s Password</h2>
                         <form className='settings__content' id='change-password-form' onSubmit={(e) => handleChangingPassword(e, users[changingPassword].id, changingPassword)}>
                         <label htmlFor="new-password">New password:</label>
                         <input
@@ -430,8 +433,8 @@ const AdminSettings = () => {
                     setPassword("");
                     globalStateDispatch({ type: "close modal" });
                 }}>
-                    <p>Create a new user account</p>
-                    <form className='settings__content' onSubmit={handleNewUserSubmit}>
+                    <h2>Create new user</h2>
+                    <form className='settings__content' id='create-user' onSubmit={handleNewUserSubmit}>
                         <label htmlFor="new-username">Username:</label>
                         <input
                             type="text"
@@ -446,21 +449,22 @@ const AdminSettings = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
                         />
-                        <div className='modal__controls'>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                aria-label='Save'
-                            ></button>
-                            <button type='button' aria-label='Cancel' onClick={() => {
-                                setCreatingUser(false);
-                                setName(undefined);
-                                setRole(undefined);
-                                setPassword("");
-                                globalStateDispatch({ type: "close modal" });
-                            }}></button>
-                        </div>
                     </form>
+                    <div className='modal__controls'>
+                        <button
+                            type="submit"
+                            form='create-user'
+                            disabled={loading}
+                            aria-label='Save'
+                        ></button>
+                        <button type='button' aria-label='Cancel' onClick={() => {
+                            setCreatingUser(false);
+                            setName(undefined);
+                            setRole(undefined);
+                            setPassword("");
+                            globalStateDispatch({ type: "close modal" });
+                        }}></button>
+                    </div>
                 </Modal>
             }
         </>

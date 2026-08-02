@@ -73,6 +73,7 @@ const AccountSettings = () => {
                     <input
                         type="text"
                         id="username"
+                        maxLength={32}
                         onChange={(e) => setUsername(e.target.value)}
                         value={username}
                     />

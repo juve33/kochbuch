@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { type RecipeApi } from '../utils/ApiTypes';
 import BackButton from '../components/BackButton';
 import { useGlobalState } from '../utils/GlobalState';
+import Modal from '../components/Modal';
 
 export type RecipeOutletContext = {
     recipe?: RecipeApi;
@@ -97,11 +98,14 @@ const RecipeView = () => {
                     <BackButton />
                 </>,
             globalState.refs.headerMain.current)}
-            {error ? (
-                <p>{error}</p>
-            ) : (
-                <Outlet context={{ recipe: recipe, disabled: loading, onFormSubmit: handleSubmit} satisfies RecipeOutletContext} />
-            )}
+            <Outlet context={{ recipe: recipe, disabled: loading, onFormSubmit: handleSubmit} satisfies RecipeOutletContext} />
+            {error &&
+                <Modal onCloseButtonClick={() => setError("")}>
+                    <h2>Error</h2>
+                    <p>{error}</p>
+                    <button type='button' onClick={() => setError("")}>OK</button>
+                </Modal>
+            }
         </>      
     )
 }

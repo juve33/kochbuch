@@ -178,8 +178,9 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                 <Modal
                     onCloseButtonClick={() => setOpen(false)}
                 >
+                    <h2>Share recipe</h2>
+                    <p>Select users:</p>
                     <form id='share-form' onSubmit={handleSubmit}>
-                        <legend>Select users:</legend>
                         {allUsers.foreign.length > 0 ?
                             <>
                                 <div>
@@ -214,23 +215,25 @@ const ShareButton = ({ recipeId, children = "Share" }: ShareButtonProps) => {
                             ))
                         }
                     </form>
-                    <button
-                        type="submit"
-                        form='share-form'
-                    >
-                        Submit
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setOpen(false);
-                            dispatchGlobalState({
-                                type: "close modal"
-                            })
-                        }}
-                    >
-                        Cancel
-                    </button>
+                    <div className='modal__controls'>
+                        <button
+                            type="submit"
+                            form='share-form'
+                        >
+                            Submit
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setOpen(false);
+                                dispatchGlobalState({
+                                    type: "close modal"
+                                })
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                     {error && <div>{error}</div>}
                 </Modal>
             )}

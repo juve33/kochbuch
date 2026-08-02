@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Navigate } from 'react-router';
 
 import { useGlobalState, useGlobalStateDispatch } from '../../utils/GlobalState';
+import Modal from '../../components/Modal';
+
+import '../../assets/css/login.css'
 
 const Login = () => {
     const globalState = useGlobalState();
@@ -87,33 +90,47 @@ const Login = () => {
         globalState.authStatus === "authenticated" ?
             <Navigate to="/overview" replace />
         :
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    placeholder="Enter Username here"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Enter Password here"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                    required
-                />
-                <button
-                    type="submit"
-                    disabled={loading}
-                >
-                    {loading ? "Logging in..." : "Log in"}
-                </button>
-                { error ?? (<p>{error}</p>)}
-            </form>
+            <>
+                <form onSubmit={handleSubmit} className='login-form' id='login-form'>
+                    <fieldset disabled={(error || loading) ? true : false}>
+                        <label htmlFor="username">Username:</label>
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="Enter Username here"
+                            maxLength={32}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter Password here"
+                            onChange={(e) => setPassword(e.target.value)}
+                            value={password}
+                            required
+                        />
+                        {error &&
+                            <Modal onCloseButtonClick={() => setError("")}>
+                                <h2>Error</h2>
+                                <p>{error}</p>
+                                <button type='button' onClick={() => setError("")}>OK</button>
+                            </Modal>
+                        }
+                    </fieldset>
+                </form>
+                <div className='modal__controls'>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        form='login-form'
+                    >
+                        {loading ? "Logging in..." : "Log in"}
+                    </button>
+                </div>
+            </>
     )
 }
 

@@ -133,6 +133,10 @@
     justify-self: end;
 }
 
+:where(.recipe-author__title) {
+    display: none;
+}
+
 .recipe-step__wrapper {
     display: flex !important;
     flex-direction: row !important;

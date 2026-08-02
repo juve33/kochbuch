@@ -115,6 +115,10 @@ const mePost = async (req, res) => {
     } catch (err) {
         await client.query('ROLLBACK');
 
+        if (err.code === '22001') {
+            return res.status(400).json({ message: 'Too long string submitted' });
+        }
+
         if (err.code === '23502') {
             return res.status(400).json({ message: 'Username must not be empty' });
         }
@@ -145,6 +149,10 @@ const newUserPost = async (req, res) => {
             RETURNING id;
         `, [username, hashedPassword])
         .catch(err => {
+            if (err.code === '22001') {
+                return res.status(400).json({ message: 'Too long string submitted' });
+            }
+            
             if (err.code === '23502') {
                 return res.status(400).json({ message: 'Username must not be empty' });
             }
@@ -235,6 +243,10 @@ const userPost = async (req, res) => {
         res.status(201).json({ message: 'User modified successfully' });
     } catch (err) {
         await client.query('ROLLBACK');
+
+        if (err.code === '22001') {
+            return res.status(400).json({ message: 'Too long string submitted' });
+        }
 
         if (err.code === '23502') {
             return res.status(400).json({ message: 'Username must not be empty' });

@@ -6,6 +6,7 @@ export type RecipeApi = {
     role: number;
     servings?: number;
     duration?: number;
+    author?: string;
     
     images: ImageApi[];
     ingredients: IngredientApi[];

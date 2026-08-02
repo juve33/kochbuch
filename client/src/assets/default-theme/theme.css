@@ -4,12 +4,15 @@
 @import "./header.css";
 @import "./settings.css";
 @import "./modal.css";
+@import "./recipe-list.css";
 
 @import url(https://fonts.bunny.net/css?family=abhaya-libre:400,700);
 @import url(https://fonts.bunny.net/css?family=pacifico:400);
 @import url(https://fonts.bunny.net/css?family=baskervville:400,400i,600,600i);
 
 :root {
+    font-size: 16px;
+
     --size-xsmall: 0.5rem;
     --size-small: 1rem;
     --size-medium: 1.25rem;
@@ -44,6 +47,18 @@
     }
 }
 
+@media (min-width: 500px) {
+    :root {
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 1000px) {
+    :root {
+        font-size: 20px;
+    }
+}
+
 body {
     line-height: 1.25;
 
@@ -53,6 +68,7 @@ body {
 }
 
 #root {
+    margin-top: calc(var(--size-large) + 2 * var(--size-small));
     padding: var(--size-small) var(--size-xsmall);
 
     overflow: visible;

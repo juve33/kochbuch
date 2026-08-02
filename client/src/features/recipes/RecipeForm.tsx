@@ -119,7 +119,7 @@ const RecipeForm = () => {
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Unexpected error";
-            console.log("ERROR: " + message)
+            throw new Error(message)
         }
     }
 
@@ -143,6 +143,7 @@ const RecipeForm = () => {
                             type="text"
                             className="input-recipe-name"
                             id="recipe-name"
+                            maxLength={64}
                             placeholder="New recipe"
                             onChange={(e) => setName(e.target.value)}
                             value={name}
@@ -171,8 +172,13 @@ const RecipeForm = () => {
                             onChange={(e) => setServings(e.target.value)}
                             value={servings}
                             aria-labelledby='servings-label'
+                            required
                         />
                         <label className='input-recipe-servings-label recipe-servings-label' id='recipe-servings-label' htmlFor='recipe-servings'>Servings</label>
+                    </div>
+                    <div className={'recipe-author' + (recipe?.author ? '' : ' empty')}>
+                        {recipe?.author}
+                        <div className='recipe-author__title'>Author</div>
                     </div>
                 </div>
                 <div className='input-recipe-group-ingredients recipe-group-ingredients'>
@@ -207,6 +213,7 @@ const RecipeForm = () => {
                         })}
                         setAction={setIngredients}
                         aria-label='Add an ingredient'
+                        title='Add an ingredient'
                     />
                 </div>
                 <div className='input-recipe-group-steps recipe-group-steps'>
@@ -241,6 +248,7 @@ const RecipeForm = () => {
                         })}
                         setAction={setSteps}
                         aria-label='Add a step'
+                        title='Add a step'
                     />
                 </div>
                 <ImageForm

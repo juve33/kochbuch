@@ -154,7 +154,7 @@ input[type=number] {
 }
 
 :where(.input__hidden:checked + label) {
-    box-shadow: inset 0px 0px 0px 2px gray;
+    font-weight: bold;
 }
 
 :where(.add-button)::before,

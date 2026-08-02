@@ -98,7 +98,7 @@ export async function init() {
                 recipe_id INT NOT NULL,
                 slot INT NOT NULL,
                 caption TEXT,
-                UNIQUE (recipe_id, slot) DEFERRABLE INITIALLY DEFERRED,
+                UNIQUE (recipe_id, slot),
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
             );`,
             (err) => {

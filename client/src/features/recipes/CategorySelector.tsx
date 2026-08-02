@@ -47,7 +47,8 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
             } catch (err) {
                 const message =
                     err instanceof Error ? err.message : "Unexpected error";
-                setError(message);
+
+                throw new Error(message);
             }
         };
         fetchCategories();
@@ -187,6 +188,7 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                         globalStateDispatch({ type: 'close modal' })
                     }}
                 >
+                    <h2>Edit categories</h2>
                     <ul className='categories'>
                         {categories.map((category, index) => (
                             <li className='category'>
@@ -195,6 +197,7 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                                         <input
                                             type='text'
                                             className='category__name'
+                                            maxLength={32}
                                             value={newCategory}
                                             onChange={(e) => {
                                                 setNewCategory(e.target.value);
@@ -243,13 +246,14 @@ const CategorySelector = ({ value, setAction }: CategorySelectorProps) => {
                         createItem={() => ({ id: undefined, name: "" } as Category)}
                         setAction={setCategories}
                         aria-label='Add category'
+                        title='Add category'
                         onClick={() => {
                             setCurrentlyEditting(categories.length);
                             setNewCategory(categories[categories.length].name);
                         }}
                     />
-                    {error && <p>{error}</p>}
-                    <div>
+                    {error && <div>{error}</div>}
+                    <div className='modal__controls'>
                         <button
                             type='button'
                             aria-label='Close'

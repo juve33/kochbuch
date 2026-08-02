@@ -60,7 +60,7 @@
 
 .settings-admin {
     display: grid !important;
-    grid-template-columns: 40% 30% auto !important;
+    grid-template-columns: 4fr 3fr auto !important;
 }
 
 :where(.settings-admin) {

@@ -47,6 +47,7 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
             <input
                 type="text"
                 id="unit"
+                maxLength={16}
                 placeholder='Unit'
                 title='Unit'
                 onChange={(e) => {
@@ -64,6 +65,7 @@ const IngredientForm = ({ value, index, setAction }: FieldsetFormProps<Ingredien
             <input
                 type="text"
                 id="text"
+                maxLength={64}
                 placeholder='Ingredient'
                 title='Ingredient'
                 onChange={(e) => {

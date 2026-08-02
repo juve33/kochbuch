@@ -18,7 +18,21 @@
 }
 
 :where(.modal) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    
+    position: relative;
+    min-height: 40%;
+    width: calc(100% - 2rem);
+    max-width: 600px;
+
+    padding: 1rem;
+
     background-color: #fff;
+
+    box-sizing: border-box;
 }
 
 .modal__wrapper .close-button {
