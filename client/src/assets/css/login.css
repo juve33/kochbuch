@@ -18,12 +18,5 @@
 }
 
 :where(.login-form label) {
-    justify-self: end;
-}
-
-:where(.login-form input) {
-    justify-self: start;
-
-    field-sizing: content;
-    min-width: 15ch;
+    text-align: right;
 }
