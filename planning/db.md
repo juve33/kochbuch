@@ -36,7 +36,7 @@ s[steps] {
 i[ingredients] {
     int id PK "generated always as identity"
     int recipe_id FK "not null on delete cascade"
-    int StepID FK "on delete set null"
+    int step_id FK "on delete set null"
     int index_number "not null"
     numeric amount
     varchar(16) unit
