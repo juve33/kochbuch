@@ -88,11 +88,18 @@ const themeFileGet = async (req, res) => {
 
     const file = `${uploadDir}/themes/${theme_slug}/${file_name}`;
 
-    res.sendFile(file, err => {
-        if (err) {
-            return res.status(404).json({ message: 'File not found' });
-        }
-    });
+    res.sendFile(
+        file,
+        {
+            headers: {
+                "Cache-Control": "public, max-age=31536000, immutable"
+            }
+        },
+        err => {
+            if (err) {
+                return res.status(404).json({ message: 'File not found' });
+            }
+        });
 }
 
 export default {uploadRecipeImage, recipeImageGet, themeFileGet}
