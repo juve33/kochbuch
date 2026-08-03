@@ -11,7 +11,7 @@ import uploadsRoutes from './routes/uploadsRoutes.js';
 
 import bcrypt from 'bcrypt';
 import * as db from './db/index.js';
-import { init, createTestUser, requireAuth } from './src/utils.js';
+import { init, createFirstUser, requireAuth, checkThemes } from './src/utils.js';
 
 const app = express();
 
@@ -51,7 +51,9 @@ await waitPort({
 
 init();
 
-createTestUser();
+createFirstUser();
+
+checkThemes();
 
 
 

@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import fs from "fs/promises";
 
 import * as db from '../db/index.js';
 
@@ -13,7 +14,8 @@ export async function init() {
                 password_hash VARCHAR(60) NOT NULL,
                 role INT NOT NULL DEFAULT 0,
                 setting_theme_slug VARCHAR(32),
-                setting_advanced_options bool DEFAULT false
+                setting_advanced_options bool DEFAULT false,
+                FOREIGN KEY (setting_theme_slug) REFERENCES themes(slug) ON DELETE SET NULL
             );
 
             CREATE TABLE IF NOT EXISTS categories (
@@ -100,6 +102,10 @@ export async function init() {
                 caption TEXT,
                 UNIQUE (recipe_id, slot),
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+            );
+            
+            CREATE TABLE IF NOT EXISTS themes (
+                slug VARCHAR(32) PRIMARY KEY
             );`,
             (err) => {
                 if (err) return rej(err);
@@ -113,7 +119,15 @@ export async function init() {
 
 
 
-export async function createTestUser() {
+export async function createFirstUser() {
+    const result = await db.query(`
+        SELECT (COUNT(*) > 0) AS users_exists
+        FROM users;
+        `
+    );
+
+    if (result.rows[0].users_exists) return;
+
     const hashedPassword = await bcrypt.hash(`1234`, 10);
 
     return new Promise((acc, rej) => {
@@ -123,7 +137,7 @@ export async function createTestUser() {
                 ($1, $2, $3),
                 ($4, $5, $6)
             ON CONFLICT (name) DO NOTHING;
-            `, [`test`, hashedPassword, 10, `test2`, hashedPassword, 0],
+            `, [`admin`, hashedPassword, 10],
             (err) => {
                 if (err) return rej(err);
 
@@ -132,6 +146,43 @@ export async function createTestUser() {
             },
         );
     });
+}
+
+
+
+export async function checkThemes() {
+    const themes_dir = "/app/uploads/themes";
+
+    await fs.mkdir(`${themes_dir}`, { recursive: true });
+    
+    const getFileNames = async (path) => {
+        try {
+            return await fs.readdir(path);
+        } catch (err) {
+            if (err.code === "ENOENT") {
+                return [];
+            }
+            throw err;
+        }
+    }
+
+    const themes = await getFileNames(themes_dir)
+
+    if (themes.length === 0) return;
+
+    await db.query(`
+        DELETE FROM themes
+        WHERE slug <> ALL($1::VARCHAR(32)[]);
+        `, [themes]);
+
+    await Promise.all(
+        themes.map(theme =>
+            db.query(`
+            INSERT INTO themes (slug)
+            VALUES ($1)
+            ON CONFLICT DO NOTHING;
+        `, [theme]))
+    );
 }
 
 

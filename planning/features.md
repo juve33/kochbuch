@@ -41,4 +41,4 @@
 - [x] einloggen
 - [x] ausloggen
 - [x] Einstellungen bearbeiten
-- [ ] Themes
+- [x] Themes

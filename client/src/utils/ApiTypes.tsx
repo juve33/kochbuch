@@ -59,3 +59,7 @@ export type UserApi = {
     name: string;
     role: number;
 }
+
+export type ThemeApi = {
+    slug: string;
+}

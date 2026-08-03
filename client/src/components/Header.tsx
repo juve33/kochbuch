@@ -29,6 +29,7 @@ const Header = ({ children } : HeaderProps) => {
     return createPortal(
         <>
             <title>{globalState.user?.name ? globalState.user.name + "s Kochbuch" : "Kochbuch"}</title>
+            {globalState.settings?.themeSlug && <link rel="stylesheet" href={"/api/uploads/theme/" + globalState.settings.themeSlug + "/theme.css"} />}
             <header className="header__wrapper">
                 <div className="header__inner">
                     <div className="header__portal-main" ref={headerMainRef}></div>

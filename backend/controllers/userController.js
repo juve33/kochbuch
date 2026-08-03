@@ -144,10 +144,10 @@ const newUserPost = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await db.query(`
-        INSERT INTO users (name, password_hash, role)
-            VALUES ($1, $2, 0)
+        INSERT INTO users (name, password_hash, role, setting_theme_slug)
+            VALUES ($1, $2, 0, $3)
             RETURNING id;
-        `, [username, hashedPassword])
+        `, [username, hashedPassword, "default"])
         .catch(err => {
             if (err.code === '22001') {
                 return res.status(400).json({ message: 'Too long string submitted' });
@@ -165,6 +165,33 @@ const newUserPost = async (req, res) => {
         });
 
     res.status(201).json({ message: 'User created successfully', id: result.rows[0].id });
+}
+
+const themesListGet = async (req, res) => {
+    const result = await db.query(`
+        SELECT t.slug
+        FROM themes t;
+        `
+    );
+
+    const user_parsed = {
+        themes: result.rows,
+    }
+
+    res.status(200).json(user_parsed);
+}
+
+const themePost = async (req, res) => {
+    const { slug } = req.body;
+
+    await db.query(`
+        UPDATE users
+        SET
+            setting_theme_slug = $2
+        WHERE id = $1;
+        `, [req.session.userId, slug]);
+
+    res.status(200).json({ message: 'Theme updated successfully' });
 }
 
 const userDelete = async (req, res) => {
@@ -267,4 +294,4 @@ const userPost = async (req, res) => {
     }
 }
 
-export default {allUsersGet, innerApiKeysGet, meGet, mePost, newUserPost, userDelete, userPost}
+export default {allUsersGet, innerApiKeysGet, meGet, mePost, newUserPost, themesListGet, themePost, userDelete, userPost}

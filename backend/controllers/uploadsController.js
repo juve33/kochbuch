@@ -5,7 +5,7 @@ import path from "path";
 
 import * as db from '../db/index.js';
 
-export const uploadDir = "/app/uploads/images";
+export const uploadDir = "/app/uploads";
 
 const uploadRecipeImage = async (req, res) => {
     const { id } = req.params;
@@ -52,8 +52,8 @@ const uploadRecipeImage = async (req, res) => {
             .webp()
             .toBuffer();
 
-        await fs.mkdir(`${uploadDir}/recipe-${id}`, { recursive: true });
-        await fs.writeFile(`${uploadDir}/recipe-${id}/${slots[i]}.webp`, image);
+        await fs.mkdir(`${uploadDir}/images/recipe-${id}`, { recursive: true });
+        await fs.writeFile(`${uploadDir}/images/recipe-${id}/${slots[i]}.webp`, image);
     }
 
     res.status(200).json({ message: 'Upload successfull' });
@@ -74,7 +74,7 @@ const recipeImageGet = async (req, res) => {
         return res.status(403).json({ message: 'Forbidden' });
     }
 
-    const file = `${uploadDir}/recipe-${recipe_id}/${image_name}`;
+    const file = `${uploadDir}/images/recipe-${recipe_id}/${image_name}`;
 
     res.sendFile(file, err => {
         if (err) {
@@ -83,4 +83,16 @@ const recipeImageGet = async (req, res) => {
     });
 }
 
-export default {uploadRecipeImage, recipeImageGet}
+const themeFileGet = async (req, res) => {
+    const { theme_slug, file_name } = req.params;
+
+    const file = `${uploadDir}/themes/${theme_slug}/${file_name}`;
+
+    res.sendFile(file, err => {
+        if (err) {
+            return res.status(404).json({ message: 'File not found' });
+        }
+    });
+}
+
+export default {uploadRecipeImage, recipeImageGet, themeFileGet}

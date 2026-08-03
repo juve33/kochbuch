@@ -12,8 +12,7 @@ import Header from './components/Header';
 import SettingsView from './views/SettingsView';
 import AccountSettings from './features/user/AccountSettings';
 import AdminSettings from './features/user/AdminSettings';
-
-import './assets/default-theme/theme.css';
+import GeneralSettings from './features/user/GeneralSettings';
 
 function App() {
     return (
@@ -37,10 +36,9 @@ function App() {
                     </Route>
 
                     <Route path="settings" element={<SettingsView />}>
-                        <Route index element={<p>test</p>} />
                         <Route path='account' element={<AccountSettings />} />
                         <Route path='admin' element={<AdminSettings />} />
-                        <Route path='*' element={<p>test</p>} />
+                        <Route index element={<GeneralSettings />} />
                     </Route>
                 </Route>
             </Routes>

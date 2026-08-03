@@ -43,10 +43,6 @@
     display: none;
 }
 
-:where(.recipe select) {
-    background: none;
-}
-
 :where(.recipe input),
 :where(.recipe textarea) {
     background-color: unset;

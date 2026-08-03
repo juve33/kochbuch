@@ -43,6 +43,10 @@ type GlobalStateReducerAction =
         headerMainRef: RefObject<HTMLElement | null>,
         headerMenuRef: RefObject<HTMLElement | null>
     }
+    | {
+        type: "set theme",
+        themeSlug: string
+    }
 
 
 export function globalStateReducer(state: GlobalState, action: GlobalStateReducerAction) {
@@ -106,6 +110,24 @@ export function globalStateReducer(state: GlobalState, action: GlobalStateReduce
                 }
             };
         }
+        case "set theme": {
+            return {
+                ...state,
+                settings: {
+                    ...state.user,
+                    themeSlug: action.themeSlug ?? state.settings.themeSlug,
+                }
+            }
+        };
+        case "change user name": {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    name: action.name ?? state.user.name,
+                },
+            };
+        }
     }
 }
 
@@ -140,6 +162,10 @@ export const GlobalStateProvider = ({ children }: GlobalStateProviderProps) => {
                         type: "set auth status",
                         authStatus: "unauthenticated"
                     });
+                    dispatchGlobalState({
+                        type: "set theme",
+                        themeSlug: "default"
+                    });
                     throw new Error(data.error || data.message || "User data failed");
                 }
 
@@ -161,7 +187,7 @@ export const GlobalStateProvider = ({ children }: GlobalStateProviderProps) => {
                     id: userData.id,
                     name: userData.name,
                     role: userData.role,
-                    settingThemeSlug: userData.setting_theme_slug,
+                    settingThemeSlug: userData.setting_theme_slug ?? "default",
                     settingAdvancedOptions: userData.setting_advanced_options
                 });
             } catch (err) {

@@ -9,7 +9,7 @@ u[users] {
     varchar(32) name "unique not null"
     varchar(60) passwort_hash "not null"
     int role "not null default 0"
-    varchar(32) setting_theme_slug
+    varchar(32) setting_theme_slug FK "on delete set null"
     bool setting_advanced_options "default false"
 }
 
@@ -70,6 +70,10 @@ im[recipe_images] {
     text caption
 }
 
+t[themes] {
+    varchar(32) slug PK
+}
+
 r }o--o| c: gehörtZu
 r ||--o{ im: hat
 r ||--|{ i: hat
@@ -78,5 +82,6 @@ s |o--o{ i: benötigt
 apii ||--o| u: gehörtZu
 apio }o--|| u: gehörtZu
 apii ||--o{ a: gehörtZu
+t ||--o{ u: wirdVerwendetVon
 r ||--|{ a: kannZugegriffenWerdenDurch
 ```
