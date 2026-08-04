@@ -7,6 +7,10 @@ export async function init() {
     return new Promise((acc, rej) => {
         db.query(`
             CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+            CREATE TABLE IF NOT EXISTS themes (
+                slug VARCHAR(32) PRIMARY KEY
+            );
             
             CREATE TABLE IF NOT EXISTS users (
                 id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -102,10 +106,6 @@ export async function init() {
                 caption TEXT,
                 UNIQUE (recipe_id, slot),
                 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
-            );
-            
-            CREATE TABLE IF NOT EXISTS themes (
-                slug VARCHAR(32) PRIMARY KEY
             );`,
             (err) => {
                 if (err) return rej(err);
@@ -134,14 +134,13 @@ export async function createFirstUser() {
         db.query(`
             INSERT INTO users (name, password_hash, role)
             VALUES
-                ($1, $2, $3),
-                ($4, $5, $6)
+                ($1, $2, $3)
             ON CONFLICT (name) DO NOTHING;
             `, [`admin`, hashedPassword, 10],
             (err) => {
                 if (err) return rej(err);
 
-                console.log(`Created tables`);
+                console.log(`Created admin`);
                 acc();
             },
         );
